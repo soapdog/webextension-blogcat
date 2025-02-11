@@ -37,7 +37,7 @@ function getCurrentActiveTab(tabs) {
         }
 
         if (res.blogroll) {
-            document.getElementById("blogroll_link").setAttribute("href", res.blogroll)
+            document.getElementById("blogroll_link").setAttribute("href", `../importOpml.html?url=${res.blogroll}`)
             document.getElementById("blogroll_copy").addEventListener("click", ev => {
                 copyToClipboard(res.blogroll)
             })

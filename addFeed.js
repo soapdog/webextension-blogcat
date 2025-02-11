@@ -15,7 +15,6 @@ if (search.has("url")) {
     if (feed) {
         feedNameInput.value = feed.title
     }
-
 }
 
 addFeedButton.addEventListener("click", evt => {
@@ -30,6 +29,13 @@ addFeedButton.addEventListener("click", evt => {
         frequency: update_frequency.value
     }
 
-    saveFeed(feed)
-    location = "reader.html"
+    const onOk = e => {
+        location = "reader.html"
+    }
+
+    const onError = e => {
+        console.log("error", e)
+    }
+
+    saveFeed(feed).then(onOk, onError)
 })
