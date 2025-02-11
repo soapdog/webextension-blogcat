@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "BlogCat",
+  "description": "An add-on to make blogging a first-class citizen on Firefox.",
+  "version": "1.0.0",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "blogcat@andregarzia.com",
+      "strict_min_version": "48.0"
+    }
+  },
+  "icons": {
+    "512": "icons/cat_computer512c.png"
+  },
+  "page_action": {
+    "default_icon": {
+      "512": "icons/cat_idea512c.png"
+    },
+    "default_popup": "pageAction/pageAction.html",
+    "default_title": "BlogCat"
+  },
+  "action": {
+    "default_icon": {
+      "512": "icons/cat_computer512c.png"
+    },
+    "default_popup": "browserAction/browserAction.html",
+    "default_title": "BlogCat"
+  },
+    "background": {
+    "scripts": ["browser-polyfill.js", "background.js"]
+  },
+  "permissions": [
+    "scripting",
+    "tabs",
+    "activeTab",
+    "clipboardWrite",
+    "storage",
+    "unlimitedStorage"
+  ],
+  "host_permissions": ["<all_urls>"]
+}

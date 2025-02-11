@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>BlogCat - Reader</title>
+    <link rel="stylesheet" href="vendor/concrete.css">
+    <script src="browser-polyfill.js"></script>
+    <script src="./vendor/rss-parser.min.js"></script>
+    <script src="./vendor/mithril.js"></script>
+    <script defer type="module" src="reader.js"></script>
+    <style type="text/css">
+    .cat-icon {
+        max-height: 64px;
+    }
+
+    .right {
+        float: right;
+    }
+
+    .item-list-expanded  .feed-item {
+        text-wrap: pretty;
+        max-width: 520px;
+        display: inline-block;
+        padding-bottom: 10px;
+        text-decoration: none;
+    }
+
+    .item-list-expanded {
+        list-style: none;
+        padding-left: 0;
+    }
+    </style>
+</head>
+
+<body>
+        <header>
+            <h1><img src="../icons/cat_computer512c.png" class="cat-icon"> BlogCat</h1>
+        </header>
+    <main>
+        <div id="app"></div>
+    </main>
+</body>
+
+</html>

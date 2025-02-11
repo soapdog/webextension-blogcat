@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>BlogCat - Add Feed</title>
+    <link rel="stylesheet" href="vendor/concrete.css">
+    <script src="browser-polyfill.js"></script>
+    <script src="./vendor/rss-parser.min.js"></script>
+    <script defer type="module" src="addFeed.js"></script>
+    <style type="text/css">
+    .cat-icon {
+        max-height: 64px;
+    }
+    </style>
+</head>
+
+<body>
+    <main>
+        <section>
+            <h1><img src="../icons/cat_pencil512c.png" class="cat-icon"> Add Feed To BlogCat</h1>
+            <form>
+                <label for="feed_name">Feed Name</label>
+                <input type="text" name="feed_name" id="feed_name">
+                <label for="feed_url">Feed URL</label>
+                <input type="text" name="feed_url" id="feed_url">
+                <label for="update_frequency">Update Frequency</label>
+                <select name="update_frequency" id="update_frequency">
+                    <option value="realtime">Realtime</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                </select>
+                <input type="submit" value="Add" id="add_feed">
+            </form>
+        </section>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../css/browser.css">
+    <script src="../browser-polyfill.js"></script>
+    <script defer src="pageAction.js"></script>
+    <style>
+    body {
+        width: 300px;
+    }
+
+    .logo {
+        width: 48px;
+    }
+
+    a.text {
+        text-decoration: none;
+        color: unset;
+    }
+
+    a.text:visited {
+        color: unset;
+    }
+
+    body,
+    html {
+        border-top: none;
+    }
+
+    #atom_section {
+        display: none;
+    }
+
+    #rss_section {
+        display: none;
+    }
+
+    #blogroll_section {
+        display: none;
+    }
+    </style>
+</head>
+
+<body>
+    <header class="panel-section panel-section-header">
+        <img src="../icons/cat_idea512c.png" class="cat-idea-icon-32">
+        <div class="text-section-header" id="blogcat-header">BlogCat Found Feeds</div>
+    </header>
+    <div class="panel-section panel-section-list">
+        <div id="atom_section">
+            <div class="panel-list-item" id="atom_item">
+                <div class="icon"></div>
+                <a class="text" target="_blank" href="#" id="atom_link">Add Atom Feed</a>
+            </div>
+            <div class="panel-list-item" id="copy-atom-feed">
+                <div class="icon"></div>
+                <div class="text" id="atom_copy">Copy Atom Feed URL</div>
+            </div>
+            <div class="panel-section-separator"></div>
+        </div>
+        <div id="rss_section">
+            <div class="panel-list-item" id="add-rss-feed">
+                <div class="icon"></div>
+                <a class="text" target="_blank" href="" id="rss_link">Add RSS Feed</a>
+            </div>
+            <div class="panel-list-item" id="copy-rss-feed">
+                <div class="icon"></div>
+                <div class="text" id="rss_copy">Copy RSS Feed URL</div>
+            </div>
+        </div>
+        <div id="blogroll_section">
+            <div class="panel-section-separator"></div>
+            <div class="panel-list-item" id="open-blogroll">
+                <div class="icon"></div>
+                <a class="text" target="_blank" href="" id="blogroll_link">Open Blogroll</a>
+            </div>
+            <div class="panel-list-item" id="copy-blogroll">
+                <div class="icon"></div>
+                <div class="text" id="blogroll_copy">Copy Blogroll URL</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
