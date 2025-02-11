@@ -26,7 +26,9 @@ export async function getAllFeeds() {
 }
 
 export async function loadFeedFromURL(url) {
-    let parser = new RSSParser();
+    let parser = new RSSParser({
+        timeout: 1000,
+    })
     let feed = await parser.parseURL(url)
     return feed
 }
@@ -44,13 +46,13 @@ export const FeedLoader = {
         FeedLoader.queue = keys.map(k => obj.feeds[k])
     },
     loadOne: async () => {
-        console.timeStart("loadOne")
         if (FeedLoader.queue.length == 0) {
             console.timeEnd("loadOne")
             return false
         }
 
         let feed = FeedLoader.queue.shift()
+        console.time(feed.url)
 
         let data = await loadFeedFromURL(feed.url)
         let today = new Date()
@@ -67,17 +69,17 @@ export const FeedLoader = {
         }
 
         console.log(`${FeedLoader.progress}/${FeedLoader.total}`)
-        FeedLoader.feeds.push(Object.clone(feed))
+        FeedLoader.feeds.push(structuredClone(feed))
 
         await saveFeed(feed)
 
-        console.timeEnd("loadOne")
+        console.timeEnd(feed.url)
 
         return true
     },
     processQueue: (callback) => {
         const nextLoop = () => {
-            FeedLoader.progress += 1    
+            FeedLoader.progress += 1
             FeedLoader.processQueue(callback)
             m.redraw()
         }
