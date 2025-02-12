@@ -16,36 +16,36 @@ const FeedItem = {
         let pubDate = new Date(item.pubDate).toISOString().slice(0, 10)
 
         return m("li", [
-            m("a.feed-item", { href: item.link, target: "_blank" }, item.title),
-            m("small.right", pubDate)
+            m("a", { href: item.link, target: "_blank" }, item.title),
+            m("span", "  •  "),
+            m("small", pubDate)
         ])
     }
 }
 
 const FeedDisplay = {
     showMore: true,
-    smallDisplay: false,
     view: vnode => {
         let feed = vnode.attrs.feed
         let items = vnode.state.showMore ? feed.data.items.slice(0, 3) : feed.data.items
 
         return m("section", [
-            m("header", [
-                m("a.link", { href: feed.data.link, target: "_blank" }, m("b", feed.data.title)),
-                m("small.right", {
-                    onclick: () => {
-                        vnode.state.smallDisplay = !vnode.state.smallDisplay
-                    }
-                }, "…")
-            ]),
-            m("small", m("i", feed.data.description)),
-            m("div", { style: { display: vnode.state.smallDisplay ? "none" : "block" } }, [
-                m("ul", { class: "item-list-expanded" }, items.map(i => m(FeedItem, { item: i }))),
-                m("small", {
+            m("nav", m("ul", [
+                m("li", m("a", { href: feed.data.link, target: "_blank" }, m("b", feed.data.title))),
+                m("li", m("a", { href: `/addFeed.html?url=${feed.url}`, target: "_blank" }, m("small", "edit"))),
+                m("li", m("a", {
+                    href: "#",
                     onclick: e => {
+                        e.preventDefault()
+                        e.stopPropagation()
                         vnode.state.showMore = !vnode.state.showMore
                     }
-                }, vnode.state.showMore ? "show more posts" : "show fewer posts")
+                }, vnode.state.showMore ? m("small","more posts") : m("small","fewer posts")))
+            ])),
+            m("small", m("i", feed.data.description)),
+            m("div", { style: { display: vnode.state.smallDisplay ? "none" : "block" } }, [
+                m("ul", items.map(i => m(FeedItem, { item: i }))),
+                
             ])
         ])
 

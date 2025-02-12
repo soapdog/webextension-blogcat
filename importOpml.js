@@ -90,7 +90,7 @@ const FeedItem = {
             		})
             		
 
-            }}, "add")),
+            }}, vnode.attrs.feed.subscribed ? "Subscribed" : "Subscribe")),
         ])
     }
 }
@@ -127,8 +127,8 @@ const FeedList = {
                             m.redraw()
                         }
                     })),
-                    m("th", "title"),
-                    m("th", m("button", {onclick: addAllSelected}, "add all selected"))
+                    m("th", "Title"),
+                    m("th", m("button", {onclick: addAllSelected}, "Subscribe Selected"))
                 ])
             ]),
             m("tbody", opmlParser.feeds.map(feed => m(FeedItem, { feed })))
