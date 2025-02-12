@@ -1,4 +1,4 @@
-import { getAllFeeds, saveFeed, loadFeedFromURL, FeedLoader } from "./common/dataStorage.js"
+import { FeedLoader, deleteFeed } from "./common/dataStorage.js"
 
 
 const Loading = {
@@ -29,6 +29,10 @@ const FeedDisplay = {
         let feed = vnode.attrs.feed
         let items = vnode.state.showMore ? feed.data.items.slice(0, 3) : feed.data.items
 
+        if (!feed.data.link.includes("://")) {
+            feed.data.link = `https://${feed.data.link}`
+        }
+
         return m("section", [
             m("nav", m("ul", [
                 m("li", m("a", { href: feed.data.link, target: "_blank" }, m("b", feed.data.title))),
@@ -40,7 +44,16 @@ const FeedDisplay = {
                         e.stopPropagation()
                         vnode.state.showMore = !vnode.state.showMore
                     }
-                }, vnode.state.showMore ? m("small","more posts") : m("small","fewer posts")))
+                }, vnode.state.showMore ? m("small","more posts") : m("small","fewer posts"))),
+                m("li", m("a", {
+                    href: "#",
+                    onclick: e => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        deleteFeed(feed)
+                        location.reload()
+                    }
+                }, m("small", "remove")))
             ])),
             m("small", m("i", feed.data.description)),
             m("div", { style: { display: vnode.state.smallDisplay ? "none" : "block" } }, [
@@ -75,7 +88,6 @@ const Reader = {
             vnode.state.loading = false
 
             m.redraw()
-            console.log("callback", feeds)
         }
 
         FeedLoader.processQueue(finishedLoading)

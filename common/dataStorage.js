@@ -17,8 +17,17 @@ Date.prototype.getWeek = function() {
 
 export async function saveFeed(feed) {
     let obj = {}
+
+    if (!feed.url.includes("://")) {
+        feed.url = `https://${feed.url}`
+    }
+
     obj[feed.url] = feed
     return browser.storage.local.set(obj)
+}
+
+export async function deleteFeed(feed) {
+    return browser.storage.local.remove(feed.url)
 }
 
 export async function saveFeeds(newFeeds) {
@@ -34,7 +43,7 @@ export async function getAllFeeds() {
 
 export async function loadFeedFromURL(url) {
     let parser = new RSSParser({
-        timeout: 3000,
+        timeout: 6000,
     })
     let feed = await parser.parseURL(url)
 
@@ -53,44 +62,50 @@ export async function loadFeed(feed, ticker) {
     let m_today = today.getMonth()
     let m_lastFetch = lastFetchDate.getMonth()
 
-    if (feed.frequency == "realtime" || m_today !== m_lastFetch) {
-        data = await loadFeedFromURL(feed.url)
-    } else if (feed.frequency == "daily" && w_today !== w_lastFetch) {
-        if (d_today !== d_lastFetch) {
-            data = await loadFeedFromURL(feed.url)
-        } else {
-            console.log("already fetch daily", feed.url)
-            data = feed.data
-        }
-    } else if (feed.frequency == "weekly") {
 
-        if (w_today !== w_lastFetch) {
+    try {
+        if (feed.frequency == "realtime" || m_today !== m_lastFetch) {
             data = await loadFeedFromURL(feed.url)
+            feed.lastFetch = today
+        } else if (feed.frequency == "daily" && w_today !== w_lastFetch) {
+            if (d_today !== d_lastFetch) {
+                data = await loadFeedFromURL(feed.url)
+                feed.lastFetch = today
+            } else {
+                console.log("already fetch daily", feed.url)
+                data = feed.data
+            }
+        } else if (feed.frequency == "weekly") {
+
+            if (w_today !== w_lastFetch) {
+                data = await loadFeedFromURL(feed.url)
+                feed.lastFetch = today
+            } else {
+                console.log("already fetch weekly", feed.url)
+                data = feed.data
+            }
+        } else if (feed.frequency == "monthly") {
+            if (m_today !== m_lastFetch) {
+                data = await loadFeedFromURL(feed.url)
+                feed.lastFetch = today
+            } else {
+                console.log("already fetch monthly", feed.url)
+                data = feed.data
+            }
         } else {
-            console.log("already fetch weekly", feed.url)
             data = feed.data
         }
-    } else if (feed.frequency == "monthly") {
-        if (m_today !== m_lastFetch) {
-            data = await loadFeedFromURL(feed.url)
-        } else {
-            console.log("already fetch monthly", feed.url)
-            data = feed.data
-        }
-    } else {
+    }catch(e){
+        console.error(`thrown from feed`, feed.url)
         data = feed.data
     }
 
-
-
     if (!data || !data.items) {
-        console.error(`something strange with the feed`, data)
         ticker()
         return false
     }
 
     feed.data = data
-    feed.lastFetch = today
 
     if (feed.data.items[0].hasOwnProperty("isoDate")) {
         feed.lastBuildDate = new Date(feed.data.items[0].isoDate)
@@ -127,20 +142,14 @@ export const FeedLoader = {
         }
 
         let ps = FeedLoader.queue.map(f => {
-            let p
-            try {
-                p = loadFeed(f, ticker)
-            } catch (e) {
-                console.log(`thrown from feedloader`, e)
-                ticker()
-                return false
-            }
+            let p = loadFeed(f, ticker)
+            
             return p
         })
 
         const done = (feeds) => {
             let fs = feeds.filter((f) => {
-                if (f.status == "fulfilled") {
+                if (f.status == "fulfilled" && f.value.hasOwnProperty("data")) {
                     return true
                 } else {
                     return false
