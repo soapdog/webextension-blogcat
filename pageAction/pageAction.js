@@ -23,7 +23,8 @@ function getCurrentActiveTab(tabs) {
             document.getElementById("atom_copy").addEventListener("click", ev => {
                 copyToClipboard(res.atom)
             })
-            document.getElementById("atom_section").style.display = "block"
+            document.getElementById("subscribe_atom").style.display = "block"
+            document.getElementById("copy_atom").style.display = "block"
 
         }
 
@@ -32,7 +33,8 @@ function getCurrentActiveTab(tabs) {
             document.getElementById("rss_copy").addEventListener("click", ev => {
                 copyToClipboard(res.rss)
             })
-            document.getElementById("rss_section").style.display = "block"
+            document.getElementById("subscribe_rss").style.display = "block"
+            document.getElementById("copy_rss").style.display = "block"
 
         }
 
@@ -41,7 +43,8 @@ function getCurrentActiveTab(tabs) {
             document.getElementById("blogroll_copy").addEventListener("click", ev => {
                 copyToClipboard(res.blogroll)
             })
-            document.getElementById("blogroll_section").style.display = "block"
+            document.getElementById("open_blogroll").style.display = "block"
+            document.getElementById("copy_blogroll").style.display = "block"
 
         }
     }

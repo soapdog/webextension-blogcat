@@ -37,7 +37,15 @@
         display: none;
     }
 
-    #blogroll_section {
+    #subscribe_atom, #copy_atom {
+        display: none;
+    }
+
+    #subscribe_rss, #copy_rss {
+        display: none;
+    }
+
+    #open_blogroll, #copy_blogroll {
         display: none;
     }
     </style>
@@ -49,38 +57,31 @@
         <div class="text-section-header" id="blogcat-header">BlogCat Found Feeds</div>
     </header>
     <div class="panel-section panel-section-list">
-        <div id="atom_section">
-            <div class="panel-list-item" id="atom_item">
+            <div class="panel-list-item" id="subscribe_atom">
                 <div class="icon"></div>
-                <a class="text" target="_blank" href="#" id="atom_link">Add Atom Feed</a>
+                <a class="text" target="_blank" href="#" id="atom_link">Subscribe using Atom feed</a>
             </div>
-            <div class="panel-list-item" id="copy-atom-feed">
+            <div class="panel-list-item" id="subscribe_rss">
                 <div class="icon"></div>
-                <div class="text" id="atom_copy">Copy Atom Feed URL</div>
+                <a class="text" target="_blank" href="" id="rss_link">Subscribe using RSS feed</a>
+            </div>
+            <div class="panel-list-item" id="open_blogroll">
+                <div class="icon"></div>
+                <a class="text" target="_blank" href="" id="blogroll_link">View Blogroll</a>
             </div>
             <div class="panel-section-separator"></div>
-        </div>
-        <div id="rss_section">
-            <div class="panel-list-item" id="add-rss-feed">
-                <div class="icon"></div>
-                <a class="text" target="_blank" href="" id="rss_link">Add RSS Feed</a>
-            </div>
-            <div class="panel-list-item" id="copy-rss-feed">
+            <div class="panel-list-item" id="copy_rss">
                 <div class="icon"></div>
                 <div class="text" id="rss_copy">Copy RSS Feed URL</div>
             </div>
-        </div>
-        <div id="blogroll_section">
-            <div class="panel-section-separator"></div>
-            <div class="panel-list-item" id="open-blogroll">
+            <div class="panel-list-item" id="copy_atom">
                 <div class="icon"></div>
-                <a class="text" target="_blank" href="" id="blogroll_link">Open Blogroll</a>
+                <div class="text" id="atom_copy">Copy Atom Feed URL</div>
             </div>
-            <div class="panel-list-item" id="copy-blogroll">
+            <div class="panel-list-item" id="copy_blogroll">
                 <div class="icon"></div>
                 <div class="text" id="blogroll_copy">Copy Blogroll URL</div>
             </div>
-        </div>
     </div>
 </body>
 
