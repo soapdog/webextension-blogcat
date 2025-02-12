@@ -41,6 +41,9 @@
         "default_popup": "browserAction/browserAction.html",
         "default_title": "BlogCat"
     },
+    "options_ui": {
+      "page": "options/options.html"
+    },
     "background":
     {
         "scripts": ["browser-polyfill.js", "background.js"]

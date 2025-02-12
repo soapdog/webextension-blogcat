@@ -1,4 +1,4 @@
-import { FeedLoader, deleteFeed } from "./common/dataStorage.js"
+import { FeedLoader, deleteFeed } from "/common/dataStorage.js"
 
 
 const Loading = {
@@ -50,8 +50,10 @@ const FeedDisplay = {
                     onclick: e => {
                         e.preventDefault()
                         e.stopPropagation()
-                        deleteFeed(feed)
-                        location.reload()
+                        if (window.confirm(`Are you sure you want to remove "${feed.title}" from your subscriptions? Confirming it will reload the reader.`)) {
+                            deleteFeed(feed)
+                            location.reload()
+                        }
                     }
                 }, m("small", "remove")))
             ])),
@@ -98,9 +100,6 @@ const Reader = {
         return vnode.state.loading ? m(Loading, { value: vnode.state.progressValue, max: vnode.state.progressMax }) : m(FeedList)
     }
 }
-
-
-
 
 const appRoot = document.getElementById("app")
 let feeds = []

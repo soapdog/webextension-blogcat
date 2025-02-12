@@ -15,6 +15,10 @@ Date.prototype.getWeek = function() {
         3 + (week1.getDay() + 6) % 7) / 7);
 }
 
+const defaultSettings = {
+    postsPerBlog: 3
+}
+
 export async function saveFeed(feed) {
     let obj = {}
 
@@ -38,7 +42,32 @@ export async function saveFeeds(newFeeds) {
 }
 
 export async function getAllFeeds() {
-    return await browser.storage.local.get(undefined) // this is a stupid hack, cue https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea/get
+    let all =  await browser.storage.local.get(undefined) // this is a stupid hack, cue https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea/get
+    delete all.settings
+    return all
+}
+
+export async function getAllSettings() {
+    let settings = await browser.storage.local.get("settings")
+    if (!settings.hasOwnProperty("postsPerBlog")) {
+        return defaultSettings
+    } else {
+        return settings
+    }
+}
+
+export async function valueForSetting(key) {
+    let settings = await getAllSettings()
+
+    if (settings.hasOwnProperty(key)) {
+        return settings[key]
+    } else {
+        return defaultSettings[key]
+    }
+}
+
+export async function saveSettings(settings) {
+    return browser.storage.local.set({settings})
 }
 
 export async function loadFeedFromURL(url) {
