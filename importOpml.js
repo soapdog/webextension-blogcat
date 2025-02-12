@@ -96,14 +96,14 @@ const FeedItem = {
 }
 
 const addAllSelected = () => {
-	let feeds = {}
+	let feeds = []
 	opmlParser.feeds.forEach(feed => {
 		if (feed.selected) {
-			feeds[feed.url] = {
+			feeds.push({
 				title: feed.title,
 				url: feed.url,
 				frequency: "realtime"
-			}
+			})
 			feed.subscribed = true
 		}
 	})
