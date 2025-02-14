@@ -16,7 +16,9 @@ Date.prototype.getWeek = function() {
 }
 
 const defaultSettings = {
-    postsPerBlog: 3
+    postsPerBlog: 3,
+    openPostsIn: "newtab",
+    postViewer: "reader"
 }
 
 export async function saveFeed(feed) {
@@ -48,18 +50,21 @@ export async function getAllFeeds() {
 }
 
 export async function getAllSettings() {
-    let settings = await browser.storage.local.get("settings")
-    if (!settings.hasOwnProperty("postsPerBlog")) {
+    let obj = await browser.storage.local.get("settings")
+
+    if (!Object.hasOwn(obj, "settings")) {
+        console.log("returning default", settings)
         return defaultSettings
     } else {
-        return settings
+        console.log("saved settings")
+        return obj.settings
     }
 }
 
 export async function valueForSetting(key) {
     let settings = await getAllSettings()
 
-    if (settings.hasOwnProperty(key)) {
+    if (Object.hasOwn(settings, key)) {
         return settings[key]
     } else {
         return defaultSettings[key]

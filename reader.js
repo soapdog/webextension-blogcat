@@ -1,4 +1,4 @@
-import { FeedLoader, deleteFeed } from "/common/dataStorage.js"
+import { FeedLoader, deleteFeed, getAllSettings } from "/common/dataStorage.js"
 
 
 const Loading = {
@@ -16,7 +16,15 @@ const FeedItem = {
         let pubDate = new Date(item.pubDate).toISOString().slice(0, 10)
 
         return m("li", [
-            m("a", { href: item.link, target: "_blank" }, item.title),
+            m("a", { href: item.link, target: "_blank", onclick: e=> {
+                console.log("settings", settings)
+                console.log(settings["postViewer"])
+                if (settings["postViewer"] == "reader") {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    openInReaderView(item.link)
+                }
+            } }, item.title),
             m("span", "  •  "),
             m("small", pubDate)
         ])
@@ -91,7 +99,7 @@ const Reader = {
 
             m.redraw()
         }
-
+    
         FeedLoader.processQueue(finishedLoading)
 
     },
@@ -101,8 +109,14 @@ const Reader = {
     }
 }
 
-const appRoot = document.getElementById("app")
+let settings = await getAllSettings()
 let feeds = []
+
+function openInReaderView(url) {
+      var creating = browser.tabs.create({openInReaderMode: true, url: url})
+}
+
+const appRoot = document.getElementById("app")
 
 m.route(appRoot, "/reader", {
     "/reader": Reader
