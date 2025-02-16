@@ -18,7 +18,17 @@ Date.prototype.getWeek = function() {
 const defaultSettings = {
     postsPerBlog: 3,
     openPostsIn: "newtab",
-    postViewer: "reader"
+    postViewer: "reader",
+    maxFetchErrors: 3
+}
+
+const reservedKeys = [
+    "settings",
+    "accounts"
+]
+
+function removeReservedKeys(obj) {
+    reservedKeys.forEach(k => delete obj[k])
 }
 
 export async function saveFeed(feed) {
@@ -33,6 +43,7 @@ export async function saveFeed(feed) {
 }
 
 export async function deleteFeed(feed) {
+    console.log("removing feed", feed.url)
     return browser.storage.local.remove(feed.url)
 }
 
@@ -45,7 +56,7 @@ export async function saveFeeds(newFeeds) {
 
 export async function getAllFeeds() {
     let all =  await browser.storage.local.get(undefined) // this is a stupid hack, cue https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea/get
-    delete all.settings
+    removeReservedKeys(all)
     return all
 }
 
@@ -53,10 +64,8 @@ export async function getAllSettings() {
     let obj = await browser.storage.local.get("settings")
 
     if (!Object.hasOwn(obj, "settings")) {
-        console.log("returning default", settings)
         return defaultSettings
     } else {
-        console.log("saved settings")
         return obj.settings
     }
 }
@@ -95,16 +104,25 @@ export async function loadFeed(feed, ticker) {
     let w_lastFetch = lastFetchDate.getWeek()
     let m_today = today.getMonth()
     let m_lastFetch = lastFetchDate.getMonth()
+    let maxFetchErrors = await valueForSetting("maxFetchErrors")
 
 
     try {
-        if (feed.frequency == "realtime" || m_today !== m_lastFetch) {
+        if (Number.isInteger(feed.errorCount) && 
+            feed.errorFetching && 
+            feed.errorCount >= maxFetchErrorsqq) {
+            console.log("too many errors, not fetching", feed.url)
+        } else if (feed.frequency == "realtime" || m_today !== m_lastFetch) {
             data = await loadFeedFromURL(feed.url)
             feed.lastFetch = today
+            feed.errorFetching = false 
+            feed.errorCount = 0
         } else if (feed.frequency == "daily" && w_today !== w_lastFetch) {
             if (d_today !== d_lastFetch) {
                 data = await loadFeedFromURL(feed.url)
+                feed.errorFetching = false
                 feed.lastFetch = today
+                feed.errorCount = 0
             } else {
                 console.log("already fetch daily", feed.url)
                 data = feed.data
@@ -113,7 +131,9 @@ export async function loadFeed(feed, ticker) {
 
             if (w_today !== w_lastFetch) {
                 data = await loadFeedFromURL(feed.url)
+                feed.errorFetching = false
                 feed.lastFetch = today
+                feed.errorCount = 0
             } else {
                 console.log("already fetch weekly", feed.url)
                 data = feed.data
@@ -121,7 +141,9 @@ export async function loadFeed(feed, ticker) {
         } else if (feed.frequency == "monthly") {
             if (m_today !== m_lastFetch) {
                 data = await loadFeedFromURL(feed.url)
+                feed.errorFetching = false
                 feed.lastFetch = today
+                feed.errorCount = 0
             } else {
                 console.log("already fetch monthly", feed.url)
                 data = feed.data
@@ -131,11 +153,17 @@ export async function loadFeed(feed, ticker) {
         }
     }catch(e){
         console.error(`thrown from feed`, feed.url)
-        data = feed.data
     }
 
     if (!data || !data.items) {
+        feed.errorFetching = true
+        if (!Number.isInteger(feed.errorCount)) {
+            feed.errorCount = 1
+        } else {
+            feed.errorCount += 1
+        } 
         ticker()
+        saveFeed(feed)
         return false
     }
 

@@ -1,16 +1,16 @@
 
+/**
+ * Page Action 
+ * ==================================================
+ */ 
 
 // Check for <link rel="blogroll">
-
-console.log("starting")
 
 function onError(error) {
   console.log(`Error: ${error}`);
 }
 
 function pageActionToggle(tabId, changeInfo, tabInfo) {
-
-
 	function onExecuted(result) {
 		let res = result[0].result
 	  console.log(`exec`, result[0]);
@@ -21,8 +21,6 @@ function pageActionToggle(tabId, changeInfo, tabInfo) {
 	  	browser.pageAction.hide(tabId)
 	  }
 	}
-
-	
 
 	if (changeInfo.status === "complete") {
 		const executing = browser.scripting.executeScript({
@@ -62,6 +60,83 @@ function handleMessage(request, sender, sendResponse) {
 	return true
 }
 
-browser.runtime.onMessage.addListener(handleMessage);
+/**
+ * Context Menu
+ * ==================================================
+ */ 
 
+
+function onContextMenuCreated() {
+  if (browser.runtime.lastError) {
+    console.log(`Error: ${browser.runtime.lastError}`);
+  } else {
+    console.log("Context menu item created successfully");
+  }
+}
+
+function copyToClipboard(text, html) {
+  function oncopy(event) {
+    document.removeEventListener("copy", oncopy, true);
+    // Hide the event from the page to prevent tampering.
+    event.stopImmediatePropagation();
+
+    // Overwrite the clipboard content.
+    event.preventDefault();
+    event.clipboardData.setData("text/plain", text);
+    event.clipboardData.setData("text/html", html);
+  }
+  document.addEventListener("copy", oncopy, true);
+
+  // Requires the clipboardWrite permission, or a user gesture:
+  document.execCommand("copy");
+}
+
+function initializeContextMenus() {
+  browser.contextMenus.create({
+    id: "text-selection-to-clipboard-as-quotation",
+    title: "Copy selected text as quotation",
+    contexts: ["selection"]
+  }, onContextMenuCreated);
+
+  browser.contextMenus.create({
+    id: "page-action-to-clipboard-as-link",
+    title: "Copy link to the current page",
+    contexts: ["all", "page"]
+  }, onContextMenuCreated);
+
+  browser.contextMenus.create({
+    id: "link-to-clipboard-as-link",
+    title: "Copy link",
+    contexts: ["link"]
+  }, onContextMenuCreated);
+
+  browser.contextMenus.onClicked.addListener(function (info, tab) {
+    let template
+    console.dir("info", info)
+    switch (info.menuItemId) {
+      case "text-selection-to-clipboard-as-quotation":
+      let lines = info.selectionText.split(`\n`).map(l => `> ${l}`).join(`\n`)
+      template = `${lines}\n>\n> &mdash; _Source: [${tab.title}](${info.pageUrl})_`
+      copyToClipboard(template, template)
+      break;
+      case "page-action-to-clipboard-as-link":
+      template = `[${tab.title}](${tab.url})`
+      copyToClipboard(template, template)
+      break;
+      case "link-to-clipboard-as-link":
+      template = `[${info.linkText}](${info.linkUrl})`
+      copyToClipboard(template, template)
+      break;
+    }
+  })
+}
+
+
+/**
+ * Initialise
+ * ==================================================
+ */ 
+
+browser.runtime.onMessage.addListener(handleMessage)
 browser.tabs.onUpdated.addListener(pageActionToggle)
+initializeContextMenus()

@@ -12,6 +12,20 @@ function goAddFeed() {
   window.close()
 }
 
+function goFeedManagement() {
+  browser.tabs.create({
+    url: "/feedManagement.html",
+  })
+  window.close()
+}
+
+function goAccountManagement() {
+  browser.tabs.create({
+    url: "/accountManagement.html",
+  })
+  window.close()
+}
+
 function goImportOpml() {
   browser.tabs.create({
     url: "/importOpml.html",
@@ -65,6 +79,18 @@ document.getElementById("go-to-import-opml").addEventListener("click", (ev) => {
   ev.stopPropagation()
   ev.preventDefault()
   goImportOpml()
+})
+
+document.getElementById("go-to-feed-management").addEventListener("click", (ev) => {
+  ev.stopPropagation()
+  ev.preventDefault()
+  goFeedManagement()
+})
+
+document.getElementById("go-to-account-management").addEventListener("click", (ev) => {
+  ev.stopPropagation()
+  ev.preventDefault()
+  goAccountManagement()
 })
 
 document.getElementById("go-to-help").addEventListener("click", (ev) => {

@@ -41,12 +41,13 @@ const SettingsManager = {
     view: vnode => {
         console.log(settings)
         return m("form", [
-            makeInput("postsPerBlog", "Show How Many Posts Per Blog?"),
-            makeRadio("openPostsIn", "Where To Open A Blog Post?", {
+            makeInput("postsPerBlog", "Show how many posts per blog?"),
+            makeInput("maxFetchErrors", "Maximum amount of errors before we stop fetching that feed?"),
+            makeRadio("openPostsIn", "Where to open a blog post?", {
                 "newtab": "Posts open in a new tab",
                 "sametab": "Posts open on the same tab"
             }),
-            makeRadio("postViewer", "How To Open A Blog Post?", {
+            makeRadio("postViewer", "How to open a blog post?", {
                 "reader": "Posts open using reader view",
                 "web": "Posts open on their own page"
             }),
@@ -54,17 +55,10 @@ const SettingsManager = {
     }
 }
 
-const SubscriptionsManager = {
-    view: vnode => {
-        return m("section", "feeds")
-    }
-}
-
 const Options = {
     view: vnode => {
         return [
-            m(SettingsManager),
-            m(SubscriptionsManager)
+            m(SettingsManager)
         ]
     }
 }
