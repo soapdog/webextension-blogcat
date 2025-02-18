@@ -48,7 +48,7 @@ const SettingsManager = {
                 "sametab": "Posts open on the same tab"
             }),
             makeRadio("postViewer", "How to open a blog post?", {
-                "reader": "Posts open using reader view",
+                "reader": "Posts open using reader view (always open in a new tab)",
                 "web": "Posts open on their own page"
             }),
         ])

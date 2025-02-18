@@ -16,7 +16,7 @@ const FeedItem = {
         let pubDate = new Date(item.pubDate).toISOString().slice(0, 10)
 
         return m("li", [
-            m("a", { href: item.link, target: "_blank", onclick: e=> {
+            m("a", { href: item.link, target: settings["openPostsIn"] == "newtab" ? "_blank" : "", onclick: e=> {
                 console.log("settings", settings)
                 console.log(settings["postViewer"])
                 if (settings["postViewer"] == "reader") {
@@ -113,7 +113,7 @@ let settings = await getAllSettings()
 let feeds = []
 
 function openInReaderView(url) {
-      var creating = browser.tabs.create({openInReaderMode: true, url: url})
+    browser.tabs.create({openInReaderMode: true, url: url})
 }
 
 const appRoot = document.getElementById("app")

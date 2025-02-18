@@ -35,6 +35,36 @@ const opmlParser = {
                 }
                 m.redraw()
             })
+    },
+    fileSelectedEvent: (ev) => {
+        const opmlFile = ev.target.files[0]
+        const reader = new FileReader()
+        reader.onload = function (evt) {
+            const text = evt.target.result
+            const parser = new DOMParser()
+            const doc = parser.parseFromString(text, "text/xml")
+            const opml = doc.documentElement
+
+            const outlines = opml.querySelectorAll(`outline[xmlUrl]:not([xmlUrl=""])`)
+
+            for (const outline of outlines) {
+                const feed = {
+                    title: outline.getAttribute("title"),
+                    url: outline.getAttribute("xmlUrl"),
+                    web: outline.getAttribute("htmlUrl"),
+                    selected: false,
+                    subscribed: false
+                }
+
+                if (feed.web == "") {
+                    feed.web = undefined
+                }
+
+                opmlParser.feeds.push(feed)
+            }
+            m.redraw()
+        }
+        reader.readAsText(opmlFile)
     }
 }
 
@@ -60,7 +90,9 @@ const InputForm = {
                     vnode.state.url = e.target.value
                 }
             }),
-            m("input", { type: "submit", value: "Fetch" })
+            m("input", { type: "submit", value: "Load From URL" }),
+            m("label", {for: "file"}, "OPML FILE"),
+            m("input", { name: "file", type: "file", onchange: opmlParser.fileSelectedEvent})
         ])
     }
 }

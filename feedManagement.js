@@ -1,32 +1,90 @@
 import { getAllFeeds, deleteFeed } from "./common/dataStorage.js"
 
+function exportOPML() {
+    const xmlDoc = document.implementation.createDocument(null, "opml")
+    const opml = xmlDoc.getElementsByTagName("opml")
+    opml[0].setAttribute("version", "2.0")
+
+    const head = xmlDoc.createElement("head")
+    opml[0].appendChild(head)
+
+    const body = xmlDoc.createElement("body")
+    opml[0].appendChild(body)
+
+    const title = xmlDoc.createElement("title")
+    title.innerText = "Exported from BlogCat"
+    head.appendChild(title)
+
+    const dateCreated = xmlDoc.createElement("dateCreated")
+    dateCreated.innerText = new Date()
+    head.appendChild(dateCreated)
+
+    feeds.forEach(feed => {
+        const outline = xmlDoc.createElement("outline")
+        outline.setAttribute("text", feed.title)
+        outline.setAttribute("title", feed.title)
+        outline.setAttribute("xmlUrl", feed.url)
+        outline.setAttribute("htmlUrl", feed.web)
+        outline.setAttribute("type", "rss")
+        body.appendChild(outline)
+    })
+
+    const serializer = new XMLSerializer()
+    const xmlString = serializer.serializeToString(xmlDoc)
+
+
+    function onStartedDownload(id) {
+      console.log(`Started downloading: ${id}`);
+    }
+
+    function onFailed(error) {
+      console.log(`Download failed: ${error}`);
+    }
+
+    const xmlBlob = new Blob([xmlString], {
+        type: "text/x-opml"
+    })
+
+    const downloadUrl = URL.createObjectURL(xmlBlob)
+
+    let downloading = browser.downloads.download({
+      url: downloadUrl,
+      filename: "subscriptions.opml",
+      conflictAction: "uniquify",
+    });
+
+    downloading.then(onStartedDownload, onFailed);
+
+}
+
 const FeedItem = {
     view: vnode => {
         let feed = vnode.attrs.feed
-        let title = feed.title ?? feed.url 
+        let title = feed.title ?? feed.url
 
         if (title.length == 0) {
             title = feed.url
         }
 
         if (feed.errorFetching) {
-            title = [ m("span", title), m("small", "  •  "), m("mark", "error fetching this feed")]
+            title = [m("span", title), m("small", "  •  "), m("mark", "error fetching this feed")]
         }
         return m("tr", [
             m("td", m("input[type=checkbox]", {
                 checked: feed.selected,
                 oninput: e => {
-                	feed.selected = e.target.checked
+                    feed.selected = e.target.checked
                 }
             })),
-            m("td", feed.web ? m("a", {href: feed.web, target: "_blank"}, title) : title),
+            m("td", feed.web ? m("a", { href: feed.web, target: "_blank" }, title) : title),
             m("td", m("button", {
-            	disabled: feed.subscribed,
-            	onclick: e =>  {
-            		deleteFeed(feed)
+                disabled: feed.subscribed,
+                onclick: e => {
+                    deleteFeed(feed)
                     fetchFeeds()
-            
-            }}, feed.subscribed ? "Removed" : "Remove")),
+
+                }
+            }, feed.subscribed ? "Removed" : "Remove")),
         ])
     }
 }
@@ -55,7 +113,7 @@ const FeedList = {
                         }
                     })),
                     m("th", "Title"),
-                    m("th", m("a", {href: "#", onclick: removeAllSelected}, "Remove Selected"))
+                    m("th", m("a", { href: "#", onclick: removeAllSelected }, "Remove Selected"))
                 ])
             ]),
             m("tbody", feeds.map(feed => m(FeedItem, { feed })))
@@ -73,20 +131,16 @@ function showBrokenFeeds() {
     feeds = feeds.filter(f => f.errorFetching)
 }
 
-function exportOPML() {
-
-}
-
 const Menu = {
     view: vnode => {
         return m("nav", [
             m("ul", m("li", m("div.box", [
-                m("img", {src: "../icons/cat_computer512c.png", class:"cat-icon"}),
-                m("strong","Manage Feeds")
+                m("img", { src: "../icons/cat_computer512c.png", class: "cat-icon" }),
+                m("strong", "Manage Feeds")
             ]))),
             m("ul", [
-                m("li", m("a",{href: "#", onclick: exportOPML}, "Export OPML")),
-                m("li", m("a",{href: "#", onclick: showBrokenFeeds}, "Show broken feeds")),
+                m("li", m("a", { href: "#", onclick: exportOPML }, "Export OPML")),
+                m("li", m("a", { href: "#", onclick: showBrokenFeeds }, "Show broken feeds")),
             ])
         ])
     }
