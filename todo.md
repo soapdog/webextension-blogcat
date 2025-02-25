@@ -10,7 +10,14 @@ Posting related:
 
 - [x] add account management
 - [x] add mastodon posting
-- [ ] add micropub posting
+- [x] add micropub posting
 - [ ] add xml-rpc posting
-- [ ] add micro.blog posting
 - [x] add bluesky posting
+- [ ] image upload
+
+Desired, but maybe not crucial:
+
+- [ ] add micro.blog posting
+- [ ] internal SSG
+  - [ ] post to git backed repos via isomorphic-git
+  - [ ] post to neocities
