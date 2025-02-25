@@ -1,22 +1,29 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>BlogCat - Editor</title>
-    <link rel="stylesheet" href="/vendor/pico.classless.min.css">
+    <link rel="stylesheet" href="/vendor/pico.classless.min.css" />
     <script src="browser-polyfill.js"></script>
     <script src="./vendor/rss-parser.min.js"></script>
     <script src="./vendor/mithril.js"></script>
     <script defer type="module" src="editor.js"></script>
-</head>
+    <style type="text/css">
+      button {
+        margin: 3px;
+      }
 
-<body>
+      button.secondary {
+        background-color: #525f7a;
+      }
+    </style>
+  </head>
+
+  <body>
     <main>
-        <div id="app"></div>
+      <div id="app"></div>
     </main>
-</body>
-
+  </body>
 </html>

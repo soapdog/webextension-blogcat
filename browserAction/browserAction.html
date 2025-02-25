@@ -1,103 +1,112 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>BlogCat menu</title>
+    <link rel="stylesheet" href="../css/browser.css" />
+    <script src="../browser-polyfill.js"></script>
+    <style>
+      body {
+        width: 300px;
+      }
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>BlogCat menu</title>
-  <link rel="stylesheet" href="../css/browser.css">
-  <script src="../browser-polyfill.js"></script>
-  <style>
-    body {
-      width: 300px;
-    }
+      .logo {
+        width: 48px;
+      }
 
-    .logo {
-      width: 48px;
-    }
+      a.text {
+        text-decoration: none;
+        color: unset;
+      }
 
-    a.text {
-      text-decoration: none;
-      color: unset;
-    }
+      a.text:visited {
+        color: unset;
+      }
 
-    a.text:visited {
-      color: unset;
-    }
+      body,
+      html {
+        border-top: none;
+      }
+    </style>
+  </head>
 
-    body,
-    html {
-      border-top: none;
-    }
-  </style>
-</head>
+  <body>
+    <header class="panel-section panel-section-header">
+      <div class="icon-section-header"></div>
+      <div class="text-section-header" id="blogcat-header">BlogCat</div>
+    </header>
 
-<body>
-  <header class="panel-section panel-section-header">
-    <div class="icon-section-header"></div>
-    <div class="text-section-header" id="blogcat-header">BlogCat</div>
-  </header>
+    <div class="panel-section panel-section-list">
+      <div class="panel-list-item" id="go-to-reader">
+        <div class="icon"></div>
+        <div class="text">Open Reader</div>
+      </div>
 
-  <div class="panel-section panel-section-list">
-    <div class="panel-list-item" id="go-to-reader">
-      <div class="icon"></div>
-      <div class="text">Open Reader</div>
+      <div class="panel-list-item" id="go-to-add-feed">
+        <div class="icon"></div>
+        <div class="text">Add Feed</div>
+      </div>
+
+      <div class="panel-list-item" id="go-to-import-opml">
+        <div class="icon"></div>
+        <div class="text">Import OPML</div>
+      </div>
+
+      <div class="panel-section-separator"></div>
+
+      <div class="panel-list-item" id="options-trigger">
+        <div class="icon"></div>
+        <div class="text">Preferences</div>
+      </div>
+
+      <div class="panel-list-item" id="go-to-feed-management">
+        <div class="icon"></div>
+        <div class="text">Manage Feeds</div>
+      </div>
+
+      <div class="panel-list-item" id="go-to-account-management">
+        <div class="icon"></div>
+        <div class="text">Manage Posting Accounts</div>
+      </div>
+
+      <div class="panel-section-separator"></div>
+
+      <div class="panel-list-item" id="go-to-release-notes">
+        <div class="icon"></div>
+        <div class="text">Release Notes</div>
+      </div>
+
+      <div class="panel-list-item">
+        <div class="icon"></div>
+        <a
+          class="text"
+          href="https://github.com/soapdog/webextension-blogcat"
+          target="_blank"
+          >Source Code on Github</a
+        >
+        <div class="text-shortcut"></div>
+      </div>
+      <div class="panel-list-item">
+        <div class="icon"></div>
+        <a
+          class="text"
+          href="https://github.com/soapdog/webextension-blogcat/issues"
+          target="_blank"
+          >Issues on Github</a
+        >
+        <div class="text-shortcut"></div>
+      </div>
     </div>
 
-    <div class="panel-list-item" id="go-to-add-feed">
-      <div class="icon"></div>
-      <div class="text">Add Feed</div>
-    </div>
-
-    <div class="panel-list-item" id="go-to-import-opml">
-      <div class="icon"></div>
-      <div class="text">Import OPML</div>
-    </div>
-
-    <div class="panel-section-separator"></div>
-
-    <div class="panel-list-item" id="options-trigger">
-      <div class="icon"></div>
-      <div class="text">Preferences</div>
-    </div>
-
-    <div class="panel-list-item" id="go-to-feed-management">
-      <div class="icon"></div>
-      <div class="text">Manage Feeds</div>
-    </div>
-
-    <div class="panel-list-item" id="go-to-account-management">
-      <div class="icon"></div>
-      <div class="text">Manage Posting Accounts</div>
-    </div>
-
-    <div class="panel-section-separator"></div>
-    
-    <div class="panel-list-item" id="go-to-release-notes">
-      <div class="icon"></div>
-      <div class="text">Release Notes</div>
-    </div>
-
-    <div class="panel-list-item">
-      <div class="icon"></div>
-      <a class="text" href="https://github.com/soapdog/webextension-blogcat" target="_blank">Source Code on
-        Github</a>
-      <div class="text-shortcut"></div>
-    </div>
-    <div class="panel-list-item">
-      <div class="icon"></div>
-      <a class="text" href="https://github.com/soapdog/webextension-blogcat/issues" target="_blank">Issues on Github</a>
-      <div class="text-shortcut"></div>
-    </div>
-  </div>
-
-  <footer class="panel-section panel-section-footer">
-    <button class="panel-section-footer-button" id="go-to-help">Help</button>
-    <div class="panel-section-footer-separator"></div>
-    <button class="panel-section-footer-button default" id="compose">New Post</button>
-  </footer>
-  <script src="browserAction.js"></script>
-</body>
-
+    <footer class="panel-section panel-section-footer">
+      <button class="panel-section-footer-button" id="go-to-help">Help</button>
+      <div class="panel-section-footer-separator"></div>
+      <button class="panel-section-footer-button default" id="compose">
+        New Post
+      </button>
+    </footer>
+    <script type="module" src="browserAction.js"></script>
+  </body>
 </html>

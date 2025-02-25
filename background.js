@@ -1,8 +1,7 @@
-
 /**
- * Page Action 
+ * Page Action
  * ==================================================
- */ 
+ */
 
 // Check for <link rel="blogroll">
 
@@ -11,60 +10,55 @@ function onError(error) {
 }
 
 function pageActionToggle(tabId, changeInfo, tabInfo) {
-	function onExecuted(result) {
-		let res = result[0].result
-	  console.log(`exec`, result[0]);
+  function onExecuted(result) {
+    let res = result[0].result;
+    // console.log(`exec`, result[0]);
 
-	  if (res.atom || res.rss || res.blogroll) {
-	  	browser.pageAction.show(tabId)
-	  } else {
-	  	browser.pageAction.hide(tabId)
-	  }
-	}
+    if (res.atom || res.rss || res.blogroll) {
+      browser.pageAction.show(tabId);
+    } else {
+      browser.pageAction.hide(tabId);
+    }
+  }
 
-	if (changeInfo.status === "complete") {
-		const executing = browser.scripting.executeScript({
-	      target: {
-	        tabId: tabId,
-	      },
-	      files: ["/detect.js"],
-	    });
-		executing.then(onExecuted, onError);
-	}
-
+  if (changeInfo.status === "complete") {
+    const executing = browser.scripting.executeScript({
+      target: {
+        tabId: tabId,
+      },
+      files: ["/detect.js"],
+    });
+    executing.then(onExecuted, onError);
+  }
 }
 
 // background-script.js
 function handleMessage(request, sender, sendResponse) {
+  console.log("getting info for tab", request.tab);
 
-	console.log("getting info for tab", request.tab)
+  function onExecuted(result) {
+    let res = result[0].result;
 
-	function onExecuted(result) {
-		let res = result[0].result
+    console.log("sending response", res);
 
-		console.log("sending response",res)
+    sendResponse(res);
+  }
 
-	  	sendResponse(res)
+  const executing = browser.scripting.executeScript({
+    target: {
+      tabId: request.tab,
+    },
+    files: ["/detect.js"],
+  });
+  executing.then(onExecuted, onError);
 
-	}
-
-
-	const executing = browser.scripting.executeScript({
-      target: {
-        tabId: request.tab,
-      },
-      files: ["/detect.js"],
-    });
-	executing.then(onExecuted, onError);
-	
-	return true
+  return true;
 }
 
 /**
  * Context Menu
  * ==================================================
- */ 
-
+ */
 
 function onContextMenuCreated() {
   if (browser.runtime.lastError) {
@@ -92,51 +86,62 @@ function copyToClipboard(text, html) {
 }
 
 function initializeContextMenus() {
-  browser.contextMenus.create({
-    id: "text-selection-to-clipboard-as-quotation",
-    title: "Copy selected text as quotation",
-    contexts: ["selection"]
-  }, onContextMenuCreated);
+  browser.contextMenus.create(
+    {
+      id: "text-selection-to-clipboard-as-quotation",
+      title: "Copy selected text as quotation",
+      contexts: ["selection"],
+    },
+    onContextMenuCreated,
+  );
 
-  browser.contextMenus.create({
-    id: "page-action-to-clipboard-as-link",
-    title: "Copy link to the current page",
-    contexts: ["all", "page"]
-  }, onContextMenuCreated);
+  browser.contextMenus.create(
+    {
+      id: "page-action-to-clipboard-as-link",
+      title: "Copy link to the current page",
+      contexts: ["all", "page"],
+    },
+    onContextMenuCreated,
+  );
 
-  browser.contextMenus.create({
-    id: "link-to-clipboard-as-link",
-    title: "Copy link",
-    contexts: ["link"]
-  }, onContextMenuCreated);
+  browser.contextMenus.create(
+    {
+      id: "link-to-clipboard-as-link",
+      title: "Copy link",
+      contexts: ["link"],
+    },
+    onContextMenuCreated,
+  );
 
   browser.contextMenus.onClicked.addListener(function (info, tab) {
-    let template
-    console.dir("info", info)
+    let template;
+    console.dir("info", info);
     switch (info.menuItemId) {
       case "text-selection-to-clipboard-as-quotation":
-      let lines = info.selectionText.split(`\n`).map(l => `> ${l}`).join(`\n`)
-      template = `${lines}\n>\n> &mdash; _Source: [${tab.title}](${info.pageUrl})_`
-      copyToClipboard(template, template)
-      break;
+        let lines = info.selectionText
+          .split(`\n`)
+          .map((l) => `> ${l}`)
+          .join(`\n`);
+        template = `${lines}\n>\n> &mdash; _Source: [${tab.title}](${info.pageUrl})_`;
+        copyToClipboard(template, template);
+        break;
       case "page-action-to-clipboard-as-link":
-      template = `[${tab.title}](${tab.url})`
-      copyToClipboard(template, template)
-      break;
+        template = `[${tab.title}](${tab.url})`;
+        copyToClipboard(template, template);
+        break;
       case "link-to-clipboard-as-link":
-      template = `[${info.linkText}](${info.linkUrl})`
-      copyToClipboard(template, template)
-      break;
+        template = `[${info.linkText}](${info.linkUrl})`;
+        copyToClipboard(template, template);
+        break;
     }
-  })
+  });
 }
-
 
 /**
  * Initialise
  * ==================================================
- */ 
+ */
 
-browser.runtime.onMessage.addListener(handleMessage)
-browser.tabs.onUpdated.addListener(pageActionToggle)
-initializeContextMenus()
+browser.runtime.onMessage.addListener(handleMessage);
+browser.tabs.onUpdated.addListener(pageActionToggle);
+initializeContextMenus();

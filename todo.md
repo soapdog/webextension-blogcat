@@ -8,9 +8,9 @@ Things I need to do:
 
 Posting related:
 
-- [ ] add account management
+- [x] add account management
 - [x] add mastodon posting
 - [ ] add micropub posting
 - [ ] add xml-rpc posting
 - [ ] add micro.blog posting
-- [ ] add bluesky posting
+- [x] add bluesky posting
