@@ -37,10 +37,6 @@ const FeedDisplay = {
         let feed = vnode.attrs.feed
         let items = vnode.state.showMore ? feed.data.items.slice(0, 3) : feed.data.items
 
-        if (!feed.data.link.includes("://")) {
-            feed.data.link = `https://${feed.data.link}`
-        }
-
         return m("section", [
             m("nav", m("ul", [
                 m("li", m("a", { href: feed.data.link, target: "_blank" }, m("b", feed.data.title))),

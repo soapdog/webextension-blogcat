@@ -51,6 +51,10 @@ const SettingsManager = {
                 "reader": "Posts open using reader view (always open in a new tab)",
                 "web": "Posts open on their own page"
             }),
+            makeRadio("openEditorIn", "Editor opens in?", {
+                "sidebar": "Editor opens on a sidebar",
+                "newtab": "Editor opens on a new tab"
+            }),
         ])
     }
 }

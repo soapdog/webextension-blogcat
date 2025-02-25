@@ -19,12 +19,13 @@ const defaultSettings = {
     postsPerBlog: 3,
     openPostsIn: "newtab",
     postViewer: "reader",
-    maxFetchErrors: 3
+    maxFetchErrors: 3,
+    openEditorIn: "sidebar"
 }
 
 const reservedKeys = [
     "settings",
-    "accounts"
+    "account@"
 ]
 
 function removeReservedKeys(obj) {
@@ -38,14 +39,22 @@ export async function saveFeed(feed) {
         feed.url = `https://${feed.url}`
     }
 
-    obj[feed.url] = feed
+    let key = `feed@${feed.url}`
+
+    obj[key] = feed
     return browser.storage.local.set(obj)
 }
 
 export async function deleteFeed(feed) {
     console.log("removing feed", feed.url)
-    return browser.storage.local.remove(feed.url)
+    return browser.storage.local.remove(`feed@${feed.url}`)
 }
+
+export async function deletePostingAccount(account) {
+    console.log("removing account", account.name)
+    return browser.storage.local.remove(`account@${account.name}`)
+}
+
 
 export async function saveFeeds(newFeeds) {
 
@@ -56,7 +65,12 @@ export async function saveFeeds(newFeeds) {
 
 export async function getAllFeeds() {
     let all =  await browser.storage.local.get(undefined) // this is a stupid hack, cue https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea/get
-    removeReservedKeys(all)
+    let keys = Object.keys(all)
+    keys.forEach(k => {
+        if (!k.startsWith("feed@")) {
+            delete all[k]
+        }
+    })
     return all
 }
 
@@ -68,6 +82,26 @@ export async function getAllSettings() {
     } else {
         return obj.settings
     }
+}
+
+export async function getAllPostingAccounts() {
+    let all =  await browser.storage.local.get(undefined) // this is a stupid hack, cue https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea/get
+    let keys = Object.keys(all)
+    keys.forEach(k => {
+        if (!k.startsWith("account@")) {
+            delete all[k]
+        }
+    })
+    return all
+}
+
+export async function savePostingAccount(account) {
+    let obj = {}
+
+    let key = `account@${account.name}`
+
+    obj[key] = account
+    return browser.storage.local.set(obj)
 }
 
 export async function valueForSetting(key) {
@@ -177,6 +211,22 @@ export async function loadFeed(feed, ticker) {
         feed.lastBuildDate = today
     }
 
+    if (!feed.data.link.includes("://")) {
+        feed.data.link = `https://${feed.data.link}`
+    }
+
+    let items = feed.data.items
+
+    feed.data.items = items.map(i => {
+        if (!i.link.includes("://")) {
+            if (!i.link.startsWith("/")) {
+                i.link = `/${i.link}`
+            }
+            i.link = new URL(i.link, feed.data.link)
+        }
+        return i
+    })
+
     ticker()
 
     saveFeed(feed)
@@ -216,7 +266,9 @@ export const FeedLoader = {
                 } else {
                     return false
                 }
-            }).map(f => f.value)
+            })
+            .map(f => f.value)
+
             callback(fs)
         }
 

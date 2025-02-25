@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "BlogCat",
     "description": "An add-on to make blogging a first-class citizen on Firefox.",
-    "version": "1.0.0",
+    "version": "2025.2.0",
     "browser_specific_settings":
     {
         "gecko":
@@ -41,6 +41,14 @@
         "default_popup": "browserAction/browserAction.html",
         "default_title": "BlogCat"
     },
+    "sidebar_action": {
+        "default_icon": {
+          "512": "icons/cat_pencil512c.png"
+        },
+        "default_title": "BlogCat Editor",
+        "default_panel": "editor.html",
+        "open_at_install": false
+      },
     "options_ui": {
       "page": "options/options.html"
     },

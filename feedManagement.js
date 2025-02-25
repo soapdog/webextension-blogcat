@@ -76,7 +76,7 @@ const FeedItem = {
                     feed.selected = e.target.checked
                 }
             })),
-            m("td", feed.web ? m("a", { href: feed.web, target: "_blank" }, title) : title),
+            m("td", feed?.data?.link ? m("a", { href: feed?.data?.link, target: "_blank" }, title) : title),
             m("td", m("button", {
                 disabled: feed.subscribed,
                 onclick: e => {

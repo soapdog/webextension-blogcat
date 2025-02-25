@@ -113,7 +113,7 @@ const FeedItem = {
             		const feed = {
             			title: vnode.attrs.title,
             			url: vnode.attrs.feed.url,
-            			frequency: "realtime"
+            			frequency: "daily"
             		}
 
             		saveFeed(feed).then(onOk =>{
@@ -134,7 +134,7 @@ const addAllSelected = () => {
 			feeds.push({
 				title: feed.title,
 				url: feed.url,
-				frequency: "realtime"
+				frequency: "daily"
 			})
 			feed.subscribed = true
 		}

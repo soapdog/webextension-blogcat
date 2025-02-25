@@ -13,6 +13,4 @@ const debug = {
 
 const appRoot = document.getElementById("app")
 
-m.route(appRoot, "/debug", {
-    "/debug": debug
-})
+m.mount(appRoot, debug)

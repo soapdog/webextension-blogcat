@@ -5,6 +5,13 @@ function goReader() {
   window.close()
 }
 
+function goCompose() {
+  browser.tabs.create({
+    url: "/editor.html",
+  })
+  window.close()
+}
+
 function goAddFeed() {
   browser.tabs.create({
     url: "/addFeed.html",
@@ -21,7 +28,7 @@ function goFeedManagement() {
 
 function goAccountManagement() {
   browser.tabs.create({
-    url: "/accountManagement.html",
+    url: "/postingAccountManagement.html",
   })
   window.close()
 }
@@ -98,6 +105,13 @@ document.getElementById("go-to-help").addEventListener("click", (ev) => {
   ev.preventDefault()
   goHelp()
 })
+
+document.getElementById("compose").addEventListener("click", (ev) => {
+  ev.stopPropagation()
+  ev.preventDefault()
+  goCompose()
+})
+
 
 document
   .getElementById("go-to-release-notes")
