@@ -1,8 +1,8 @@
-# BlogCat
+# BlogCat :id=readme
 
 > A handy add-on that makes blogging a first-class citizen on Firefox.
 
-To learn how to use this add-on, go to our [getting started guide](https://blogcat.org/#/quickstart). Using the sidebar on the left, you can find out how BlogCat integrates with Firefox, how to read and subscribe to blogs, and how to be a part of the conversation by adding your blogging and microblogging accounts.
+To learn how to use this add-on, go to our [getting started guide](/quickstart). Using the sidebar on the left, you can find out how BlogCat integrates with Firefox, how to read and subscribe to blogs, and how to be a part of the conversation by adding your blogging and microblogging accounts.
 
 # Inspiration
 

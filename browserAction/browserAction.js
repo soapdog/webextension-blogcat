@@ -53,7 +53,7 @@ function goSettings() {
 }
 
 function goHelp() {
-  const url = browser.extension.getURL("docs/index.html");
+  const url = browser.runtime.getURL("docs/index.html");
   browser.tabs.create({
     url: `${url}#/?id=readme`,
   });

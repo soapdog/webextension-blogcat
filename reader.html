@@ -1,32 +1,30 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>BlogCat - Reader</title>
-    <link rel="stylesheet" href="/vendor/pico.classless.min.css">
+    <link rel="stylesheet" href="/vendor/pico.classless.min.css" />
     <script src="browser-polyfill.js"></script>
     <script src="./vendor/rss-parser.min.js"></script>
     <script src="./vendor/mithril.js"></script>
     <script defer type="module" src="reader.js"></script>
     <style type="text/css">
-    .cat-icon {
+      .cat-icon {
         max-height: 64px;
-    }
-
-   
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <header>
-        <h1><img src="../icons/cat_computer512c.png" class="cat-icon"> BlogCat</h1>
+      <h1>
+        <img src="../icons/cat_computer512c.png" class="cat-icon" /> BlogCat
+      </h1>
     </header>
     <main>
-        <div id="app"></div>
+      <div id="app"></div>
     </main>
-</body>
-
+  </body>
 </html>
