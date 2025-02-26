@@ -18,7 +18,7 @@ Instead of simply embedding a full application into the browser, BlogCat augment
 
 # Privacy Policy
 
-This WebExtension does not collect or transmit any personal data.
+This WebExtension does not collect or transmit any personal data. Access Tokens added by the user are only sent to the servers the user added.
 
 # License
 

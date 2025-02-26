@@ -12,15 +12,16 @@
 - Subscribing and Reading
 
   - [Adding Sites to BlogCat](/feeddiscovery)
+  - [Feed Management](/feedmanagement)
   - [Importing and Exporting OPML](/opml)
   - [Using The Reader](/reader)
 
 - Posting
 
+  - [Managing Posting Accounts](/postingaccounts)
   - [Adding a Micropub Account](/micropub)
   - [Adding a Mastodon Account](/mastodon)
   - [Adding a Bluesky Account](/bluesky)
-  - [Managing Posting Accounts](/postingaccounts)
   - [Composing New Posts](/compose)
 
 - Development

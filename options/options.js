@@ -68,7 +68,18 @@ const SettingsManager = {
 
 const Options = {
   view: (vnode) => {
-    return [m(SettingsManager)];
+    return [
+      m(SettingsManager),
+      m("p", [
+        "Open the documentation about ",
+        m(
+          "a",
+          { href: "/docs/index.html#/options", target: "_blank" },
+          "BlogCat preferences",
+        ),
+        ".",
+      ]),
+    ];
   },
 };
 

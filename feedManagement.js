@@ -182,6 +182,14 @@ const Menu = {
           "li",
           m("a", { href: "#", onclick: showBrokenFeeds }, "Show broken feeds"),
         ),
+        m(
+          "li",
+          m(
+            "a",
+            { href: "/docs/index.html#/feedmanagement", target: "_blank" },
+            "Help",
+          ),
+        ),
       ]),
     ]);
   },

@@ -7,6 +7,13 @@ function goReader() {
   window.close();
 }
 
+function goKofi() {
+  browser.tabs.create({
+    url: "https://ko-fi.com/andreshouldbewriting",
+  });
+  window.close();
+}
+
 function goCompose() {
   if (settings["openEditorIn"] == "sidebar") {
     browser.sidebarAction.open();
@@ -130,6 +137,12 @@ document
     ev.preventDefault();
     goReleaseNotes();
   });
+
+document.getElementById("go-to-kofi").addEventListener("click", (ev) => {
+  ev.stopPropagation();
+  ev.preventDefault();
+  goKofi();
+});
 
 let settings = await getAllSettings();
 

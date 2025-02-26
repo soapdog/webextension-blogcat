@@ -212,6 +212,15 @@ const URLImporter = {
   view: (vnode) => {
     return m("section", [
       m(InputForm),
+      m("p", [
+        "Open the documentation about ",
+        m(
+          "a",
+          { href: "/docs/index.html#/opml", target: "_blank" },
+          "importing and exporting OPML files",
+        ),
+        ".",
+      ]),
       opmlParser.feeds.length > 0 ? m(FeedList) : "",
     ]);
   },

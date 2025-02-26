@@ -290,6 +290,15 @@ const AccountList = {
           ),
         ]),
       ),
+      m("p", [
+        "Open the documentation about ",
+        m(
+          "a",
+          { href: "/docs/index.html#/postingaccounts", target: "_blank" },
+          "managing posting accounts",
+        ),
+        ".",
+      ]),
     ]);
   },
 };
