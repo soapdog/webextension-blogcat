@@ -4,5 +4,6 @@ window.$docsify = {
   coverpage: true,
   loadSidebar: true,
   autoHeader: true,
+  auto2top: true,
   // logo: "_media/icon.png",
 };
