@@ -125,16 +125,17 @@ function post(ev) {
   ev.preventDefault();
   ev.stopPropagation();
 
-  console.log("posting");
+  Model.errors = {};
+  Model.links = {};
 
-  let ps = accounts.map(async (account) => {
-    if (!account.selected) {
-      console.log(`${account.name} not selected`);
-      return;
-    }
+  const selectedAccounts = accounts.filter((account) => account.selected);
 
+  console.time("posting");
+  console.dir(selectedAccounts);
+
+  let ps = selectedAccounts.map(async (account) => {
+    console.log(`posting to ${account.name}`);
     try {
-      console.dir(account);
       switch (account.type) {
         case "Mastodon":
           let mastodonRes = await mastodon.publishStatus(account, {
@@ -152,7 +153,8 @@ function post(ev) {
           let blueskyRes = await bluesky.publishStatus(account, {
             text: Model.body,
           });
-          console.log(blueskyRes);
+
+          console.dir(blueskyRes);
 
           if (blueskyRes.link) {
             Model.links[account.name] = blueskyRes.link;
@@ -166,8 +168,6 @@ function post(ev) {
             title: Model.title,
           });
 
-          console.log(micropubRes);
-
           if (micropubRes.url) {
             Model.links[account.name] = micropubRes.url;
             delete Model.errors[account.name];
@@ -175,10 +175,12 @@ function post(ev) {
             delete Model.links[account.name];
           }
       }
+      return true;
     } catch (e) {
+      console.error(`Error posting for ${account.name}:`, e.message);
       Model.errors[account.name] = `error: ${e.message}`;
+      return false;
     }
-    console.log("model", Model);
 
     m.redraw();
   });
@@ -186,6 +188,7 @@ function post(ev) {
   Promise.allSettled(ps, (res) => {
     ev.target.disabled = false;
     m.redraw();
+    console.timeEnd("posting");
   });
 }
 

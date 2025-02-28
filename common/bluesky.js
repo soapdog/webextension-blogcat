@@ -25,6 +25,20 @@ function atUriToBskyAppUrl(atUri) {
   }
 }
 
+function UTF16IndexToUTF8(text, index) {
+  /*
+    got this fucker.
+
+    slice the string up to start, convert to utf8, count the array
+    slice the string to the end, convert to utf8, count the array
+    */
+  const textEncoder = new TextEncoder();
+  const sliced = text.slice(0, index);
+  const utf8 = new Uint8Array(sliced.length);
+  const encodedResult = textEncoder.encodeInto(sliced, utf8);
+  return utf8.length;
+}
+
 export const bluesky = {
   createSession: async (account) => {
     const createSessionURL =
@@ -62,15 +76,15 @@ export const bluesky = {
     // partial/naive URL regex based on: https://stackoverflow.com/a/3809435
     // tweaked to disallow some training punctuation
     const url_regex =
-      /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*[-a-zA-Z0-9@%_\+~#//=])?)/dgi;
+      /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*[-a-zA-Z0-9@%_\+~#//=])?)/gi;
     const matches = text.matchAll(url_regex);
 
     matches.forEach((m) => {
       try {
         spans.push({
           index: {
-            byteStart: m.index,
-            byteEnd: m.index + m[0].length,
+            byteStart: UTF16IndexToUTF8(text, m.index),
+            byteEnd: UTF16IndexToUTF8(text, m.index + m[0].length),
           },
           features: [
             {
@@ -87,15 +101,15 @@ export const bluesky = {
   },
   getFacetsForTags: (text) => {
     const spans = [];
-    const url_regex = /#[a-z0-9_]+/dgi;
+    const url_regex = /#[a-z0-9_]+/gi;
     const matches = text.matchAll(url_regex);
 
     matches.forEach((m) => {
       try {
         spans.push({
           index: {
-            byteStart: m.index,
-            byteEnd: m.index + m[0].length,
+            byteStart: UTF16IndexToUTF8(text, m.index),
+            byteEnd: UTF16IndexToUTF8(text, m.index + m[0].length),
           },
           features: [
             {
@@ -137,38 +151,40 @@ export const bluesky = {
       ],
     };
 
+    // console.log(post.text);
+    // post.facets.forEach((f) => {
+    //   console.log(post.text.slice(f.index.byteStart, f.index.byteEnd));
+    // });
+    // console.dir(post);
+    // return false;
+
     const obj = {
       repo,
       collection: "app.bsky.feed.post",
       record: post,
     };
 
-    try {
-      // console.log("payload", obj)
+    // console.log("payload", obj)
 
-      const response = await fetch(url, {
-        headers,
-        method: "POST",
-        body: JSON.stringify(obj),
-      });
+    const response = await fetch(url, {
+      headers,
+      method: "POST",
+      body: JSON.stringify(obj),
+    });
 
-      if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
-      }
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
 
-      const data = await response.json();
+    const data = await response.json();
 
-      console.log(data);
+    // console.log(data);
 
-      if (data.uri) {
-        data.link = atUriToBskyAppUrl(data.uri);
-        return data;
-      } else {
-        throw new Error("strange bluesky response");
-      }
-    } catch (e) {
-      console.error(e.message);
-      console.log(e);
+    if (data.uri) {
+      data.link = atUriToBskyAppUrl(data.uri);
+      return data;
+    } else {
+      throw new Error("strange bluesky response");
     }
   },
 };
