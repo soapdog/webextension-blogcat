@@ -17,9 +17,24 @@ const Model = {
 const Compose = {
   view: (vnode) => {
     let micropubSelected = false;
+    let lengthStatus = Model.body.length;
+
     accounts.forEach((account) => {
       if (account.selected && account.type == "Micropub") {
         micropubSelected = true;
+      }
+      if (account.selected && account.type !== "Micropub") {
+        switch (account.type) {
+          case "Mastodon":
+            if (Model.body.length >= mastodon.maxPostLength()) {
+              lengthStatus = `${lengthStatus}  •  Over Mastodon Limit!`;
+            }
+
+          case "Bluesky":
+            if (Model.body.length >= bluesky.maxPostLength()) {
+              lengthStatus = `${lengthStatus}  •  Over Bluesky Limit!`;
+            }
+        }
       }
     });
     return m("div", [
@@ -43,7 +58,7 @@ const Compose = {
           Model.body = e.target.value;
         },
       }),
-      m("div", [m("span", { style: { float: "right" } }, Model.body.length)]),
+      m("div", [m("span", { style: { float: "right" } }, lengthStatus)]),
     ]);
   },
 };
@@ -69,7 +84,7 @@ const Account = {
             m(
               "a",
               { href: Model.links[account.name], target: "_blank" },
-              Model.links[account.name],
+              Model.links[account.name]
             ),
           ])
         : "",
@@ -110,7 +125,7 @@ const Editor = {
             });
           },
         },
-        "Clear",
+        "Clear"
       ),
     ]);
   },
@@ -131,7 +146,6 @@ function post(ev) {
   const selectedAccounts = accounts.filter((account) => account.selected);
 
   console.time("posting");
-  console.dir(selectedAccounts);
 
   let ps = selectedAccounts.map(async (account) => {
     console.log(`posting to ${account.name}`);
@@ -149,12 +163,11 @@ function post(ev) {
           } else {
             delete Model.links[account.name];
           }
+          break;
         case "Bluesky":
           let blueskyRes = await bluesky.publishStatus(account, {
             text: Model.body,
           });
-
-          console.dir(blueskyRes);
 
           if (blueskyRes.link) {
             Model.links[account.name] = blueskyRes.link;
@@ -162,6 +175,8 @@ function post(ev) {
           } else {
             delete Model.links[account.name];
           }
+          console.log("model", Model);
+          break;
         case "Micropub":
           let micropubRes = await micropub.publish(account, {
             text: Model.body,
@@ -174,15 +189,17 @@ function post(ev) {
           } else {
             delete Model.links[account.name];
           }
+          break;
       }
+      console.dir(Model);
+      m.redraw();
       return true;
     } catch (e) {
       console.error(`Error posting for ${account.name}:`, e.message);
       Model.errors[account.name] = `error: ${e.message}`;
+      m.redraw();
       return false;
     }
-
-    m.redraw();
   });
 
   Promise.allSettled(ps, (res) => {

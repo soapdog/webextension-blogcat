@@ -1,4 +1,7 @@
 export const mastodon = {
+  maxPostLength: () => {
+    return 500;
+  },
   methodCall: async (account, method, obj) => {
     const access_token = account.access_token;
     const url = new URL(method, account.server);
