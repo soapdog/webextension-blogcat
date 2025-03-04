@@ -152,7 +152,15 @@ const FeedList = {
 
 const EmptyList = {
   view: (vnode) => {
-    return m("h1", "You haven't subscribed to any feed yet.");
+    let chunk = `
+      You have not yet subscribed to any website. You can:
+      <ul>
+        <li><a href="/docs/index.html#/quickstart">Check out the Getting Started guide.</a></li>
+        <li><a href="/docs/index.html#/feeddiscovery">Learn more about feed discovery.</a></li>
+        <li><a href="/docs/index.html#/opml">Learn how to import an OPML from another reader.</a></li>
+      </ul>
+      `;
+    return m("p", m.trust(chunk));
   },
 };
 

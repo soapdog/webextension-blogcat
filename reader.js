@@ -152,12 +152,29 @@ const Reader = {
   },
   view: (vnode) => {
     vnode.state.progressValue = FeedLoader.progress;
-    return vnode.state.loading
-      ? m(Loading, {
-          value: vnode.state.progressValue,
-          max: vnode.state.progressMax,
-        })
-      : m(FeedList);
+
+    if (vnode.state.loading) {
+      return m(Loading, {
+        value: vnode.state.progressValue,
+        max: vnode.state.progressMax,
+      });
+    }
+
+    if (!vnode.state.loading && feeds.length > 0) {
+      return m(FeedList);
+    }
+
+    if (!vnode.state.loading && feeds.length == 0) {
+      let chunk = `
+      You have not yet subscribed to any website. You can:
+      <ul>
+        <li><a href="/docs/index.html#/quickstart">Check out the Getting Started guide.</a></li>
+        <li><a href="/docs/index.html#/feeddiscovery">Learn more about feed discovery.</a></li>
+        <li><a href="/docs/index.html#/opml">Learn how to import an OPML from another reader.</a></li>
+      </ul>
+      `;
+      return m("p", m.trust(chunk));
+    }
   },
 };
 
