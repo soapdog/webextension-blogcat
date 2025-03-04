@@ -112,7 +112,7 @@ export const bluesky = {
           features: [
             {
               $type: "app.bsky.richtext.facet#tag",
-              tag: m[0],
+              tag: m[0].slice(1),
             },
           ],
         });
