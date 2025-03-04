@@ -61,17 +61,17 @@ export async function getFeedWithURL(url) {
   }
 }
 
-export async function deleteFeed(feed) {
+export function deleteFeed(feed) {
   console.log("removing feed", feed.url);
   return browser.storage.local.remove(`feed@${feed.url}`);
 }
 
-export async function deletePostingAccount(account) {
+export function deletePostingAccount(account) {
   console.log("removing account", account.name);
   return browser.storage.local.remove(`account@${account.name}`);
 }
 
-export async function saveFeeds(newFeeds) {
+export function saveFeeds(newFeeds) {
   const ps = newFeeds.map((f) => saveFeed(f));
 
   return ps;
