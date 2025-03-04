@@ -156,7 +156,9 @@ const FeedItem = {
   },
 };
 
-const addAllSelected = () => {
+const addAllSelected = (evt) => {
+  evt.preventDefault();
+  evt.stopPropagation();
   let feeds = [];
   opmlParser.feeds.forEach((feed) => {
     if (feed.selected) {
@@ -170,7 +172,9 @@ const addAllSelected = () => {
   });
 
   console.log("saving feeds", feeds);
-  saveFeeds(feeds).then((e) => {
+  let ps = saveFeeds(feeds);
+
+  Promise.all(ps, (e) => {
     m.redraw();
   });
 };
