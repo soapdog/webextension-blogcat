@@ -4,16 +4,16 @@
 
   - [Toolbar button](/browseraction)
   - [Address bar button](/pageaction)
-  - [Preferences screen](/options)
+  - [Preferences page](/options)
   - [Sidebar](/sidebar)
-  - [Context Menu](/contextmenu)
-  - [New Tab and Homepage](/homepage)
+  - [Context menu](/contextmenu)
+  - [New tab and Homepage](/homepage)
 
 - Subscribing and Reading
 
   - [Adding Sites to BlogCat](/feeddiscovery)
   - [Feed Management](/feedmanagement)
-  - [Importing and Exporting OPML](/opml)
+  - [Importing OPML](/opml)
   - [Using The Reader](/reader)
 
 - Posting
