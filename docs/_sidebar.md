@@ -25,6 +25,10 @@
   - [Composing New Posts](/compose)
 
 - Development
+
   - [BlogCat Development Stack](/development)
   - [Contributing](/contributing)
   - [Oh My Gods, Why?!](/why)
+
+- Release Notes
+  - [2025.3.0](/release-notes/2025.3.0)
