@@ -137,6 +137,34 @@ function initializeContextMenus() {
   });
 }
 
+/*
+== Update Checker ===========================================================================================================
+*/
+
+function installedOrUpdated(details) {
+  let url;
+  let version = browser.runtime.getManifest().version;
+  let previousVersion = details.previousVersion;
+  switch (details.reason) {
+    case "update":
+      if (version !== previousVersion) {
+        url = browser.runtime.getURL(
+          `/docs/index.html#/release-notes/${version}`,
+        );
+        browser.tabs.create({
+          url: `${url}`,
+        });
+      }
+      break;
+    case "install":
+      url = browser.runtime.getURL("/docs/index.html#/quickstart");
+      browser.tabs.create({
+        url: `${url}`,
+      });
+      break;
+  }
+}
+
 /**
  * Initialise
  * ==================================================
@@ -144,4 +172,5 @@ function initializeContextMenus() {
 
 browser.runtime.onMessage.addListener(handleMessage);
 browser.tabs.onUpdated.addListener(pageActionToggle);
+browser.runtime.onInstalled.addListener(installedOrUpdated);
 initializeContextMenus();

@@ -7,7 +7,6 @@
   - [Preferences page](/options)
   - [Sidebar](/sidebar)
   - [Context menu](/contextmenu)
-  - [New tab and Homepage](/homepage)
 
 - Subscribing and Reading
 
@@ -32,3 +31,4 @@
 
 - Release Notes
   - [2025.3.0](/release-notes/2025.3.0)
+  - [2025.3.1](/release-notes/2025.3.1)
