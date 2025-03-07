@@ -154,13 +154,19 @@ export async function loadFeed(feed, ticker) {
   let m_lastFetch = lastFetchDate.getMonth();
   let maxFetchErrors = await valueForSetting("maxFetchErrors");
 
+  // if (feed.title.includes("Ruby") || feed.title.includes("Andre")) {
+  //    console.log(feed);
+  //  }
+
   try {
     if (
       Number.isInteger(feed.errorCount) &&
       feed.errorFetching &&
-      feed.errorCount >= maxFetchErrorsqq
+      feed.errorCount >= maxFetchErrors
     ) {
       console.log("too many errors, not fetching", feed.url);
+      ticker();
+      return false;
     } else if (feed.frequency == "realtime" || m_today !== m_lastFetch) {
       data = await loadFeedFromURL(feed.url);
       feed.lastFetch = today;
@@ -199,11 +205,57 @@ export async function loadFeed(feed, ticker) {
     } else {
       data = feed.data;
     }
+
+    if (!data || !data.items) {
+      console.log("feed broken", feed.title);
+      feed.errorFetching = true;
+      if (!Number.isInteger(feed.errorCount)) {
+        feed.errorCount = 1;
+      } else {
+        feed.errorCount += 1;
+      }
+      ticker();
+      saveFeed(feed);
+      return false;
+    }
+
+    feed.data = data;
+
+    if (feed.data.items[0].hasOwnProperty("isoDate")) {
+      feed.lastBuildDate = new Date(feed.data.items[0].isoDate);
+    } else if (feed.data.items[0].hasOwnProperty("pubDate")) {
+      feed.lastBuildDate = new Date(feed.data.items[0].pubDate);
+    } else {
+      feed.lastBuildDate = today;
+    }
+
+    if (!feed.data.link.includes("://")) {
+      feed.data.link = `https://${feed.data.link}`;
+    }
+
+    let items = feed.data.items;
+
+    // feed.data.items = items.map((i) => {
+    //   if (!i.link) {
+    //     return i
+    //   }
+
+    //   if (!i.link.includes("://")) {
+    //     if (!i.link.startsWith("/")) {
+    //       i.link = `/${i.link}`;
+    //     }
+    //     i.link = new URL(i.link, feed.data.link);
+    //   }
+    //   return i;
+    // });
+
+    ticker();
+
+    saveFeed(feed);
+
+    return feed;
   } catch (e) {
     console.error(`thrown from feed`, feed.url);
-  }
-
-  if (!data || !data.items) {
     feed.errorFetching = true;
     if (!Number.isInteger(feed.errorCount)) {
       feed.errorCount = 1;
@@ -214,38 +266,6 @@ export async function loadFeed(feed, ticker) {
     saveFeed(feed);
     return false;
   }
-
-  feed.data = data;
-
-  if (feed.data.items[0].hasOwnProperty("isoDate")) {
-    feed.lastBuildDate = new Date(feed.data.items[0].isoDate);
-  } else if (feed.data.items[0].hasOwnProperty("pubDate")) {
-    feed.lastBuildDate = new Date(feed.data.items[0].pubDate);
-  } else {
-    feed.lastBuildDate = today;
-  }
-
-  if (!feed.data.link.includes("://")) {
-    feed.data.link = `https://${feed.data.link}`;
-  }
-
-  let items = feed.data.items;
-
-  feed.data.items = items.map((i) => {
-    if (!i.link.includes("://")) {
-      if (!i.link.startsWith("/")) {
-        i.link = `/${i.link}`;
-      }
-      i.link = new URL(i.link, feed.data.link);
-    }
-    return i;
-  });
-
-  ticker();
-
-  saveFeed(feed);
-
-  return feed;
 }
 
 export const FeedLoader = {

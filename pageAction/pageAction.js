@@ -26,6 +26,14 @@ function getCurrentActiveTab(tabs) {
       });
       document.getElementById("subscribe_atom").style.display = "block";
       document.getElementById("copy_atom").style.display = "block";
+
+      document
+        .getElementById("subscribe_atom")
+        .addEventListener("click", (ev) => {
+          browser.tabs.create({
+            url: `../addFeed.html?url=${res.atom}`,
+          });
+        });
     }
 
     if (res.rss) {
@@ -37,6 +45,14 @@ function getCurrentActiveTab(tabs) {
       });
       document.getElementById("subscribe_rss").style.display = "block";
       document.getElementById("copy_rss").style.display = "block";
+
+      document
+        .getElementById("subscribe_rss")
+        .addEventListener("click", (ev) => {
+          browser.tabs.create({
+            url: `../addFeed.html?url=${res.rss}`,
+          });
+        });
     }
 
     if (res.blogroll) {
@@ -50,6 +66,14 @@ function getCurrentActiveTab(tabs) {
         });
       document.getElementById("open_blogroll").style.display = "block";
       document.getElementById("copy_blogroll").style.display = "block";
+
+      document
+        .getElementById("open_blogroll")
+        .addEventListener("click", (ev) => {
+          browser.tabs.create({
+            url: `../importOpml.html?url=${res.blogroll}`,
+          });
+        });
     }
   }
 

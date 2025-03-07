@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "BlogCat",
   "description": "An add-on to make blogging a first-class citizen on Firefox.",
-  "version": "2025.3.1",
+  "version": "2025.3.2",
   "browser_specific_settings": {
     "gecko": {
       "id": "blogcat@andregarzia.com",

@@ -13,7 +13,8 @@ const FeedItem = {
   view: (vnode) => {
     let item = vnode.attrs.item;
     let pubDate = new Date(item.pubDate).toISOString().slice(0, 10);
-
+    console.log(item);
+    let label = item.title || item?.contentSnippet || "Unknown";
     return m("li", [
       m(
         "a",
@@ -30,7 +31,7 @@ const FeedItem = {
             }
           },
         },
-        item.title,
+        label,
       ),
       m("span", "  •  "),
       m("small", pubDate),
@@ -128,6 +129,44 @@ const FeedList = {
   },
 };
 
+const Menu = {
+  view: (vnode) => {
+    return m("nav", [
+      m(
+        "ul",
+        m(
+          "li",
+          m("div.box", [
+            m("img", {
+              src: "../icons/cat_reading512c.png",
+              class: "cat-icon",
+            }),
+            m("h2", { style: { display: "inline" } }, "BlogCat"),
+          ]),
+        ),
+      ),
+      m("ul", [
+        m(
+          "li",
+          m(
+            "a",
+            { href: "/feedManagement.html", onclick: () => {} },
+            "Manage Feeds",
+          ),
+        ),
+        m(
+          "li",
+          m(
+            "a",
+            { href: "/docs/index.html#/reader", target: "_blank" },
+            "Help",
+          ),
+        ),
+      ]),
+    ]);
+  },
+};
+
 const Reader = {
   loading: true,
   progressValue: 0,
@@ -161,7 +200,7 @@ const Reader = {
     }
 
     if (!vnode.state.loading && feeds.length > 0) {
-      return m(FeedList);
+      return [m(Menu), m(FeedList)];
     }
 
     if (!vnode.state.loading && feeds.length == 0) {
@@ -173,7 +212,7 @@ const Reader = {
         <li><a href="/docs/index.html#/opml">Learn how to import an OPML from another reader.</a></li>
       </ul>
       `;
-      return m("p", m.trust(chunk));
+      return [m(Menu), m("p", m.trust(chunk))];
     }
   },
 };
