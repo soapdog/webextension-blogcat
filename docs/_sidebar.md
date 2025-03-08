@@ -32,3 +32,5 @@
 - Release Notes
   - [2025.3.0](/release-notes/2025.3.0)
   - [2025.3.1](/release-notes/2025.3.1)
+  - [2025.3.2](/release-notes/2025.3.2)
+  - [2025.3.3](/release-notes/2025.3.3)

@@ -154,10 +154,6 @@ export async function loadFeed(feed, ticker) {
   let m_lastFetch = lastFetchDate.getMonth();
   let maxFetchErrors = await valueForSetting("maxFetchErrors");
 
-  // if (feed.title.includes("Ruby") || feed.title.includes("Andre")) {
-  //    console.log(feed);
-  //  }
-
   try {
     if (
       Number.isInteger(feed.errorCount) &&
@@ -172,7 +168,7 @@ export async function loadFeed(feed, ticker) {
       feed.lastFetch = today;
       feed.errorFetching = false;
       feed.errorCount = 0;
-    } else if (feed.frequency == "daily" && w_today !== w_lastFetch) {
+    } else if (feed.frequency == "daily" || m_today !== m_lastFetch) {
       if (d_today !== d_lastFetch) {
         data = await loadFeedFromURL(feed.url);
         feed.errorFetching = false;
@@ -234,6 +230,10 @@ export async function loadFeed(feed, ticker) {
     }
 
     let items = feed.data.items;
+
+    if (feed.title.includes("Andre")) {
+      console.log(feed);
+    }
 
     // feed.data.items = items.map((i) => {
     //   if (!i.link) {

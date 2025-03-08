@@ -13,7 +13,6 @@ const FeedItem = {
   view: (vnode) => {
     let item = vnode.attrs.item;
     let pubDate = new Date(item.pubDate).toISOString().slice(0, 10);
-    console.log(item);
     let label = item.title || item?.contentSnippet || "Unknown";
     return m("li", [
       m(
