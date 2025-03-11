@@ -28,6 +28,8 @@ const defaultSettings = {
   postViewer: "reader",
   maxFetchErrors: 3,
   openEditorIn: "sidebar",
+  openYoutubeIn: "youtube",
+  youtubeCustomURL: "",
 };
 
 const reservedKeys = ["settings", "account@"];

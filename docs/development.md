@@ -26,6 +26,7 @@ The current dependencies are:
 - [Pico CSS Classless](https://picocss.com/)
 - [RSS Parser](https://github.com/rbren/rss-parser)
 - [Browser Polyfill](https://github.com/mozilla/webextension-polyfill) (_not in vendor_)
+- [XSS Filter](https://github.com/YahooArchive/xss-filters)
 
 ## BlogCat Features
 

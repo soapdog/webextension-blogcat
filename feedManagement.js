@@ -19,7 +19,13 @@ function exportOPML() {
   dateCreated.innerText = new Date();
   head.appendChild(dateCreated);
 
-  feeds.forEach((feed) => {
+  const anyFeedSelected = feeds.some((f) => f.selected);
+
+  const selectedFeeds = anyFeedSelected
+    ? feeds.filter((f) => f.selected)
+    : feeds;
+
+  selectedFeeds.forEach((feed) => {
     const outline = xmlDoc.createElement("outline");
     outline.setAttribute("text", feed.title);
     outline.setAttribute("title", feed.title);
@@ -46,9 +52,20 @@ function exportOPML() {
 
   const downloadUrl = URL.createObjectURL(xmlBlob);
 
+  const filename = anyFeedSelected
+    ? prompt(
+        `You selected feeds to export. Do you want to save the OPML file with a different name? Remember to add the ".opml" extension.`,
+        "subscriptions.opml",
+      )
+    : "subscriptions.opml";
+
+  if (filename == null) {
+    return;
+  }
+
   let downloading = browser.downloads.download({
     url: downloadUrl,
-    filename: "subscriptions.opml",
+    filename,
     conflictAction: "uniquify",
   });
 
@@ -101,6 +118,21 @@ const FeedItem = {
           feed.subscribed ? "Removed" : "Remove",
         ),
       ),
+      m(
+        "td",
+        m(
+          "button",
+          {
+            onclick: (ev) => {
+              browser.tabs.create({
+                url: `/addFeed.html?url=${feed.url}`,
+              });
+            },
+            target: "_blank",
+          },
+          "Edit",
+        ),
+      ),
     ]);
   },
 };
@@ -140,6 +172,7 @@ const FeedList = {
               "Remove Selected",
             ),
           ),
+          m("th", ""),
         ]),
       ]),
       m(
@@ -217,7 +250,9 @@ let feeds = [];
 async function fetchFeeds() {
   let feedsObj = await getAllFeeds();
 
-  feeds = Object.keys(feedsObj).map((k) => feedsObj[k]);
+  feeds = Object.keys(feedsObj)
+    .map((k) => feedsObj[k])
+    .sort((a, b) => a.title.localeCompare(b.title));
 
   console.log(feeds);
   m.redraw();

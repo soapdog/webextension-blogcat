@@ -62,6 +62,25 @@ const SettingsManager = {
         sidebar: "Editor opens on a sidebar",
         newtab: "Editor opens on a new tab",
       }),
+      makeRadio("openYoutubeIn", "Open YouTube Videos in?", {
+        youtube: "YouTube",
+        embed: "BlogCat",
+        custom: "Custom Front-End",
+      }),
+      settings["openYoutubeIn"] == "custom"
+        ? [
+            makeInput("youtubeCustomURL", "Custom URL for YouTube?"),
+            m("p", [
+              "Open the documentation about ",
+              m(
+                "a",
+                { href: "/docs/index.html#/youtube", target: "_blank" },
+                "viewing YouTube videos inside BlogCat",
+              ),
+              ".",
+            ]),
+          ]
+        : "",
     ]);
   },
 };

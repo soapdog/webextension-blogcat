@@ -30,6 +30,8 @@ function getCurrentActiveTab(tabs) {
       document
         .getElementById("subscribe_atom")
         .addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          ev.preventDefault();
           browser.tabs.create({
             url: `../addFeed.html?url=${res.atom}`,
           });
@@ -49,6 +51,8 @@ function getCurrentActiveTab(tabs) {
       document
         .getElementById("subscribe_rss")
         .addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          ev.preventDefault();
           browser.tabs.create({
             url: `../addFeed.html?url=${res.rss}`,
           });
@@ -70,6 +74,8 @@ function getCurrentActiveTab(tabs) {
       document
         .getElementById("open_blogroll")
         .addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          ev.preventDefault();
           browser.tabs.create({
             url: `../importOpml.html?url=${res.blogroll}`,
           });

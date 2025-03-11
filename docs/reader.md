@@ -37,3 +37,5 @@ Clicking on a post will navigate to the post with some user configurable options
 [Firefox reader view](https://support.mozilla.org/en-US/kb/firefox-reader-view-clutter-free-web-pages) is quite elegant and provides an amazing reading experience. It can also read the post out loud for you and/or send the post to pocket.
 
 > I use the send to pocket a lot since I got pocket setup on my [Kobo eReader](https://uk.kobobooks.com/collections/ereaders). Sending long articles from Firefox to my Kobo is such a pleasant experience, really recommend it.
+
+BlogCat has some [special features for YouTube](youtube.md), you might want to check it out.

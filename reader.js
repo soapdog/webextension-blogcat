@@ -14,11 +14,36 @@ const FeedItem = {
     let item = vnode.attrs.item;
     let pubDate = new Date(item.pubDate).toISOString().slice(0, 10);
     let label = item.title || item?.contentSnippet || "Unknown";
+    let link = item.link;
+
+    if (link.startsWith("https://www.youtube.com/watch?")) {
+      console.log(settings["openYoutubeIn"]);
+      let params = new URL(item.link).searchParams;
+      let id = params.get("v");
+      switch (settings["openYoutubeIn"]) {
+        case "embed":
+          link = `/youtube.html?id=${id}`;
+          break;
+        case "custom":
+          let template = settings["youtubeCustomURL"];
+          if (template.length == 0) {
+            link = `/youtube.html?id=${id}`;
+          } else {
+            link = template.toLowerCase().replace("%id%", id);
+          }
+          break;
+        case "youtube":
+        default:
+          link = item.link;
+          break;
+      }
+    }
+
     return m("li", [
       m(
         "a",
         {
-          href: item.link,
+          href: link,
           target: settings["openPostsIn"] == "newtab" ? "_blank" : "",
           onclick: (e) => {
             console.log("settings", settings);
@@ -46,9 +71,19 @@ const FeedDisplay = {
       ? feed.data.items.slice(0, 3)
       : feed.data.items;
 
+    function stripHtml(html) {
+      let el = new DOMParser().parseFromString(html, "text/html");
+      return el.body.textContent;
+    }
+
+    let description = feed.data.description
+      ? stripHtml(feed.data.description)
+      : "";
+
     return m("section", [
       m(
         "nav",
+        { class: "feed-item" },
         m("ul", [
           m(
             "li",
@@ -94,11 +129,12 @@ const FeedDisplay = {
                   e.stopPropagation();
                   if (
                     window.confirm(
-                      `Are you sure you want to remove "${feed.title}" from your subscriptions? Confirming it will reload the reader.`,
+                      `Are you sure you want to remove "${feed.title}" from your subscriptions?`,
                     )
                   ) {
                     deleteFeed(feed);
-                    location.reload();
+                    feeds = feeds.filter((f) => f !== feed);
+                    m.redraw();
                   }
                 },
               },
@@ -107,7 +143,11 @@ const FeedDisplay = {
           ),
         ]),
       ),
-      m("small", m("i", feed.data.description)),
+      m(
+        "div",
+        { style: { "padding-bottom": "0.5rem" } },
+        m("small", description),
+      ),
       m(
         "div",
         { style: { display: vnode.state.smallDisplay ? "none" : "block" } },

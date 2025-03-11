@@ -9,11 +9,17 @@
     <script src="browser-polyfill.js"></script>
     <script src="./vendor/rss-parser.min.js"></script>
     <script src="./vendor/mithril.js"></script>
+    <script src="./vendor/xss-filters.js"></script>
     <script defer type="module" src="reader.js"></script>
     <style type="text/css">
       .cat-icon {
         max-height: 64px;
         padding-right: 20px;
+      }
+
+      nav.feed-item li {
+        padding-top: 1rem;
+        padding-bottom: 0.4rem;
       }
     </style>
   </head>

@@ -14,6 +14,7 @@
   - [Feed Management](/feedmanagement)
   - [Importing OPML](/opml)
   - [Using The Reader](/reader)
+  - [Special YouTube features](/youtube)
 
 - Posting
 
