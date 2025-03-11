@@ -21,14 +21,6 @@ const Menu = {
           "li",
           m(
             "a",
-            { href: "/feedManagement.html", onclick: () => {} },
-            "Manage Feeds",
-          ),
-        ),
-        m(
-          "li",
-          m(
-            "a",
             { href: "/docs/index.html#/podcast", target: "_blank" },
             "Help",
           ),
@@ -38,11 +30,62 @@ const Menu = {
   },
 };
 
+const SeasonSelector = {
+  view: (vnode) => {
+    return m(
+      "select",
+      Object.keys(seasons).map((s) => {
+        return m(
+          "option",
+          {
+            value: s,
+            selected: s == selectedSeason,
+            onclick: (e) => {
+              selectedSeason = e.target.value;
+            },
+          },
+          `Season ${s}`,
+        );
+      }),
+    );
+  },
+};
+
+const EpisodeSelector = {
+  view: (vnode) => {
+    return m(
+      "select",
+      Object.keys(seasons[selectedSeason]).map((e) => {
+        let episode = seasons[selectedSeason][e];
+        return m(
+          "option",
+          {
+            value: e,
+            selected: e == selectedEpisode,
+            onclick: (e) => {
+              selectedEpisode = e.target.value;
+              item = seasons[selectedSeason][selectedEpisode];
+            },
+          },
+          `${episode.title}`,
+        );
+      }),
+    );
+  },
+};
+
 const PodcastMeta = {
   view: (vnode) => {
     let meta = feed.data;
     return [
-      m("h1", feed.title),
+      m(
+        "nav",
+        m("ul", [
+          m("li", m("h1", feed.title)),
+          m("li", m(SeasonSelector)),
+          m("li", m(EpisodeSelector)),
+        ]),
+      ),
       m("section.podcast-meta", [
         m(
           "a",
@@ -73,6 +116,7 @@ const ItemMeta = {
             src: item.enclosure.url,
             controls: true,
             poster,
+            preload: "auto",
           }),
           item?.itunes?.author
             ? m("span", `Author: ${item.itunes.author}`)
@@ -122,10 +166,10 @@ feed.data.items.forEach((i) => {
     }
     seasons[i.itunes.season][i.itunes.episode] = i;
   }
-  // console.dir(i);
 });
 
-console.dir(seasons);
+let selectedSeason = item?.itunes?.season;
+let selectedEpisode = item?.itunes?.episode;
 
 let settings = await getAllSettings();
 

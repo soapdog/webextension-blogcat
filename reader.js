@@ -20,7 +20,11 @@ const FeedItem = {
     /*
     == Podcast ===========================================================================================================
     */
-    if (item.enclosure !== undefined && item.enclosure.type.includes("audio")) {
+    if (
+      item.enclosure !== undefined &&
+      (item.enclosure.type.includes("audio") ||
+        item.enclosure.type.includes("video"))
+    ) {
       console.log(feed.title, item.enclosure);
       link = `/podcast.html?feed=${feed.url}&item=${item.enclosure.url}`;
     }

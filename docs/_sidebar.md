@@ -15,6 +15,7 @@
   - [Importing OPML](/opml)
   - [Using The Reader](/reader)
   - [Special YouTube features](/youtube)
+  - [Special Podcast features](/podcasts)
 
 - Posting
 
