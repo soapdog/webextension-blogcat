@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>BlogCat - Podcast Player</title>
+    <link rel="stylesheet" href="/vendor/pico.classless.min.css" />
+    <script src="browser-polyfill.js"></script>
+    <script src="./vendor/rss-parser.min.js"></script>
+    <script src="./vendor/mithril.js"></script>
+    <style type="text/css">
+      .cat-icon {
+        max-height: 64px;
+        padding-right: 20px;
+      }
+
+      nav.feed-item li {
+        padding-top: 1rem;
+        padding-bottom: 0.4rem;
+      }
+
+      .podcast-banner {
+        max-width: 150px;
+      }
+
+      video {
+        max-width: 250px;
+      }
+
+      .podcast-meta,
+      .episode-meta {
+        display: flex;
+        vertical-align: top;
+      }
+
+      .description {
+        border-left: solid 1px;
+        padding-left: 10px;
+        margin-left: 10px;
+      }
+    </style>
+    <script defer type="module" src="podcast.js"></script>
+  </head>
+
+  <body>
+    <main>
+      <div id="app"></div>
+    </main>
+  </body>
+</html>

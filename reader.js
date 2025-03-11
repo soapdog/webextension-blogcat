@@ -12,12 +12,24 @@ const Loading = {
 const FeedItem = {
   view: (vnode) => {
     let item = vnode.attrs.item;
+    let feed = vnode.attrs.feed;
     let pubDate = new Date(item.pubDate).toISOString().slice(0, 10);
     let label = item.title || item?.contentSnippet || "Unknown";
-    let link = item.link;
+    let link = item.link ?? "";
+
+    /*
+    == Podcast ===========================================================================================================
+    */
+    if (item.enclosure !== undefined && item.enclosure.type.includes("audio")) {
+      console.log(feed.title, item.enclosure);
+      link = `/podcast.html?feed=${feed.url}&item=${item.enclosure.url}`;
+    }
+
+    /*
+    == YouTube ===========================================================================================================
+    */
 
     if (link.startsWith("https://www.youtube.com/watch?")) {
-      console.log(settings["openYoutubeIn"]);
       let params = new URL(item.link).searchParams;
       let id = params.get("v");
       switch (settings["openYoutubeIn"]) {
@@ -46,8 +58,6 @@ const FeedItem = {
           href: link,
           target: settings["openPostsIn"] == "newtab" ? "_blank" : "",
           onclick: (e) => {
-            console.log("settings", settings);
-            console.log(settings["postViewer"]);
             if (settings["postViewer"] == "reader") {
               e.preventDefault();
               e.stopPropagation();
@@ -154,7 +164,7 @@ const FeedDisplay = {
         [
           m(
             "ul",
-            items.map((i) => m(FeedItem, { item: i })),
+            items.map((i) => m(FeedItem, { item: i, feed })),
           ),
         ],
       ),
@@ -164,6 +174,7 @@ const FeedDisplay = {
 
 const FeedList = {
   view: (vnode) => {
+    console.log("feeds", feeds);
     return feeds.map((f) => m(FeedDisplay, { feed: f }));
   },
 };
