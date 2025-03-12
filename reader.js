@@ -62,7 +62,11 @@ const FeedItem = {
           href: link,
           target: settings["openPostsIn"] == "newtab" ? "_blank" : "",
           onclick: (e) => {
-            if (settings["postViewer"] == "reader") {
+            if (
+              settings["postViewer"] == "reader" &&
+              !link.startsWith("/youtube.html?") &&
+              !link.startsWith("/podcast.html?")
+            ) {
               e.preventDefault();
               e.stopPropagation();
               openInReaderView(item.link);
