@@ -157,7 +157,9 @@ export async function loadFeed(feed, ticker) {
   let maxFetchErrors = await valueForSetting("maxFetchErrors");
 
   try {
-    if (
+    if (!navigator.onLine) {
+      data = feed.data;
+    } else if (
       Number.isInteger(feed.errorCount) &&
       feed.errorFetching &&
       feed.errorCount >= maxFetchErrors
