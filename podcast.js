@@ -157,7 +157,6 @@ if (search.has("item")) {
   );
 }
 
-console.log(feed);
 console.log(item);
 
 let seasons = {};
@@ -173,8 +172,15 @@ feed.data.items.forEach((i) => {
       seasons["1"] = {};
     }
     seasons["1"][i.itunes.episode] = i;
+  } else {
+    if (!seasons["1"]) {
+      seasons["1"] = {};
+    }
+    seasons["1"][i.enclosure.url] = i;
   }
 });
+
+console.log(seasons);
 
 let selectedSeason = item?.itunes?.season ?? "1";
 let selectedEpisode = item?.itunes?.episode;

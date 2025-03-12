@@ -26,7 +26,7 @@ const FeedItem = {
         item.enclosure.type.includes("video"))
     ) {
       console.log(feed.title, item.enclosure);
-      link = `/podcast.html?feed=${feed.url}&item=${item.enclosure.url}`;
+      link = `/podcast.html?feed=${encodeURIComponent(feed.url)}&item=${encodeURIComponent(item.enclosure.url)}`;
     }
 
     /*
