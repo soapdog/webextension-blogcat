@@ -150,12 +150,15 @@ if (search.has("feed")) {
 
 if (search.has("item")) {
   let link = search.get("item");
+  console.log("looking for episode", link);
 
-  item = feed.data.items.find((i) => i.enclosure.url == link);
+  item = feed.data.items.find(
+    (i) => decodeURIComponent(i.enclosure.url) == link,
+  );
 }
 
-// console.log(feed);
-// console.log(item);
+console.log(feed);
+console.log(item);
 
 let seasons = {};
 
@@ -165,11 +168,19 @@ feed.data.items.forEach((i) => {
       seasons[i.itunes.season] = {};
     }
     seasons[i.itunes.season][i.itunes.episode] = i;
+  } else if (i?.itunes?.episode) {
+    if (!seasons["1"]) {
+      seasons["1"] = {};
+    }
+    seasons["1"][i.itunes.episode] = i;
   }
 });
 
-let selectedSeason = item?.itunes?.season;
+let selectedSeason = item?.itunes?.season ?? "1";
 let selectedEpisode = item?.itunes?.episode;
+
+// console.dir(feed);
+// console.dir(seasons);
 
 let settings = await getAllSettings();
 
