@@ -104,6 +104,7 @@ const FeedItem = {
           ? m("a", { href: feed?.data?.link, target: "_blank" }, title)
           : title,
       ),
+      m("td", feed.tags ? feed.tags.join(", ") : ""),
       m(
         "td",
         m(
@@ -164,6 +165,7 @@ const FeedList = {
             }),
           ),
           m("th", "Title"),
+          m("th", "Tags"),
           m(
             "th",
             m(

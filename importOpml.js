@@ -19,25 +19,36 @@ const opmlParser = {
         const parser = new DOMParser();
         const doc = parser.parseFromString(text, "text/xml");
         const opml = doc.documentElement;
+        let currentTag = "";
 
-        const outlines = opml.querySelectorAll(
-          `outline[xmlUrl]:not([xmlUrl=""])`,
-        );
+        const outlines = opml.querySelectorAll(`outline`);
 
         for (const outline of outlines) {
-          const feed = {
-            title: outline.getAttribute("title"),
-            url: outline.getAttribute("xmlUrl"),
-            web: outline.getAttribute("htmlUrl"),
-            selected: false,
-            subscribed: false,
-          };
+          if (
+            outline.hasAttribute("xmlUrl") &&
+            outline.getAttribute("xmlUrl") !== ""
+          ) {
+            const feed = {
+              title: outline.getAttribute("title"),
+              url: outline.getAttribute("xmlUrl"),
+              web: outline.getAttribute("htmlUrl"),
+              selected: false,
+              subscribed: false,
+              tags: [currentTag],
+            };
 
-          if (feed.web == "") {
-            feed.web = undefined;
+            if (feed.web == "") {
+              feed.web = undefined;
+            }
+
+            if (feed.title == "") {
+              feed.title = feed.url;
+            }
+
+            opmlParser.feeds.push(feed);
+          } else {
+            currentTag = outline.getAttribute("title").trim();
           }
-
-          opmlParser.feeds.push(feed);
         }
         m.redraw();
       });
@@ -50,25 +61,36 @@ const opmlParser = {
       const parser = new DOMParser();
       const doc = parser.parseFromString(text, "text/xml");
       const opml = doc.documentElement;
+      let currentTag = "";
 
-      const outlines = opml.querySelectorAll(
-        `outline[xmlUrl]:not([xmlUrl=""])`,
-      );
+      const outlines = opml.querySelectorAll(`outline`);
 
       for (const outline of outlines) {
-        const feed = {
-          title: outline.getAttribute("title"),
-          url: outline.getAttribute("xmlUrl"),
-          web: outline.getAttribute("htmlUrl"),
-          selected: false,
-          subscribed: false,
-        };
+        if (
+          outline.hasAttribute("xmlUrl") &&
+          outline.getAttribute("xmlUrl") !== ""
+        ) {
+          const feed = {
+            title: outline.getAttribute("title"),
+            url: outline.getAttribute("xmlUrl"),
+            web: outline.getAttribute("htmlUrl"),
+            selected: false,
+            subscribed: false,
+            tags: [currentTag],
+          };
 
-        if (feed.web == "") {
-          feed.web = undefined;
+          if (feed.web == "") {
+            feed.web = undefined;
+          }
+
+          if (!feed.title || feed.title == "") {
+            feed.title = feed.url;
+          }
+
+          opmlParser.feeds.push(feed);
+        } else {
+          currentTag = outline.getAttribute("title").trim();
         }
-
-        opmlParser.feeds.push(feed);
       }
       m.redraw();
     };
@@ -130,6 +152,7 @@ const FeedItem = {
             )
           : vnode.attrs.feed.title,
       ),
+      m("td", vnode.attrs.feed.tags.join(" ")),
       m(
         "td",
         m(
@@ -141,6 +164,7 @@ const FeedItem = {
                 title: vnode.attrs.title,
                 url: vnode.attrs.feed.url,
                 frequency: "daily",
+                tags: vnode.attrs.feed.tags,
               };
 
               saveFeed(feed).then((onOk) => {
@@ -166,6 +190,7 @@ const addAllSelected = (evt) => {
         title: feed.title,
         url: feed.url,
         frequency: "daily",
+        tags: feed.tags,
       });
       feed.subscribed = true;
     }
@@ -198,6 +223,7 @@ const FeedList = {
             }),
           ),
           m("th", "Title"),
+          m("th", "Tag"),
           m(
             "th",
             m("button", { onclick: addAllSelected }, "Subscribe Selected"),

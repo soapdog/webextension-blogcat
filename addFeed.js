@@ -7,6 +7,7 @@ import {
 const feedNameInput = document.getElementById("feed_name");
 const feedURLInput = document.getElementById("feed_url");
 const fetchFrequency = document.getElementById("update_frequency");
+const tagsInput = document.getElementById("tags");
 const addFeedButton = document.getElementById("add_feed");
 const search = new URLSearchParams(location.search);
 
@@ -45,6 +46,7 @@ addFeedButton.addEventListener("click", (evt) => {
     title: feedNameInput.value,
     url: feedURLInput.value,
     frequency: update_frequency.value,
+    tags: tagsInput.value.split(",").map((s) => s.trim()),
   };
 
   const onOk = (e) => {
