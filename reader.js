@@ -1,4 +1,9 @@
-import { FeedLoader, deleteFeed, getAllSettings } from "/common/dataStorage.js";
+import {
+  FeedLoader,
+  deleteFeed,
+  getAllSettings,
+  getAllTags,
+} from "./common/dataStorage.js";
 
 const Loading = {
   view: (vnode) => {
@@ -25,7 +30,6 @@ const FeedItem = {
       (item.enclosure.type.includes("audio") ||
         item.enclosure.type.includes("video"))
     ) {
-      console.log(feed.title, item.enclosure);
       link = `/podcast.html?feed=${encodeURIComponent(feed.url)}&item=${encodeURIComponent(item.enclosure.url)}`;
     }
 
@@ -152,6 +156,7 @@ const FeedDisplay = {
                   ) {
                     deleteFeed(feed);
                     feeds = feeds.filter((f) => f !== feed);
+                    allFeeds = allFeeds.filter((f) => f !== feed);
                     m.redraw();
                   }
                 },
@@ -182,8 +187,67 @@ const FeedDisplay = {
 
 const FeedList = {
   view: (vnode) => {
-    console.log("feeds", feeds);
     return feeds.map((f) => m(FeedDisplay, { feed: f }));
+  },
+};
+
+const Tag = {
+  view: (vnode) => {
+    let tag = vnode.attrs.tags;
+
+    if (tag == currentTag) {
+      if (currentTag == "All") {
+        feeds = allFeeds;
+      } else if (tag == "Untagged") {
+        feeds = allFeeds.filter((f) => !f.tags || f.tags.length == 0);
+      } else {
+        feeds = allFeeds.filter((f) =>
+          f?.tags
+            ? f.tags
+                .map((t) => t.toLowerCase())
+                .includes(currentTag.toLowerCase())
+            : false,
+        );
+      }
+
+      return m("li", m("button", {}, tag));
+    } else {
+      return m(
+        "li",
+        m(
+          "a",
+          {
+            href: "#",
+            onclick: (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              currentTag = tag;
+            },
+          },
+          tag,
+        ),
+      );
+    }
+  },
+};
+
+const TagsMenu = {
+  view: (vnode) => {
+    let menuTags = ["All"];
+
+    if (allFeeds.some((f) => (f.tags ? f.tags.includes("") : false))) {
+      menuTags.push("Untagged");
+    }
+
+    menuTags = [...menuTags, ...tags];
+
+    return m(
+      "nav",
+      m(
+        "ul",
+        menuTags.map((t) => m(Tag, { tags: t })),
+      ),
+    );
   },
 };
 
@@ -234,11 +298,19 @@ const Reader = {
     vnode.state.progressMax = FeedLoader.total;
 
     const finishedLoading = (fs) => {
-      feeds = fs
+      allFeeds = fs
         .sort((a, b) => {
           return a.lastBuildDate - b.lastBuildDate;
         })
         .reverse();
+
+      if (currentTag == "All") {
+        feeds = allFeeds;
+      } else {
+        feeds = allFeeds.filter((f) =>
+          f.tags.map((t) => t.toLowerCase()).includes(currentTag.toLowerCase()),
+        );
+      }
 
       vnode.state.loading = false;
 
@@ -257,11 +329,17 @@ const Reader = {
       });
     }
 
-    if (!vnode.state.loading && feeds.length > 0) {
-      return [m(Menu), m(FeedList)];
+    if (!vnode.state.loading && allFeeds.length > 0 && feeds.length == 0) {
+      // empty tag, as in removed last feed. Back to All.
+      currentTag = "All";
+      feeds = allFeeds;
     }
 
-    if (!vnode.state.loading && feeds.length == 0) {
+    if (!vnode.state.loading && feeds.length > 0) {
+      return [m(Menu), m(TagsMenu), m(FeedList)];
+    }
+
+    if (!vnode.state.loading && allFeeds.length == 0) {
       let chunk = `
       You have not yet subscribed to any website. You can:
       <ul>
@@ -275,8 +353,25 @@ const Reader = {
   },
 };
 
+/**
+ * Some variables are worth noting.
+ *
+ * `allFeeds` holds an array with all the feeds.
+ * `feeds` will hold a subset of `allFeeds` which includes only the feeds that include
+ * the `currentTag`.
+ *
+ * Routines and events that change one should be careful to change the other so they're
+ * kept kinda in sync.
+ * */
+
 let settings = await getAllSettings();
+let tags = Array.from(await getAllTags())
+  .filter((t) => t.length > 0)
+  .sort();
+
 let feeds = [];
+let allFeeds = [];
+let currentTag = "All";
 
 function openInReaderView(url) {
   browser.tabs.create({ openInReaderMode: true, url: url });

@@ -45,6 +45,17 @@ const opmlParser = {
               feed.title = feed.url;
             }
 
+            if (outline.hasAttribute("category")) {
+              let categories = outline
+                .getAttribute("category")
+                .split(",")
+                .map((c) => c.trim())
+                .filter((c) => !c.includes("/"));
+              console.log(categories);
+
+              feed.tags = [...feed.tags, ...categories];
+            }
+
             opmlParser.feeds.push(feed);
           } else {
             currentTag = outline.getAttribute("title").trim();
@@ -85,6 +96,17 @@ const opmlParser = {
 
           if (!feed.title || feed.title == "") {
             feed.title = feed.url;
+          }
+
+          if (outline.hasAttribute("category")) {
+            let categories = outline
+              .getAttribute("category")
+              .split(",")
+              .map((c) => c.trim())
+              .filter((c) => !c.includes("/"));
+            console.log(categories);
+
+            feed.tags = [...feed.tags, ...categories];
           }
 
           opmlParser.feeds.push(feed);

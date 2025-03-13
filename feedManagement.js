@@ -1,4 +1,9 @@
-import { getAllFeeds, deleteFeed } from "./common/dataStorage.js";
+import {
+  getAllFeeds,
+  deleteFeed,
+  getAllTags,
+  saveFeed,
+} from "./common/dataStorage.js";
 
 function exportOPML() {
   const xmlDoc = document.implementation.createDocument(null, "opml");
@@ -32,6 +37,12 @@ function exportOPML() {
     outline.setAttribute("xmlUrl", feed.url);
     outline.setAttribute("htmlUrl", feed.web);
     outline.setAttribute("type", "rss");
+    if (feed?.tags) {
+      outline.setAttribute(
+        "category",
+        feed.tags.filter((t) => t.length > 0).join(","),
+      );
+    }
     body.appendChild(outline);
   });
 
@@ -55,9 +66,9 @@ function exportOPML() {
   const filename = anyFeedSelected
     ? prompt(
         `You selected feeds to export. Do you want to save the OPML file with a different name? Remember to add the ".opml" extension.`,
-        "subscriptions.opml",
+        "blogcat.opml",
       )
-    : "subscriptions.opml";
+    : "blogcat.opml";
 
   if (filename == null) {
     return;
@@ -71,6 +82,10 @@ function exportOPML() {
 
   downloading.then(onStartedDownload, onFailed);
 }
+
+/*
+== Feed Table ===========================================================================================================
+*/
 
 const FeedItem = {
   view: (vnode) => {
@@ -104,7 +119,15 @@ const FeedItem = {
           ? m("a", { href: feed?.data?.link, target: "_blank" }, title)
           : title,
       ),
-      m("td", feed.tags ? feed.tags.join(", ") : ""),
+      m(
+        "td",
+        feed.tags
+          ? feed.tags
+              .filter((t) => t.length > 0)
+              .sort()
+              .join(", ")
+          : "",
+      ),
       m(
         "td",
         m(
@@ -149,6 +172,82 @@ const removeAllSelected = (e) => {
   fetchFeeds();
 };
 
+const deselectAllFeeds = () => {
+  allFeeds.forEach((f) => (f.selected = false));
+};
+
+const addTags = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  let tags = prompt("Add tags (comma separated)");
+  if (tags) {
+    let ps = feeds.map((feed) => {
+      if (feed.selected) {
+        if (!feed.tags) {
+          feed.tags = [];
+        }
+        feed.tags = [...feed.tags, ...tags.split(",").map((t) => t.trim())];
+        return saveFeed(feed);
+      } else {
+        return false;
+      }
+    });
+
+    Promise.allSettled(ps).then(() => {
+      console.log("after adding");
+      fetchFeeds();
+    });
+  }
+};
+
+const replaceTags = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  let tags = prompt("Replace tags (comma separated)");
+  if (tags) {
+    let ps = feeds.map((feed) => {
+      if (feed.selected) {
+        if (!feed.tags) {
+          feed.tags = [];
+        }
+        feed.tags = [...tags.split(",").map((t) => t.trim())];
+        return saveFeed(feed);
+      }
+    });
+
+    Promise.allSettled(ps).then(() => {
+      console.log("after replace");
+      fetchFeeds();
+    });
+  }
+};
+
+const removeTags = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  let tags = prompt("Remove Tags (comma separated)");
+  if (tags) {
+    let ps = feeds.map((feed) => {
+      if (feed.selected) {
+        if (feed.tags) {
+          let tagsToRemove = tags.split(",").map((t) => t.trim());
+
+          tagsToRemove.forEach((tr) => {
+            feed.tags = feed.tags.filter((t) => t !== tr);
+          });
+
+          return saveFeed(feed);
+        }
+      }
+    });
+
+    Promise.allSettled(ps).then(() => {
+      console.log("after remove");
+      fetchFeeds();
+    });
+  }
+};
+
 const FeedList = {
   view: (vnode) => {
     return m("table", [
@@ -165,7 +264,17 @@ const FeedList = {
             }),
           ),
           m("th", "Title"),
-          m("th", "Tags"),
+          m(
+            "th",
+            { style: { display: "flex", "flex-direction": "column" } },
+            feeds.some((f) => f.selected)
+              ? [
+                  m("a", { href: "#", onclick: addTags }, "Add Tags"),
+                  m("a", { href: "#", onclick: replaceTags }, "Replace Tags"),
+                  m("a", { href: "#", onclick: removeTags }, "Remove Tags"),
+                ]
+              : [m("span", "Tags"), m("span", "(select to edit)")],
+          ),
           m(
             "th",
             m(
@@ -199,10 +308,6 @@ const EmptyList = {
   },
 };
 
-function showBrokenFeeds() {
-  feeds = feeds.filter((f) => f.errorFetching);
-}
-
 const Menu = {
   view: (vnode) => {
     return m("nav", [
@@ -223,10 +328,6 @@ const Menu = {
         m("li", m("a", { href: "#", onclick: exportOPML }, "Export OPML")),
         m(
           "li",
-          m("a", { href: "#", onclick: showBrokenFeeds }, "Show broken feeds"),
-        ),
-        m(
-          "li",
           m(
             "a",
             { href: "/docs/index.html#/feedmanagement", target: "_blank" },
@@ -238,27 +339,118 @@ const Menu = {
   },
 };
 
+/*
+== Tags ===========================================================================================================
+*/
+
+const Tag = {
+  view: (vnode) => {
+    let tag = vnode.attrs.tags;
+
+    if (tag == currentTag) {
+      if (currentTag == "All") {
+        feeds = allFeeds;
+      } else if (tag == "Untagged") {
+        feeds = allFeeds.filter((f) => !f.tags || f.tags.length == 0);
+      } else if (tag == "Broken Feeds") {
+        feeds = allFeeds.filter((f) => f.errorFetching);
+      } else {
+        feeds = allFeeds.filter((f) => {
+          if (f?.tags) {
+            let tags = f.tags.map((t) => {
+              return t.toLowerCase();
+            });
+            return tags.includes(currentTag.toLowerCase());
+          } else {
+            return false;
+          }
+        });
+
+        if (feeds.length == 0) {
+          currentTag = "All";
+          feeds = allFeeds;
+          m.redraw();
+        }
+      }
+      console.log(`${tag}`, feeds);
+      return m("li", m("button", {}, tag));
+    } else {
+      return m(
+        "li",
+        m(
+          "a",
+          {
+            href: "#",
+            onclick: (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              deselectAllFeeds();
+              currentTag = tag;
+            },
+          },
+          tag,
+        ),
+      );
+    }
+  },
+};
+
+const TagsMenu = {
+  view: (vnode) => {
+    let menuTags = ["All", "Broken Feeds"];
+
+    if (allFeeds.some((f) => (f.tags ? f.tags.includes("") : false))) {
+      menuTags.push("Untagged");
+    }
+
+    menuTags = [...menuTags, ...tags];
+
+    return m(
+      "nav",
+      m(
+        "ul",
+        menuTags.map((t) => m(Tag, { tags: t })),
+      ),
+    );
+  },
+};
+
+/*
+== Feed Manager ===========================================================================================================
+*/
+
 const feedManager = {
   view: (vnode) => {
     return [
       m(Menu),
-      m("section", [feeds.length == 0 ? m(EmptyList) : m(FeedList)]),
+      m(TagsMenu),
+      m("section", [allFeeds.length == 0 ? m(EmptyList) : m(FeedList)]),
     ];
   },
 };
 
+let allFeeds = [];
 let feeds = [];
+let tags = [];
 
 async function fetchFeeds() {
   let feedsObj = await getAllFeeds();
 
-  feeds = Object.keys(feedsObj)
+  allFeeds = Object.keys(feedsObj)
     .map((k) => feedsObj[k])
     .sort((a, b) => a.title.localeCompare(b.title));
 
-  console.log(feeds);
+  feeds = allFeeds;
+
+  tags = Array.from(await getAllTags())
+    .filter((t) => t.length > 0)
+    .sort();
+
+  console.log("tags", tags.join(", "));
   m.redraw();
 }
+
+let currentTag = "All";
 
 await fetchFeeds();
 

@@ -23,6 +23,7 @@ if (search.has("url")) {
   if (feed.title) {
     feedNameInput.value = feed.title;
     fetchFrequency.value = feed.frequency;
+    tagsInput.value = feed.tags ? feed.tags.join(", ") : "";
     console.log("Editing feed", feed);
   } else {
     /* New Feed, fetch title */

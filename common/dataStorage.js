@@ -47,6 +47,8 @@ export async function saveFeed(feed) {
 
   let key = `feed@${feed.url}`;
 
+  delete feed.selected;
+
   obj[key] = feed;
   return browser.storage.local.set(obj);
 }
@@ -141,6 +143,20 @@ export async function loadFeedFromURL(url) {
   let feed = await parser.parseURL(url);
 
   return feed;
+}
+
+export async function getAllTags() {
+  let all = await browser.storage.local.get(undefined);
+  let tags = new Set();
+
+  let keys = Object.keys(all);
+  keys.forEach((k) => {
+    if (k.startsWith("feed@") && all[k]?.tags) {
+      all[k].tags.forEach((t) => tags.add(t));
+    }
+  });
+
+  return tags;
 }
 
 export async function loadFeed(feed, ticker) {
@@ -259,7 +275,7 @@ export async function loadFeed(feed, ticker) {
 
     return feed;
   } catch (e) {
-    console.error(`thrown from feed`, feed.url);
+    console.error(`thrown from feed ${feed.url}`, e);
     feed.errorFetching = true;
     if (!Number.isInteger(feed.errorCount)) {
       feed.errorCount = 1;
