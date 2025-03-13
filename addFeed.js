@@ -23,7 +23,14 @@ if (search.has("url")) {
   if (feed.title) {
     feedNameInput.value = feed.title;
     fetchFrequency.value = feed.frequency;
-    tagsInput.value = feed.tags ? feed.tags.join(", ") : "";
+
+    if (feed?.tags) {
+      feed.tags = feed.tags.filter((t) => t !== "");
+
+      let tags = feed.tags ? feed.tags.join(", ") : "";
+
+      tagsInput.value = tags;
+    }
     console.log("Editing feed", feed);
   } else {
     /* New Feed, fetch title */
@@ -47,8 +54,11 @@ addFeedButton.addEventListener("click", (evt) => {
     title: feedNameInput.value,
     url: feedURLInput.value,
     frequency: update_frequency.value,
-    tags: tagsInput.value.split(",").map((s) => s.trim()),
   };
+
+  if (tagsInput.value.trim().length > 0) {
+    feed.tags = tagsInput.value.split(",").map((s) => s.trim());
+  }
 
   const onOk = (e) => {
     location = "reader.html";
