@@ -27,4 +27,6 @@ The update frequency might not work exactly how you expect, I will unpack that f
 - Weekly: That doesn't mean every seven days! There are 52 weeks in a year, this one checks the _week number_ of the last time it got the feed and the current week number, if they don't match, it fetches again. That means that opening the reader on a Friday and then again on Monday will fetch the feed twice even though fewer than seven days passed.
 - Monthy: Quite simple, it checks the month number, if they don't match it fetches again.
 
+You can add one or more _tags_ to a feed by typing them in the _tags text field_ and using commas between them. The tags will become a _navigation menu_ on top of the [reader page](reader.md).
+
 BlogCat uses [RSS Parser](https://github.com/rbren/rss-parser) to fetch feeds. This library will send [HTTP Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) to the server with the date and etag of the last time it accessed the feed and respect their response.

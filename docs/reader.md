@@ -15,7 +15,7 @@ BlogCat uses [RSS Parser](https://github.com/rbren/rss-parser) to fetch feeds. T
 
 ![Reader page](_media/reader-page.png)
 
-Websites are listed in descending order with the most recently updates websites appearing first.
+Websites are listed in descending order with the most recently updates websites appearing first. At the top of the reader you can see a _navigation menu with a list of tags_. Use it to filter which sites you're focusing on. If you haven't added any tag, you'll only see the items _All_ and _Untagged_.
 
 For each website, BlogCat will list some recent posts. The amount of posts is configurable in the _add-on preferences_ and the default value is three.
 
@@ -38,4 +38,4 @@ Clicking on a post will navigate to the post with some user configurable options
 
 > I use the send to pocket a lot since I got pocket setup on my [Kobo eReader](https://uk.kobobooks.com/collections/ereaders). Sending long articles from Firefox to my Kobo is such a pleasant experience, really recommend it.
 
-BlogCat has some [special features for YouTube](youtube.md), you might want to check it out.
+BlogCat has some special features for [YouTube](youtube.md) and also for [podcasts](podcasts.md), you might want to check it out.

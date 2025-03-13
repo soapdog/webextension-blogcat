@@ -1,8 +1,21 @@
 # BlogCat :id=readme
 
-> A handy add-on that makes blogging a first-class citizen on Firefox.
+> A handy add-on that makes feed reading & blogging a first-class citizen on Firefox.
 
 To learn how to use this add-on, go to our [getting started guide](/quickstart). Using the sidebar on the left, you can find out how BlogCat integrates with Firefox, how to read and subscribe to blogs, and how to be a part of the conversation by adding your blogging and microblogging accounts.
+
+# Screenshots
+
+![Reading Feeds](_media/reader-page.png)
+_Reading Feeds._
+
+![Podcast Viewer](_media/podcast-viewer.png)
+_Listening to a podcast._
+
+![Adding a feed](_media/add-feed-page.png)
+_Subscribing to a WebSite._
+
+There is a lot more to BlogCat than what you can see on these brief screenshots. Check out the documentation for in-deep guides on how to use it.
 
 # Inspiration
 

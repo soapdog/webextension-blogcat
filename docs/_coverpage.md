@@ -4,9 +4,9 @@
 
 # BlogCat
 
-> A handy add-on that makes blogging a first-class citizen on Firefox.
+> A handy add-on that makes feed reading & blogging a first-class citizen on Firefox.
 
 - Simple and lightweight
 
-[Documentation](#readme)
+[Documentation & Screenshots](#readme)
 [Install from Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/blogcat/)
