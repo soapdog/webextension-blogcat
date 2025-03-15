@@ -49,6 +49,16 @@ export async function saveFeed(feed) {
 
   delete feed.selected;
 
+  if (!feed.tags) {
+    feed.tags = [];
+  }
+
+  if (feed.tags) {
+    let s = new Set(feed.tags);
+    let a = Array.from(s);
+    feed.tags = a;
+  }
+
   obj[key] = feed;
   return browser.storage.local.set(obj);
 }
