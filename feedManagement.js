@@ -258,7 +258,7 @@ const FeedList = {
             "th",
             m("input", {
               type: "checkbox",
-              checked: feeds.some((f) => f.selected),
+              checked: feeds.every((f) => f.selected),
               oninput: (e) => {
                 feeds.forEach((f) => (f.selected = e.target.checked));
                 m.redraw();
