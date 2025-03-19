@@ -128,6 +128,7 @@ const FeedItem = {
               .join(", ")
           : "",
       ),
+      m("td", feed.frequency),
       m(
         "td",
         m(
@@ -257,6 +258,7 @@ const FeedList = {
             "th",
             m("input", {
               type: "checkbox",
+              checked: feeds.some((f) => f.selected),
               oninput: (e) => {
                 feeds.forEach((f) => (f.selected = e.target.checked));
                 m.redraw();
@@ -264,25 +266,9 @@ const FeedList = {
             }),
           ),
           m("th", "Title"),
-          m(
-            "th",
-            { style: { display: "flex", "flex-direction": "column" } },
-            feeds.some((f) => f.selected)
-              ? [
-                  m("a", { href: "#", onclick: addTags }, "Add Tags"),
-                  m("a", { href: "#", onclick: replaceTags }, "Replace Tags"),
-                  m("a", { href: "#", onclick: removeTags }, "Remove Tags"),
-                ]
-              : [m("span", "Tags"), m("span", "(select to edit)")],
-          ),
-          m(
-            "th",
-            m(
-              "a",
-              { href: "#", onclick: removeAllSelected },
-              "Remove Selected",
-            ),
-          ),
+          m("th", "Tags"),
+          m("th", "Frequency"),
+
           m("th", ""),
         ]),
       ]),
@@ -419,10 +405,90 @@ const TagsMenu = {
 == Feed Manager ===========================================================================================================
 */
 
+function changeFrequency(e, frequency) {
+  e.preventDefault();
+  e.stopPropagation();
+
+  let ps = feeds.map((feed) => {
+    if (feed.selected) {
+      feed.frequency = frequency;
+      return saveFeed(feed);
+    } else {
+      return false;
+    }
+  });
+
+  Promise.allSettled(ps).then(() => {
+    console.log("after adding");
+    fetchFeeds();
+  });
+}
+
 const feedManager = {
   view: (vnode) => {
     return [
       m(Menu),
+      feeds.some((f) => f.selected)
+        ? m(
+            "nav",
+            m("ul", [
+              m("li", m("strong", "Tags")),
+              m("li", m("a", { href: "#", onclick: addTags }, "Add")),
+              m("li", m("a", { href: "#", onclick: replaceTags }, "Replace")),
+              m("li", m("a", { href: "#", onclick: removeTags }, "Remove")),
+            ]),
+            m("ul", [
+              m("li", m("strong", "Frequency")),
+              m(
+                "li",
+                m(
+                  "a",
+                  { href: "#", onclick: (v) => changeFrequency(v, "runtime") },
+                  "Runtime",
+                ),
+              ),
+              m(
+                "li",
+                m(
+                  "a",
+                  { href: "#", onclick: (v) => changeFrequency(v, "daily") },
+                  "Daily",
+                ),
+              ),
+              m(
+                "li",
+                m(
+                  "a",
+                  { href: "#", onclick: (v) => changeFrequency(v, "weekly") },
+                  "Weekly",
+                ),
+              ),
+
+              m(
+                "li",
+                m(
+                  "a",
+                  { href: "#", onclick: (v) => changeFrequency(v, "monthly") },
+                  "Monthly",
+                ),
+              ),
+            ]),
+            m("ul", [
+              m("li", m("strong", "Subscription")),
+              m(
+                "li",
+                m(
+                  "a",
+                  { href: "#", onclick: removeAllSelected },
+                  "Remove Feeds",
+                ),
+              ),
+            ]),
+          )
+        : m(
+            "blockquote",
+            "Select feeds to do bulk editing such as managing tags, removing, and changing fetch frequency.",
+          ),
       m(TagsMenu),
       m("section", [allFeeds.length == 0 ? m(EmptyList) : m(FeedList)]),
     ];
