@@ -21,7 +21,7 @@ Use the _Broken Feeds_ link a the top of the page to list what websites got brok
 
 ## Tag management
 
-You can use the _edit_ button to go to the _Add feed page_ and edit the tags for an individual website. You can also select multiple websites using the _check boxes_ and then BlogCat will display a _bulk tag management list of actions_ on top of the tag column. Use them to add, replace, or remove tags for multiple websites at the same time.
+You can use the _edit_ button to go to the _Add feed page_ and edit the tags for an individual website. You can also select multiple websites using the _check boxes_ and then BlogCat will display a _bulk editing menu_ on top of the page. Use them to add, replace, or remove tags for multiple websites at the same time, change fetch frequency, or bulk removal.
 
 ![Tag Management](_media/tag-management.png)
 
@@ -34,3 +34,23 @@ There are many things you can do with it:
 - Add it to your blog with a `<link rel="blogroll">` such as `<link rel="blogroll" title="Blogroll" href="/.well-known/recommendations.opml">`.
 - Share it with friends!
 - Import it into another feed reader you like.
+
+## Matching subscription lists with another app
+
+You might want to use BlogCat and also another feed reader. There are many reasons for that. Maybe you want to use them on your mobile devices, or maybe sometimes you want a river-of-news paradigm. Whatever the reason, you might want to keep all your feed readers with the same subscriptions.
+
+BlogCat has a feature to help with that. Clicking _Match Subscriptions_ will open the page to match subscriptions between BlogCat and a third-party app.
+
+![Match Subscriptions](_media/match-subscriptions-page.png)
+
+**How to match subscriptions between apps:**
+
+- Export an OPML file with your subscriptions from your third-party app.
+- Use the file input to open that file. BlogCat will display a summary of the actions needed to make both apps match:
+
+![Match Subscriptions Summary](_media/match-subscriptions-summary.png)
+
+- Clicking _Subscribe_ will make BlogCat subscribe to the websites from your other app that it was not yet following.
+- Clicking _Generate OPML_ will create a file named `missing_feeds.opml` with the websites from BlogCat that your third-party app is not yet following. Import that into your other app.
+
+Once you take both actions, the subscription between both apps will be the same.
