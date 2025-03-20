@@ -45,6 +45,10 @@ export async function saveFeed(feed) {
     feed.url = `https://${feed.url}`;
   }
 
+  if (!feed?.frequency) {
+    feed.frequency = "daily";
+  }
+
   let key = `feed@${feed.url}`;
 
   delete feed.selected;
@@ -53,11 +57,12 @@ export async function saveFeed(feed) {
     feed.tags = [];
   }
 
-  if (feed.tags) {
-    let s = new Set(feed.tags);
-    let a = Array.from(s);
-    feed.tags = a;
-  }
+  if (!feed.frequency)
+    if (feed.tags) {
+      let s = new Set(feed.tags);
+      let a = Array.from(s);
+      feed.tags = a;
+    }
 
   obj[key] = feed;
   return browser.storage.local.set(obj);
@@ -97,6 +102,8 @@ export async function getAllFeeds() {
   keys.forEach((k) => {
     if (!k.startsWith("feed@")) {
       delete all[k];
+    } else if (!all[k]?.title) {
+      all[k].title = all[k].url;
     }
   });
   return all;

@@ -215,6 +215,7 @@ const FeedList = {
           m("th", "Frequency"),
 
           m("th", ""),
+          m("th", ""),
         ]),
       ]),
       m(
