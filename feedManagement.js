@@ -5,63 +5,14 @@ import {
   saveFeed,
 } from "./common/dataStorage.js";
 
+import { opml } from "./common/opml.js";
+
 function exportOPML() {
-  const xmlDoc = document.implementation.createDocument(null, "opml");
-  const opml = xmlDoc.getElementsByTagName("opml");
-  opml[0].setAttribute("version", "2.0");
-
-  const head = xmlDoc.createElement("head");
-  opml[0].appendChild(head);
-
-  const body = xmlDoc.createElement("body");
-  opml[0].appendChild(body);
-
-  const title = xmlDoc.createElement("title");
-  title.innerText = "Exported from BlogCat";
-  head.appendChild(title);
-
-  const dateCreated = xmlDoc.createElement("dateCreated");
-  dateCreated.innerText = new Date();
-  head.appendChild(dateCreated);
-
   const anyFeedSelected = feeds.some((f) => f.selected);
 
   const selectedFeeds = anyFeedSelected
     ? feeds.filter((f) => f.selected)
     : feeds;
-
-  selectedFeeds.forEach((feed) => {
-    const outline = xmlDoc.createElement("outline");
-    outline.setAttribute("text", feed.title);
-    outline.setAttribute("title", feed.title);
-    outline.setAttribute("xmlUrl", feed.url);
-    outline.setAttribute("htmlUrl", feed.web);
-    outline.setAttribute("type", "rss");
-    if (feed?.tags) {
-      outline.setAttribute(
-        "category",
-        feed.tags.filter((t) => t.length > 0).join(","),
-      );
-    }
-    body.appendChild(outline);
-  });
-
-  const serializer = new XMLSerializer();
-  const xmlString = serializer.serializeToString(xmlDoc);
-
-  function onStartedDownload(id) {
-    console.log(`Started downloading: ${id}`);
-  }
-
-  function onFailed(error) {
-    console.log(`Download failed: ${error}`);
-  }
-
-  const xmlBlob = new Blob([xmlString], {
-    type: "text/x-opml",
-  });
-
-  const downloadUrl = URL.createObjectURL(xmlBlob);
 
   const filename = anyFeedSelected
     ? prompt(
@@ -74,13 +25,7 @@ function exportOPML() {
     return;
   }
 
-  let downloading = browser.downloads.download({
-    url: downloadUrl,
-    filename,
-    conflictAction: "uniquify",
-  });
-
-  downloading.then(onStartedDownload, onFailed);
+  opml.saveFeedsToFile(selectedFeeds, filename);
 }
 
 /*
@@ -312,6 +257,7 @@ const Menu = {
       ),
       m("ul", [
         m("li", m("a", { href: "#", onclick: exportOPML }, "Export OPML")),
+        m("li", m("a", { href: "opmlMatcher.html" }, "Match Subscriptions")),
         m(
           "li",
           m(

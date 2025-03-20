@@ -5,130 +5,24 @@ import {
   loadFeedFromURL,
 } from "./common/dataStorage.js";
 
+import { opml } from "./common/opml.js";
+
 const search = new URLSearchParams(location.search);
 
-const opmlParser = {
-  url: "",
-  feeds: [],
-  loadFromURL: (u) => {
-    opmlParser.url = u;
-
-    fetch(u)
-      .then((response) => response.text())
-      .then((text) => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(text, "text/xml");
-        const opml = doc.documentElement;
-        let currentTag = "";
-
-        const outlines = opml.querySelectorAll(`outline`);
-
-        for (const outline of outlines) {
-          if (
-            outline.hasAttribute("xmlUrl") &&
-            outline.getAttribute("xmlUrl") !== ""
-          ) {
-            const feed = {
-              title: outline.getAttribute("title"),
-              url: outline.getAttribute("xmlUrl"),
-              web: outline.getAttribute("htmlUrl"),
-              selected: false,
-              subscribed: false,
-              tags: [currentTag],
-            };
-
-            if (feed.web == "") {
-              feed.web = undefined;
-            }
-
-            if (feed.title == "") {
-              feed.title = feed.url;
-            }
-
-            if (outline.hasAttribute("category")) {
-              let categories = outline
-                .getAttribute("category")
-                .split(",")
-                .map((c) => c.trim())
-                .filter((c) => !c.includes("/"));
-              console.log(categories);
-
-              feed.tags = [...feed.tags, ...categories];
-            }
-
-            opmlParser.feeds.push(feed);
-          } else {
-            currentTag = outline.getAttribute("title").trim();
-          }
-        }
-        m.redraw();
-      });
-  },
-  fileSelectedEvent: (ev) => {
-    const opmlFile = ev.target.files[0];
-    const reader = new FileReader();
-    reader.onload = function (evt) {
-      const text = evt.target.result;
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(text, "text/xml");
-      const opml = doc.documentElement;
-      let currentTag = "";
-
-      const outlines = opml.querySelectorAll(`outline`);
-
-      for (const outline of outlines) {
-        if (
-          outline.hasAttribute("xmlUrl") &&
-          outline.getAttribute("xmlUrl") !== ""
-        ) {
-          const feed = {
-            title: outline.getAttribute("title"),
-            url: outline.getAttribute("xmlUrl"),
-            web: outline.getAttribute("htmlUrl"),
-            selected: false,
-            subscribed: false,
-            tags: [currentTag],
-          };
-
-          if (feed.web == "") {
-            feed.web = undefined;
-          }
-
-          if (!feed.title || feed.title == "") {
-            feed.title = feed.url;
-          }
-
-          if (outline.hasAttribute("category")) {
-            let categories = outline
-              .getAttribute("category")
-              .split(",")
-              .map((c) => c.trim())
-              .filter((c) => !c.includes("/"));
-            console.log(categories);
-
-            feed.tags = [...feed.tags, ...categories];
-          }
-
-          opmlParser.feeds.push(feed);
-        } else {
-          currentTag = outline.getAttribute("title").trim();
-        }
-      }
-      m.redraw();
-    };
-    reader.readAsText(opmlFile);
-  },
-};
+let feeds = [];
+let url = "";
 
 if (search.has("url")) {
-  opmlParser.loadFromURL(search.get("url"));
+  let res = await opml.loadFromURL(search.get("url"));
+  feeds = res.feeds;
+  url = res.url;
 }
 
 // use routing for importing from URL or File
 
 const InputForm = {
   oninit: (vnode) => {
-    vnode.state.url = opmlParser.url;
+    vnode.state.url = url;
   },
   view: (vnode) => {
     return m("form", [
@@ -146,7 +40,13 @@ const InputForm = {
       m("input", {
         name: "file",
         type: "file",
-        onchange: opmlParser.fileSelectedEvent,
+        onchange: (e) => {
+          const c = (fs) => {
+            feeds = fs;
+            m.redraw();
+          };
+          opml.loadFromFile(e, c);
+        },
       }),
     ]);
   },
@@ -205,10 +105,10 @@ const FeedItem = {
 const addAllSelected = (evt) => {
   evt.preventDefault();
   evt.stopPropagation();
-  let feeds = [];
-  opmlParser.feeds.forEach((feed) => {
+  let fs = [];
+  feeds.forEach((feed) => {
     if (feed.selected) {
-      feeds.push({
+      fs.push({
         title: feed.title,
         url: feed.url,
         frequency: "daily",
@@ -218,8 +118,7 @@ const addAllSelected = (evt) => {
     }
   });
 
-  console.log("saving feeds", feeds);
-  let ps = saveFeeds(feeds);
+  let ps = saveFeeds(fs);
 
   Promise.all(ps, (e) => {
     m.redraw();
@@ -236,10 +135,8 @@ const FeedList = {
             m("input", {
               type: "checkbox",
               oninput: (e) => {
-                opmlParser.feeds.forEach(
-                  (f) => (f.selected = e.target.checked),
-                );
-                console.log(opmlParser.feeds);
+                feeds.forEach((f) => (f.selected = e.target.checked));
+                console.log(feeds);
                 m.redraw();
               },
             }),
@@ -254,7 +151,7 @@ const FeedList = {
       ]),
       m(
         "tbody",
-        opmlParser.feeds.map((feed) => m(FeedItem, { feed })),
+        feeds.map((feed) => m(FeedItem, { feed })),
       ),
     ]);
   },
@@ -273,7 +170,7 @@ const URLImporter = {
         ),
         ".",
       ]),
-      opmlParser.feeds.length > 0 ? m(FeedList) : "",
+      feeds.length > 0 ? m(FeedList) : "",
     ]);
   },
 };
