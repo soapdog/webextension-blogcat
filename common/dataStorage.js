@@ -200,7 +200,7 @@ export async function loadFeed(feed, ticker) {
       console.log("too many errors, not fetching", feed.url);
       ticker();
       return false;
-    } else if (feed.frequency == "realtime" || m_today !== m_lastFetch) {
+    } else if (feed.frequency == "always" || m_today !== m_lastFetch) {
       data = await loadFeedFromURL(feed.url);
       feed.lastFetch = today;
       feed.errorFetching = false;
@@ -347,3 +347,14 @@ export const FeedLoader = {
     Promise.allSettled(ps).then(done).catch(done);
   },
 };
+
+export async function removeAllEmptyTags() {
+  let feeds = await getAllFeeds();
+  let keys = Object.keys(feeds);
+
+  let ps = [];
+
+  keys.forEach((k) => {
+    let f = feeds[k];
+  });
+}

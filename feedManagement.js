@@ -390,8 +390,8 @@ const feedManager = {
                 "li",
                 m(
                   "a",
-                  { href: "#", onclick: (v) => changeFrequency(v, "runtime") },
-                  "Runtime",
+                  { href: "#", onclick: (v) => changeFrequency(v, "always") },
+                  "Always",
                 ),
               ),
               m(

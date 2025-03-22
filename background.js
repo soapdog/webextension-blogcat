@@ -1,3 +1,5 @@
+import { getAllFeeds, saveFeed } from "./common/dataStorage.js";
+
 /**
  * Page Action
  * ==================================================
@@ -34,7 +36,7 @@ function pageActionToggle(tabId, changeInfo, tabInfo) {
 
 // background-script.js
 function handleMessage(request, sender, sendResponse) {
-  console.log("getting info for tab", request.tab);
+  console.log("getting info for tab", request.tab.url);
 
   function onExecuted(result) {
     let res = result[0].result;
@@ -44,15 +46,22 @@ function handleMessage(request, sender, sendResponse) {
     sendResponse(res);
   }
 
-  const executing = browser.scripting.executeScript({
-    target: {
-      tabId: request.tab,
-    },
-    files: ["/detect.js"],
-  });
-  executing.then(onExecuted, onError);
+  if (!request.tab.url.startsWith("https://www.youtube.com/")) {
+    const executing = browser.scripting.executeScript({
+      target: {
+        tabId: request.tab.id,
+      },
+      files: ["/detect.js"],
+    });
+    executing.then(onExecuted, onError);
 
-  return true;
+    return true;
+  } else {
+    const obj = {
+      rss: `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`,
+    };
+    sendResponse(obj);
+  }
 }
 
 /**
@@ -165,12 +174,85 @@ function installedOrUpdated(details) {
   }
 }
 
+/*
+== History observer ===========================================================================================================
+
+Removed history observer cause I'm afraid it will fire on navigation on YouTube and then cause the page action
+from the content script to actually switch off.
+
+*/
+
+let channelId;
+
+function onVisited(historyItem) {
+  browser.tabs
+    .query({ currentWindow: true, active: true })
+    .then(async (tabs) => {
+      let tab = tabs[0];
+      const tabId = tab.id;
+      // damn youtube complicating things.
+      if (tab.url.startsWith("https://www.youtube.com/")) {
+        const res = await fetch(tab.url);
+        const text = await res.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, "text/html");
+
+        channelId = doc
+          .querySelector('meta[property="og:url"]')
+          .getAttribute("content")
+          .split("/")
+          .at(4);
+
+        if (channelId) {
+          browser.pageAction.show(tabId);
+        } else {
+          browser.pageAction.hide(tabId);
+        }
+      }
+    });
+}
+
+/**
+ * Migrations
+ * ===================================================
+ */
+
+async function clearEmptyTags() {
+  let feeds = await getAllFeeds();
+  for (const feedKey in feeds) {
+    let feed = feeds[feedKey];
+
+    if (feed.tags && feed.tags.length > 0) {
+      feed.tags = feed.tags.filter((t) => t !== "");
+    } else {
+      feed.tags = [];
+    }
+    await saveFeed(feed);
+  }
+}
+
+async function renameFrequencyToAlways() {
+  let feeds = await getAllFeeds();
+  for (const feedKey in feeds) {
+    let feed = feeds[feedKey];
+
+    if (feed.frequency == "realtime" || feed.frequency == "runtime") {
+      feed.frequency = "always";
+    }
+    await saveFeed(feed);
+  }
+}
+
 /**
  * Initialise
  * ==================================================
  */
 
+await clearEmptyTags();
+await renameFrequencyToAlways();
+
 browser.runtime.onMessage.addListener(handleMessage);
 browser.tabs.onUpdated.addListener(pageActionToggle);
 browser.runtime.onInstalled.addListener(installedOrUpdated);
+browser.history.onVisited.addListener(onVisited);
 initializeContextMenus();

@@ -41,3 +41,5 @@
   - [2025.3.6](/release-notes/2025.3.6)
   - [2025.3.7](/release-notes/2025.3.7)
   - [2025.3.8](/release-notes/2025.3.8)
+  - [2025.3.9](/release-notes/2025.3.9)
+  - [2025.3.10](/release-notes/2025.3.10)
