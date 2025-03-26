@@ -61,7 +61,7 @@ addFeedButton.addEventListener("click", (evt) => {
   }
 
   const onOk = (e) => {
-    location = "reader.html";
+    window.close();
   };
 
   const onError = (e) => {

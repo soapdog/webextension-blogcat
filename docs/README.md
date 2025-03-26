@@ -33,6 +33,20 @@ Instead of simply embedding a full application into the browser, BlogCat augment
 
 This WebExtension does not collect or transmit any personal data. Access Tokens added by the user are only sent to the servers the user added.
 
+# Permissions
+
+BlogCat asks for the following permissions.
+
+- **scripting:** used to run JavaScript in the current tab to detect feeds by looking for `<link>`s.
+- **tabs:** used to be able create new tabs for the various features
+- **activeTab:** used to access the current tab so it can look for feeeds.
+- **clipboardWrite:** used by the contextual menu to copy quotes and links to be used to compose new posts.
+- **storage:** used for storing data, basically settings, accounts, and feeds.
+- **unlimitedStorage:** used because some feeds are large and you might be subsribing to a lot of websites.
+- **contextMenus:** to be able to create contextua-menus for text selection. Mostly used to facilitate quoting data in new posts.
+- **history:** used so that it can detect URL changes for YouTube channel feed detection. While you navigate on YouTube, the normal activeTab inspection doesn't trigger, this is used instead.
+- **downloads:** to be able to export OPML files.
+
 # License
 
 MIT
