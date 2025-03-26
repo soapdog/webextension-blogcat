@@ -37,7 +37,7 @@ This WebExtension does not collect or transmit any personal data. Access Tokens 
 
 BlogCat asks for the following permissions.
 
-- **scripting:** used to run JavaScript in the current tab to detect feeds by looking for `<link>`s.
+- **scripting:** used to run JavaScript in the current tab to detect feeds by looking for `<link>`.
 - **tabs:** used to be able create new tabs for the various features
 - **activeTab:** used to access the current tab so it can look for feeeds.
 - **clipboardWrite:** used by the contextual menu to copy quotes and links to be used to compose new posts.
