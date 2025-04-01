@@ -9,7 +9,14 @@ const feedURLInput = document.getElementById("feed_url");
 const fetchFrequency = document.getElementById("update_frequency");
 const tagsInput = document.getElementById("tags");
 const addFeedButton = document.getElementById("add_feed");
+const feedValidationSpan = document.getElementById("validation");
 const search = new URLSearchParams(location.search);
+
+function displayBrokenFeedMessage(feed_url) {
+  let url = `https://validator.w3.org/feed/check.cgi?url=${encodeURIComponent(feed_url)}`;
+  feedValidationSpan.innerHTML = `Error: this feed can't be loaded. <a href="${url}" target="_blank">Click to check it on a validator</a>.`;
+  addFeedButton.disabled = true;
+}
 
 if (search.has("url")) {
   let url = search.get("url");
@@ -35,11 +42,17 @@ if (search.has("url")) {
   } else {
     /* New Feed, fetch title */
 
-    feed = await loadFeedFromURL(url);
-    console.log("New feed", feed);
+    try {
+      feed = await loadFeedFromURL(url);
+      console.log("New feed", feed);
 
-    if (feed) {
-      feedNameInput.value = feed.title;
+      if (feed) {
+        feedNameInput.value = feed.title;
+      }
+    } catch (e) {
+      console.log("feed doesn't load");
+      console.dir(e);
+      displayBrokenFeedMessage(url);
     }
   }
 }
@@ -69,4 +82,20 @@ addFeedButton.addEventListener("click", (evt) => {
   };
 
   saveFeed(feed).then(onOk, onError);
+});
+
+feedURLInput.addEventListener("change", async (evt) => {
+  feedValidationSpan.innerText = "";
+  let feed_url = evt.target.value;
+  if (feed_url.length !== 0) {
+    console.log("checking feed...");
+    try {
+      let tentative_feed = await loadFeedFromURL(feed_url);
+      addFeedButton.disabled = false;
+    } catch (e) {
+      console.log("feed doesn't load");
+      console.dir(e);
+      displayBrokenFeedMessage(feed_url);
+    }
+  }
 });

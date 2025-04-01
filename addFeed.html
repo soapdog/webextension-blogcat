@@ -13,6 +13,10 @@
       .cat-icon {
         max-height: 64px;
       }
+
+      #validation {
+        color: darkred;
+      }
     </style>
   </head>
 
@@ -25,9 +29,10 @@
         </h1>
         <form>
           <label for="feed_name">Feed Name</label>
-          <input type="text" name="feed_name" id="feed_name" />
+          <input type="text" name="feed_name" id="feed_name" required />
           <label for="feed_url">Feed URL</label>
-          <input type="text" name="feed_url" id="feed_url" />
+          <input type="text" name="feed_url" id="feed_url" required />
+          <span id="validation"></span>
           <label for="update_frequency">Update Frequency</label>
           <select name="update_frequency" id="update_frequency">
             <option value="daily">Daily</option>
