@@ -8,3 +8,4 @@ web-ext-artifacts
 *.zip
 *.sublime-project
 *.sublime-workspace
+*.template

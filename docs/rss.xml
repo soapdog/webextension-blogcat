@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+    <title>BlogCat Feed</title>
+    <link>https://blogcat.org/</link>
+    <generator>Lua 5.3</generator>
+    <description>An add-on for Firefox that makes blogging a first class citizen.</description>
+    <language>en-gb</language>
+    <lastBuildDate></lastBuildDate>
+    <managingEditor>blogcat@andregarzia.com</managingEditor>
+    <webMaster>blogcat@andregarzia.com</webMaster>
+    <item>
+      <author>blogcat@andregarzia.com</author>
+      <pubDate>Tue, 04 Mar 2025 13:58:14 +0000</pubDate>
+      <title>Release 2025.3.0</title>
+      <link>https://blogcat.org/#/release-notes/2025.3.0</link>
+      <guid>https://blogcat.org/#/release-notes/2025.3.0</guid>
+      <description><![CDATA[
+      <h1>Release 2025.3.0</h1>
+<p>This is the first release of BlogCat with a very minimal feature set:</p>
+<ul>
+<li>Subscribing to websites using RSS or Atom.</li>
+<li>Importing and exporting OPML.</li>
+<li>Listing websites and their latest posts.</li>
+<li>Adding posting accounts for Mastodon, Bluesky, and Micropub.</li>
+<li>Posting to Mastodon, Bluesky, and Micropub.</li>
+</ul>
+
+      ]]>
+      </description>
+    </item>
+    <item>
+      <author>blogcat@andregarzia.com</author>
+      <pubDate>Thu, 06 Mar 2025 13:33:45 +0000</pubDate>
+      <title>Release 2025.3.1</title>
+      <link>https://blogcat.org/#/release-notes/2025.3.1</link>
+      <guid>https://blogcat.org/#/release-notes/2025.3.1</guid>
+      <description><![CDATA[
+      <h1>Release 2025.3.1</h1>
+<p>Removed the <em>homepage and new tab</em> overriding features from BlogCat. There was no way to make them a configurable option on Firefox but not the default option.</p>
+
+      ]]>
+      </description>
+    </item>
+    <item>
+      <author>blogcat@andregarzia.com</author>
+      <pubDate>Fri, 07 Mar 2025 18:02:24 +0000</pubDate>
+      <title>Release 2025.3.2</title>
+      <link>https://blogcat.org/#/release-notes/2025.3.2</link>
+      <guid>https://blogcat.org/#/release-notes/2025.3.2</guid>
+      <description><![CDATA[
+      <h1>Release 2025.3.2</h1>
+<p>Mainly bug fixes. Believe me, once you dive back into RSS and Atom feeds, you going to find some really strange feeds out there.</p>
+<ul>
+<li><strong>fix:</strong> some feeds got no titles for a given item. In these cases show <code>contentSnippet</code>. If we don't have a title or a content snippet, just say &quot;unknown&quot;.</li>
+<li><strong>fix:</strong> stop trying to fix urls in <code>item.link</code>, not worth to preemptively fiddle with what is not broken.</li>
+</ul>
+
+      ]]>
+      </description>
+    </item>
+    <item>
+      <author>blogcat@andregarzia.com</author>
+      <pubDate>Sat, 08 Mar 2025 00:33:16 +0000</pubDate>
+      <title>Release 2025.3.3</title>
+      <link>https://blogcat.org/#/release-notes/2025.3.3</link>
+      <guid>https://blogcat.org/#/release-notes/2025.3.3</guid>
+      <description><![CDATA[
+      <h1>Release 2025.3.3</h1>
+<p>Bugfixes related to daily updating blogs.</p>
+
+      ]]>
+      </description>
+    </item>
+    <item>
+      <author>blogcat@andregarzia.com</author>
+      <pubDate>Tue, 11 Mar 2025 19:47:50 +0000</pubDate>
+      <title>Release 2025.3.4</title>
+      <link>https://blogcat.org/#/release-notes/2025.3.4</link>
+      <guid>https://blogcat.org/#/release-notes/2025.3.4</guid>
+      <description><![CDATA[
+      <h1>Release 2025.3.4</h1>
+<h3>YouTube video features</h3>
+<ul>
+<li>You can now select how YouTube videos will open in BlogCat in the preferences.
+<ul>
+<li>On YouTube means a new tab will open with the video url on YouTube itself.</li>
+<li>Inside BlogCat means the video will open on its own tab inside BlogCat without the rest of the YouTube UI. For those in the known that is an <em>YouTube iframe</em>.</li>
+<li>Custom YouTube front-end allows you to specify a URL for a custom front-end.</li>
+</ul>
+</li>
+</ul>
+<p>More information about that in the <a href="/youtube.md">YouTube documentation</a>.</p>
+<h3>Reader</h3>
+<ul>
+<li>Removing a feed will no longer cause a page reload.</li>
+</ul>
+<h3>Feed Management</h3>
+<ul>
+<li>List of feeds is now sorted alphabetically.</li>
+<li>Added an &quot;edit&quot; button for each feed.</li>
+</ul>
+
+      ]]>
+      </description>
+    </item>
+    <item>
+      <author>blogcat@andregarzia.com</author>
+      <pubDate>Tue, 11 Mar 2025 23:05:38 +0000</pubDate>
+      <title>Release 2025.3.5</title>
+      <link>https://blogcat.org/#/release-notes/2025.3.5</link>
+      <guid>https://blogcat.org/#/release-notes/2025.3.5</guid>
+      <description><![CDATA[
+      <h1>Release 2025.3.5</h1>
+<h2>Podcasting features</h2>
+<p>BlogCat now detects if a feed is a podcast and opens episodes in it's own built-in podcast viewer. More information in the <a href="podcasts.md">viewing podcasts</a> documentation.</p>
+
+      ]]>
+      </description>
+    </item>
+    <item>
+      <author>blogcat@andregarzia.com</author>
+      <pubDate>Wed, 12 Mar 2025 00:33:05 +0000</pubDate>
+      <title>Release 2025.3.6</title>
+      <link>https://blogcat.org/#/release-notes/2025.3.6</link>
+      <guid>https://blogcat.org/#/release-notes/2025.3.6</guid>
+      <description><![CDATA[
+      <h1>Release 2025.3.6</h1>
+<h2>Podcasting features</h2>
+<p>BlogCat now detects if a feed is a podcast and opens episodes in it's own built-in podcast viewer. More information in the <a href="podcasts.md">viewing podcasts</a> documentation.</p>
+<ul>
+<li><strong>Bug fix:</strong> Fixed a small bug when there are no seasons in the podcast.</li>
+</ul>
+
+      ]]>
+      </description>
+    </item>
+    <item>
+      <author>blogcat@andregarzia.com</author>
+      <pubDate>Wed, 12 Mar 2025 00:54:22 +0000</pubDate>
+      <title>Release 2025.3.7</title>
+      <link>https://blogcat.org/#/release-notes/2025.3.7</link>
+      <guid>https://blogcat.org/#/release-notes/2025.3.7</guid>
+      <description><![CDATA[
+      <h1>Release 2025.3.7</h1>
+<h2>Reader</h2>
+<p>Fixed a bug where using Firefox Reader view would cause problems when opening a podcast or youtube video.</p>
+
+      ]]>
+      </description>
+    </item>
+    <item>
+      <author>blogcat@andregarzia.com</author>
+      <pubDate>Thu, 13 Mar 2025 15:38:54 +0000</pubDate>
+      <title>Release 2025.3.8</title>
+      <link>https://blogcat.org/#/release-notes/2025.3.8</link>
+      <guid>https://blogcat.org/#/release-notes/2025.3.8</guid>
+      <description><![CDATA[
+      <h1>Release 2025.3.8</h1>
+<h2>Organise your websites with tags</h2>
+<p><img src="../_media/reader-page.png" alt="Tagging" /></p>
+<p>BlogCat now has support for tagging websites. Use the <a href="/feeddiscovery.md"><em>Add feed page</em></a> or the <a href="/feedmanagement.md"><em>Feed management page</em></a> to add and remove tags. In the <em>Reader page</em> use the menu on the top of the page to navigate between your tags.</p>
+
+      ]]>
+      </description>
+    </item>
+    <item>
+      <author>blogcat@andregarzia.com</author>
+      <pubDate>Thu, 20 Mar 2025 18:41:28 +0000</pubDate>
+      <title>Release 2025.3.9</title>
+      <link>https://blogcat.org/#/release-notes/2025.3.9</link>
+      <guid>https://blogcat.org/#/release-notes/2025.3.9</guid>
+      <description><![CDATA[
+      <h1>Release 2025.3.9</h1>
+<p>New features to match subscriptions lists between BlogCat and third-party apps. Check out <a href="/feedmanagement.md">Feed Management</a> to learn more.</p>
+<p>New bulk editing actions added to <em>Feed Management</em>.</p>
+
+      ]]>
+      </description>
+    </item>
+    <item>
+      <author>blogcat@andregarzia.com</author>
+      <pubDate>Sat, 22 Mar 2025 13:10:51 +0000</pubDate>
+      <title>Release 2025.3.10</title>
+      <link>https://blogcat.org/#/release-notes/2025.3.10</link>
+      <guid>https://blogcat.org/#/release-notes/2025.3.10</guid>
+      <description><![CDATA[
+      <h1>Release 2025.3.10</h1>
+<ul>
+<li>New <a href="/feedmanagement.md">matching subscriptions</a> feature that allows you to make sure BlogCat and another app subscribe to the same websites.</li>
+<li>Better feed discovery workflow for YouTube.</li>
+</ul>
+
+      ]]>
+      </description>
+    </item>
+    <item>
+      <author>blogcat@andregarzia.com</author>
+      <pubDate>Tue, 25 Mar 2025 15:16:26 +0000</pubDate>
+      <title>Release 2025.3.11</title>
+      <link>https://blogcat.org/#/release-notes/2025.3.11</link>
+      <guid>https://blogcat.org/#/release-notes/2025.3.11</guid>
+      <description><![CDATA[
+      <h1>Release 2025.3.11</h1>
+<ul>
+<li><em>add feed:</em> changed behaviour to close the tab after adding instead of refreshing to the reader.</li>
+</ul>
+
+      ]]>
+      </description>
+    </item>
+    <item>
+      <author>blogcat@andregarzia.com</author>
+      <pubDate>Wed, 26 Mar 2025 14:30:57 +0000</pubDate>
+      <title>Release 2025.3.12</title>
+      <link>https://blogcat.org/#/release-notes/2025.3.12</link>
+      <guid>https://blogcat.org/#/release-notes/2025.3.12</guid>
+      <description><![CDATA[
+      <h1>Release 2025.3.12</h1>
+<p>Clarifying permission needs:</p>
+<ul>
+<li><strong>scripting:</strong> used to run JavaScript in the current tab to detect feeds by looking for <code>&lt;link&gt;</code>.</li>
+<li><strong>tabs:</strong> used to be able create new tabs for the various features</li>
+<li><strong>activeTab:</strong> used to access the current tab so it can look for feeeds.</li>
+<li><strong>clipboardWrite:</strong> used by the contextual menu to copy quotes and links to be used to compose new posts.</li>
+<li><strong>storage:</strong> used for storing data, basically settings, accounts, and feeds.</li>
+<li><strong>unlimitedStorage:</strong> used because some feeds are large and you might be subsribing to a lot of websites.</li>
+<li><strong>contextMenus:</strong> to be able to create contextual-menus for text selection. Mostly used to facilitate quoting data in new posts.</li>
+<li><strong>history:</strong> used so that it can detect URL changes for YouTube channel feed detection. While you navigate on YouTube, the normal activeTab inspection doesn't trigger, this is used instead.</li>
+<li><strong>downloads:</strong> to be able to export OPML files.</li>
+</ul>
+
+      ]]>
+      </description>
+    </item>
+  </channel>
+</rss>
