@@ -46,7 +46,13 @@ export const opml = {
 
         feeds.push(feed);
       } else {
-        currentTag = outline.getAttribute("title").trim();
+        if (outline.hasAttribute("title")) {
+          currentTag = outline.getAttribute("title").trim();
+        } else if (outline.hasAttribute("text")) {
+          currentTag = outline.getAttribute("text").trim();
+        } else {
+          currentTag = "";
+        }
       }
     }
     return { url: u, feeds };
@@ -99,7 +105,13 @@ export const opml = {
 
           feeds.push(feed);
         } else {
-          currentTag = outline.getAttribute("title").trim();
+          if (outline.hasAttribute("title")) {
+            currentTag = outline.getAttribute("title").trim();
+          } else if (outline.hasAttribute("text")) {
+            currentTag = outline.getAttribute("text").trim();
+          } else {
+            currentTag = "";
+          }
         }
       }
       callback(feeds);
