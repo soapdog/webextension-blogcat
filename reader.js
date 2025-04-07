@@ -18,7 +18,13 @@ const FeedItem = {
   view: (vnode) => {
     let item = vnode.attrs.item;
     let feed = vnode.attrs.feed;
-    let pubDate = new Date(item.pubDate).toISOString().slice(0, 10);
+    let temp = new Date(item.pubDate);
+
+    if (Number.isNaN(temp.valueOf())) {
+      temp = new Date();
+    }
+
+    let pubDate = temp.toISOString()?.slice(0, 10);
     let label = item.title || item?.contentSnippet || "Unknown";
     let link = item.link ?? "";
 
