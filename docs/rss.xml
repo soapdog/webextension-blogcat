@@ -11,6 +11,46 @@
     <webMaster>blogcat@andregarzia.com</webMaster>
     <item>
       <author>blogcat@andregarzia.com</author>
+      <pubDate>Mon, 07 Apr 2025 19:25:18 +0100</pubDate>
+      <title>Release 2025.4.2</title>
+      <link>https://blogcat.org/#/release-notes/2025.4.2</link>
+      <guid>https://blogcat.org/#/release-notes/2025.4.2</guid>
+      <description><![CDATA[
+      <h1>Release 2025.4.2</h1>
+<p><strong>Changes:</strong></p>
+<ul>
+<li>Small fix to background script. Hope it address <a href="https://github.com/soapdog/webextension-blogcat/issues/2">Issue: Background stops running</a>.</li>
+</ul>
+<p><strong>Fix:</strong></p>
+<ul>
+<li>If a feed item has no date, it just marks it as created on the current date.</li>
+</ul>
+
+      ]]>
+      </description>
+    </item>
+    <item>
+      <author>blogcat@andregarzia.com</author>
+      <pubDate>Tue, 01 Apr 2025 15:01:43 +0100</pubDate>
+      <title>Release 2025.4.1</title>
+      <link>https://blogcat.org/#/release-notes/2025.4.1</link>
+      <guid>https://blogcat.org/#/release-notes/2025.4.1</guid>
+      <description><![CDATA[
+      <h1>Release 2025.4.1</h1>
+<h2>Fixes</h2>
+<ul>
+<li><a href="https://github.com/soapdog/webextension-blogcat/issues/1">issue 1</a>: problem importing from miniflux opml.</li>
+</ul>
+<h2>Improvements</h2>
+<ul>
+<li>Adding Feeds: will attempt to validate a feed before adding it. Valid feeds might still not load because our third-party feed parsing library is pickier than the W3C Validator.</li>
+</ul>
+
+      ]]>
+      </description>
+    </item>
+    <item>
+      <author>blogcat@andregarzia.com</author>
       <pubDate>Wed, 26 Mar 2025 14:30:57 +0000</pubDate>
       <title>Release 2025.3.12</title>
       <link>https://blogcat.org/#/release-notes/2025.3.12</link>
