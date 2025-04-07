@@ -52,6 +52,10 @@ function handleResponse(res) {
         url: `../addFeed.html?url=${res.rss}`,
       });
     });
+
+    if (res.rss.startsWith("https://www.youtube.com/feeds/videos.xml")) {
+      document.getElementById("youtube_loading").style.display = "none";
+    }
   }
 
   if (res.blogroll) {
@@ -78,6 +82,10 @@ function getCurrentActiveTab(tabs) {
   console.log("got tabs", tabs);
 
   let tab = tabs[0];
+
+  if (tab.url.startsWith("https://youtube.com")) {
+    document.getElementById("youtube_loading").style.display = "block";
+  }
 
   const sending = browser.runtime.sendMessage({
     tab,
