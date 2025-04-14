@@ -254,6 +254,13 @@ export async function loadFeed(feed, ticker) {
 
     feed.data = data;
 
+    feed.data.items.sort((a, b) => {
+      let d1 = new Date(a.isoDate || a.pubDate);
+      let d2 = new Date(b.isoDate || b.pubDate);
+
+      return d1 < d2;
+    });
+
     if (feed.data.items[0].hasOwnProperty("isoDate")) {
       feed.lastBuildDate = new Date(feed.data.items[0].isoDate);
     } else if (feed.data.items[0].hasOwnProperty("pubDate")) {
@@ -266,11 +273,7 @@ export async function loadFeed(feed, ticker) {
       feed.data.link = `https://${feed.data.link}`;
     }
 
-    let items = feed.data.items;
-
-    if (feed.title.includes("Andre")) {
-      console.log(feed);
-    }
+    // let items = feed.data.items;
 
     // feed.data.items = items.map((i) => {
     //   if (!i.link) {
