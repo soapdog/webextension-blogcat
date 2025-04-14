@@ -192,8 +192,22 @@ const FeedDisplay = {
 };
 
 const FeedList = {
+  oninit: (vnode) => {
+    vnode.state.currentYear = new Date().getFullYear();
+  },
   view: (vnode) => {
-    return feeds.map((f) => m(FeedDisplay, { feed: f }));
+    return feeds.map((f) => {
+      let d1 = f.lastBuildDate.getFullYear();
+      if (d1 !== vnode.state.currentYear) {
+        vnode.state.currentYear = d1;
+        return [
+          m("h1.year-banner", `Posts from ${d1}`),
+          m(FeedDisplay, { feed: f }),
+        ];
+      } else {
+        return m(FeedDisplay, { feed: f });
+      }
+    });
   },
 };
 
