@@ -11,6 +11,26 @@
     <webMaster>blogcat@andregarzia.com</webMaster>
     <item>
       <author>blogcat@andregarzia.com</author>
+      <pubDate>Mon, 14 Apr 2025 12:42:27 +0100</pubDate>
+      <title>Release 2025.4.3</title>
+      <link>https://blogcat.org/#/release-notes/2025.4.3</link>
+      <guid>https://blogcat.org/#/release-notes/2025.4.3</guid>
+      <description><![CDATA[
+      <h1>Release 2025.4.3</h1>
+<h4>Changes</h4>
+<ul>
+<li>Added a header with the year so it is easier to spot feeds that haven't been updates in the current year.</li>
+</ul>
+<h4>Small fixes</h4>
+<ul>
+<li>Reordering the items on a feed by date. Can't assume they'll be in order.</li>
+</ul>
+
+      ]]>
+      </description>
+    </item>
+    <item>
+      <author>blogcat@andregarzia.com</author>
       <pubDate>Mon, 07 Apr 2025 19:25:18 +0100</pubDate>
       <title>Release 2025.4.2</title>
       <link>https://blogcat.org/#/release-notes/2025.4.2</link>
