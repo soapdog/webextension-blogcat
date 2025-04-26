@@ -11,6 +11,19 @@
     <webMaster>blogcat@andregarzia.com</webMaster>
     <item>
       <author>blogcat@andregarzia.com</author>
+      <pubDate>Sat, 26 Apr 2025 15:18:03 +0100</pubDate>
+      <title>Release 2025.4.4</title>
+      <link>https://blogcat.org/#/release-notes/2025.4.4</link>
+      <guid>https://blogcat.org/#/release-notes/2025.4.4</guid>
+      <description><![CDATA[
+      <h1>Release 2025.4.4</h1>
+<p>Better podcast player. Added a new navigation for seasons and episodes based on popular UX I see on TV apps.</p>
+
+      ]]>
+      </description>
+    </item>
+    <item>
+      <author>blogcat@andregarzia.com</author>
       <pubDate>Mon, 14 Apr 2025 12:42:27 +0100</pubDate>
       <title>Release 2025.4.3</title>
       <link>https://blogcat.org/#/release-notes/2025.4.3</link>
