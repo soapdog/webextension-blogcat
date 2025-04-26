@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "BlogCat",
   "description": "An add-on to make blogging a first-class citizen on Firefox.",
-  "version": "2025.4.3",
+  "version": "2025.4.4",
   "browser_specific_settings": {
     "gecko": {
       "id": "blogcat@andregarzia.com",
@@ -38,7 +38,10 @@
     "page": "options/options.html"
   },
   "background": {
-    "scripts": ["browser-polyfill.js", "background.js"],
+    "scripts": [
+      "browser-polyfill.js",
+      "background.js"
+    ],
     "type": "module"
   },
   "permissions": [
@@ -52,5 +55,7 @@
     "history",
     "downloads"
   ],
-  "host_permissions": ["<all_urls>"]
+  "host_permissions": [
+    "<all_urls>"
+  ]
 }
