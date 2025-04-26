@@ -39,6 +39,60 @@
         padding-left: 10px;
         margin-left: 10px;
       }
+
+      .season-pills {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        max-width: 100vw ;
+        overflow: scroll;
+      }
+
+      .season-pills > button {
+        flex: 1 1 auto;
+      }
+
+       .season-pills > button:not([selected]) {
+        flex: 1 1 auto;
+        background-color: var(--pico-form-element-background-color);
+        color: var(--pico-form-element-color);
+      }
+
+      .episode-pills {
+        display: flex;
+        gap: 10px;
+        max-width: 100vw;
+        overflow: scroll;
+      }
+
+
+
+      .episode-pills > .episode {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .episode-pills > .episode > img {
+        max-width: 200px;
+        border-radius: 5px 5px 0px 0px;
+      }
+
+      .episode > figcaption {
+        padding: 3px;
+        border-radius: 0px 0px 5px 5px;
+      }
+
+      .episode-pills > .episode[selected] > figcaption {
+        background-color: var(--pico-primary-hover-background) !important;
+        color: var(--pico-primary-inverse) !important;
+      }
+
+       .episode-pills > .episode:not([selected]) {
+        flex: 1 1 auto;
+        background-color: var(--pico-form-element-background-color);
+        color: var(--pico-form-element-color);
+      }
     </style>
     <script defer type="module" src="podcast.js"></script>
   </head>

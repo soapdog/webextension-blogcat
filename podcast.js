@@ -1,4 +1,4 @@
-import { getFeedWithURL, getAllSettings } from "./common/dataStorage.js";
+import { getAllSettings, getFeedWithURL } from "./common/dataStorage.js";
 
 const Menu = {
   view: (vnode) => {
@@ -30,44 +30,100 @@ const Menu = {
   },
 };
 
-const SeasonSelector = {
+// const SeasonSelector = {
+//   view: (vnode) => {
+//     return m(
+//       "select",
+//       Object.keys(seasons).map((s) => {
+//         return m(
+//           "option",
+//           {
+//             value: s,
+//             selected: s == selectedSeason,
+//             onclick: (e) => {
+//               selectedSeason = e.target.value;
+//             },
+//           },
+//           `Season ${s}`,
+//         );
+//       }),
+//     );
+//   },
+// };
+
+const SeasonPills = {
   view: (vnode) => {
-    return m(
-      "select",
-      Object.keys(seasons).map((s) => {
-        return m(
-          "option",
-          {
-            value: s,
-            selected: s == selectedSeason,
-            onclick: (e) => {
-              selectedSeason = e.target.value;
+    return m("div.seasons", [
+      m("h2", "Seasons"),
+      m("div.season-pills", [
+        Object.keys(seasons).map((s) => {
+          return m(
+            "button",
+            {
+              value: s,
+              selected: s == selectedSeason,
+              onclick: (e) => {
+                selectedSeason = e.target.value;
+              },
             },
-          },
-          `Season ${s}`,
-        );
-      }),
-    );
+            `Season ${s}`,
+          );
+        }),
+      ]),
+    ]);
   },
 };
 
-const EpisodeSelector = {
+// const EpisodeSelector = {
+//   view: (vnode) => {
+//     return m(
+//       "select",
+//       Object.keys(seasons[selectedSeason]).map((e) => {
+//         let episode = seasons[selectedSeason][e];
+//         return m(
+//           "option",
+//           {
+//             value: e,
+//             selected: e == selectedEpisode,
+//             onclick: (e) => {
+//               selectedEpisode = e.target.value;
+//               item = seasons[selectedSeason][selectedEpisode];
+//             },
+//           },
+//           `${episode.title}`,
+//         );
+//       }),
+//     );
+//   },
+// };
+
+const EpisodePills = {
+  oncreate: (vnode) => {
+    let el = document.querySelector("figure.episode[selected]");
+    el.scrollIntoView();
+  },
   view: (vnode) => {
+    let meta = feed.data;
     return m(
-      "select",
+      "div.episode-pills",
       Object.keys(seasons[selectedSeason]).map((e) => {
         let episode = seasons[selectedSeason][e];
+        let poster = episode?.itunes?.image || meta.image.url;
         return m(
-          "option",
+          "figure.episode",
           {
-            value: e,
             selected: e == selectedEpisode,
             onclick: (e) => {
-              selectedEpisode = e.target.value;
-              item = seasons[selectedSeason][selectedEpisode];
+              selectedEpisode = e;
+              item = episode;
+
+              console.log("Episode", item);
             },
           },
-          `${episode.title}`,
+          [
+            m("img", { src: poster }),
+            m("figcaption", `${episode.title}`),
+          ],
         );
       }),
     );
@@ -82,8 +138,8 @@ const PodcastMeta = {
         "nav",
         m("ul", [
           m("li", m("h1", feed.title)),
-          m("li", m(SeasonSelector)),
-          m("li", m(EpisodeSelector)),
+          // m("li", m(SeasonSelector)),
+          // m("li", m(EpisodeSelector)),
         ]),
       ),
       m("section.podcast-meta", [
@@ -92,8 +148,10 @@ const PodcastMeta = {
           { href: meta.image.link, target: "_blank" },
           m("img.podcast-banner", { src: meta.image.url }),
         ),
-        m("div.description", meta.description),
+        m("div.description", m.trust(meta.description)),
       ]),
+      m(SeasonPills),
+      m(EpisodePills),
     ];
   },
 };
@@ -102,10 +160,9 @@ const ItemMeta = {
   view: (vnode) => {
     let meta = feed.data;
     let poster = item?.itunes?.image || meta.image.url;
-    let episodeLabel =
-      item?.itunes?.season && item?.itunes?.episode
-        ? `Season ${item?.itunes?.season} — Episode ${item?.itunes?.episode}`
-        : "Episode";
+    let episodeLabel = item?.itunes?.season && item?.itunes?.episode
+      ? `Season ${item?.itunes?.season} — ${item?.title}`
+      : "Episode";
     return [
       m("h2", episodeLabel),
       m("section.episode-meta", [
