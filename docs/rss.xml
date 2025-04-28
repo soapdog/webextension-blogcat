@@ -11,6 +11,21 @@
     <webMaster>blogcat@andregarzia.com</webMaster>
     <item>
       <author>blogcat@andregarzia.com</author>
+      <pubDate>Mon, 28 Apr 2025 21:43:54 +0100</pubDate>
+      <title>Release 2025.4.5</title>
+      <link>https://blogcat.org/#/release-notes/2025.4.5</link>
+      <guid>https://blogcat.org/#/release-notes/2025.4.5</guid>
+      <description><![CDATA[
+      <h1>Release 2025.4.5</h1>
+<p>Better feed detection when you navigate to a new page.</p>
+<p>Better podcast player. Added a new navigation for seasons and episodes based on popular UX I see on TV apps.</p>
+<p>Added auto play next episode toggle to podcast player.</p>
+
+      ]]>
+      </description>
+    </item>
+    <item>
+      <author>blogcat@andregarzia.com</author>
       <pubDate>Sat, 26 Apr 2025 15:18:03 +0100</pubDate>
       <title>Release 2025.4.4</title>
       <link>https://blogcat.org/#/release-notes/2025.4.4</link>

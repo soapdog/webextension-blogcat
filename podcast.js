@@ -21,6 +21,27 @@ const Menu = {
           "li",
           m(
             "a",
+            {
+              href: `#`,
+              onclick: (e) => {
+                reverseEpisodeList = !reverseEpisodeList;
+              },
+            },
+            "Reverse Episode List",
+          ),
+        ),
+        m(
+          "li",
+          m(
+            "a",
+            { href: `/addFeed.html?url=${feed.url}`, target: "_blank" },
+            "Edit feed",
+          ),
+        ),
+        m(
+          "li",
+          m(
+            "a",
             { href: "/docs/index.html#/podcast", target: "_blank" },
             "Help",
           ),
@@ -53,24 +74,28 @@ const Menu = {
 
 const SeasonPills = {
   view: (vnode) => {
-    return m("div.seasons", [
-      m("h2", "Seasons"),
-      m("div.season-pills", [
-        Object.keys(seasons).map((s) => {
-          return m(
-            "button",
-            {
-              value: s,
-              selected: s == selectedSeason,
-              onclick: (e) => {
-                selectedSeason = e.target.value;
+    if (Object.keys(seasons).length == 1) {
+      return m("h2", "Episodes");
+    } else {
+      return m("div.seasons", [
+        m("h2", "Seasons"),
+        m("div.season-pills", [
+          Object.keys(seasons).map((s) => {
+            return m(
+              "button",
+              {
+                value: s,
+                selected: s == selectedSeason,
+                onclick: (e) => {
+                  selectedSeason = e.target.value;
+                },
               },
-            },
-            `Season ${s}`,
-          );
-        }),
-      ]),
-    ]);
+              `Season ${s}`,
+            );
+          }),
+        ]),
+      ]);
+    }
   },
 };
 
@@ -100,24 +125,28 @@ const SeasonPills = {
 const EpisodePills = {
   oncreate: (vnode) => {
     let el = document.querySelector("figure.episode[selected]");
-    el.scrollIntoView();
+    if (el) {
+      el.scrollIntoView();
+    }
   },
   view: (vnode) => {
     let meta = feed.data;
+    let episodes = Object.keys(seasons[selectedSeason]);
+    if (reverseEpisodeList) {
+      episodes.reverse();
+    }
     return m(
       "div.episode-pills",
-      Object.keys(seasons[selectedSeason]).map((e) => {
+      episodes.map((e) => {
         let episode = seasons[selectedSeason][e];
         let poster = episode?.itunes?.image || meta.image.url;
         return m(
           "figure.episode",
           {
             selected: e == selectedEpisode,
-            onclick: (e) => {
+            onclick: (evt) => {
               selectedEpisode = e;
               item = episode;
-
-              console.log("Episode", item);
             },
           },
           [
@@ -157,6 +186,45 @@ const PodcastMeta = {
 };
 
 const ItemMeta = {
+  oninit: (vnode) => {
+    vnode.state.playNext = false;
+  },
+  oncreate: (vnode) => {
+    console.log("attaching event");
+    let el = document.getElementById("podcast-player");
+    console.log(el);
+    el.addEventListener("ended", (p) => {
+      console.log("autoplay", vnode.state.playNext);
+
+      if (vnode.state.playNext) {
+        let keys = Object.keys(seasons[selectedSeason]);
+        let s = selectedSeason;
+        let e = selectedEpisode;
+        console.log("current season", selectedSeason);
+        let currentEpisodeIndex = keys.findIndex((ep) =>
+          ep === selectedEpisode
+        );
+        let currentSeasonIndex = Object.keys(seasons).findIndex((ss) =>
+          ss === selectedSeason
+        );
+        console.log("current episode", currentEpisodeIndex);
+        if (keys.length === currentEpisodeIndex + 1) {
+          console.log("next season");
+          s = Object.keys(seasons)[currentSeasonIndex + 1];
+          e = Object.keys(seasons[selectedSeason])[0];
+        } else if (keys[currentEpisodeIndex + 1]) {
+          e = keys[currentEpisodeIndex + 1];
+        }
+        console.log("new season", s);
+        console.log("new episode", e);
+        item = seasons[s][e];
+        selectedSeason = item?.itunes?.season ?? "1";
+        selectedEpisode = item?.itunes?.episode;
+        m.redraw();
+        setTimeout(() => el.play(), 1000);
+      }
+    });
+  },
   view: (vnode) => {
     let meta = feed.data;
     let poster = item?.itunes?.image || meta.image.url;
@@ -171,6 +239,7 @@ const ItemMeta = {
           { style: { display: "flex", "flex-direction": "column" } },
           m("video", {
             src: item.enclosure.url,
+            id: "podcast-player",
             controls: true,
             poster,
             preload: "auto",
@@ -178,6 +247,14 @@ const ItemMeta = {
           item?.itunes?.author
             ? m("span", `Author: ${item.itunes.author}`)
             : "",
+          m("label", [
+            m("input", {
+              role: "switch",
+              type: "checkbox",
+              onchange: (e) => vnode.state.playNext = e.target.value,
+            }),
+            "Autoplay next episode",
+          ]),
         ),
         m("div.description", m.trust(item.content)),
       ]),
@@ -241,6 +318,7 @@ console.log(seasons);
 
 let selectedSeason = item?.itunes?.season ?? "1";
 let selectedEpisode = item?.itunes?.episode;
+let reverseEpisodeList = false;
 
 // console.dir(feed);
 // console.dir(seasons);

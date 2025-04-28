@@ -57,12 +57,13 @@ export async function saveFeed(feed) {
     feed.tags = [];
   }
 
-  if (!feed.frequency)
+  if (!feed.frequency) {
     if (feed.tags) {
       let s = new Set(feed.tags);
       let a = Array.from(s);
       feed.tags = a;
     }
+  }
 
   obj[key] = feed;
   return browser.storage.local.set(obj);
@@ -212,7 +213,7 @@ export async function loadFeed(feed, ticker) {
         feed.lastFetch = today;
         feed.errorCount = 0;
       } else {
-        console.log("already fetch daily", feed.url);
+        // console.log("already fetch daily", feed.url);
         data = feed.data;
       }
     } else if (feed.frequency == "weekly") {
@@ -222,7 +223,7 @@ export async function loadFeed(feed, ticker) {
         feed.lastFetch = today;
         feed.errorCount = 0;
       } else {
-        console.log("already fetch weekly", feed.url);
+        // console.log("already fetch weekly", feed.url);
         data = feed.data;
       }
     } else if (feed.frequency == "monthly") {
@@ -232,7 +233,7 @@ export async function loadFeed(feed, ticker) {
         feed.lastFetch = today;
         feed.errorCount = 0;
       } else {
-        console.log("already fetch monthly", feed.url);
+        // console.log("already fetch monthly", feed.url);
         data = feed.data;
       }
     } else {

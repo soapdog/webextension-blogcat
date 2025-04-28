@@ -1,6 +1,6 @@
 import {
-  FeedLoader,
   deleteFeed,
+  FeedLoader,
   getAllSettings,
   getAllTags,
 } from "./common/dataStorage.js";
@@ -36,7 +36,9 @@ const FeedItem = {
       (item.enclosure.type.includes("audio") ||
         item.enclosure.type.includes("video"))
     ) {
-      link = `/podcast.html?feed=${encodeURIComponent(feed.url)}&item=${encodeURIComponent(item.enclosure.url)}`;
+      link = `/podcast.html?feed=${encodeURIComponent(feed.url)}&item=${
+        encodeURIComponent(item.enclosure.url)
+      }`;
     }
 
     /*
@@ -193,12 +195,20 @@ const FeedDisplay = {
 
 const FeedList = {
   oninit: (vnode) => {
-    vnode.state.currentYear = new Date().getFullYear();
+    let currentYear = new Date().getFullYear();
+    vnode.state.currentYear = currentYear;
+  },
+  onupdate: (vnode) => {
+    let currentYear = new Date().getFullYear();
+    vnode.state.currentYear = currentYear;
   },
   view: (vnode) => {
     return feeds.map((f) => {
+      let currentYear = new Date().getFullYear();
       let d1 = f.lastBuildDate.getFullYear();
-      if (d1 !== vnode.state.currentYear) {
+      if (
+        d1 !== vnode.state.currentYear
+      ) {
         vnode.state.currentYear = d1;
         return [
           m("h1.year-banner", `Posts from ${d1}`),
@@ -224,9 +234,9 @@ const Tag = {
         feeds = allFeeds.filter((f) =>
           f?.tags
             ? f.tags
-                .map((t) => t.toLowerCase())
-                .includes(currentTag.toLowerCase())
-            : false,
+              .map((t) => t.toLowerCase())
+              .includes(currentTag.toLowerCase())
+            : false
         );
       }
 
@@ -328,7 +338,7 @@ const Reader = {
         feeds = allFeeds;
       } else {
         feeds = allFeeds.filter((f) =>
-          f.tags.map((t) => t.toLowerCase()).includes(currentTag.toLowerCase()),
+          f.tags.map((t) => t.toLowerCase()).includes(currentTag.toLowerCase())
         );
       }
 
@@ -382,7 +392,7 @@ const Reader = {
  *
  * Routines and events that change one should be careful to change the other so they're
  * kept kinda in sync.
- * */
+ */
 
 let settings = await getAllSettings();
 let tags = Array.from(await getAllTags())

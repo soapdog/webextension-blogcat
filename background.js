@@ -13,8 +13,8 @@ function onError(error) {
 
 function pageActionToggle(tabId, changeInfo, tabInfo) {
   function onExecuted(result) {
+    console.log(`exec`, result[0]);
     let res = result[0].result;
-    // console.log(`exec`, result[0]);
 
     if (res.atom || res.rss || res.blogroll) {
       browser.pageAction.show(tabId);
@@ -79,7 +79,8 @@ function handleMessage(request, sender, sendResponse) {
 
           if (channelId) {
             const obj = {
-              rss: `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`,
+              rss:
+                `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`,
             };
             console.dir("response", obj);
             sendResponse(obj);
@@ -161,7 +162,8 @@ function initializeContextMenus() {
           .split(`\n`)
           .map((l) => `> ${l}`)
           .join(`\n`);
-        template = `${lines}\n>\n> &mdash; _Source: [${tab.title}](${info.pageUrl})_`;
+        template =
+          `${lines}\n>\n> &mdash; _Source: [${tab.title}](${info.pageUrl})_`;
         copyToClipboard(template, template);
         break;
       case "page-action-to-clipboard-as-link":
@@ -220,7 +222,7 @@ Removed history observer cause I'm afraid it will fire on navigation on YouTube 
 from the content script to actually switch off.
 
 --- potential issue ---
-Might be the cause for: 
+Might be the cause for:
 * https://github.com/soapdog/webextension-blogcat/issues/3
 * https://github.com/soapdog/webextension-blogcat/issues/2
 
@@ -230,7 +232,7 @@ firing and the pageAction sending a message, the background is unloaded or resta
 
 The `onVisited` and `channelId` hack was first done to avoid the latency in UI in the pageAction popup cause the old script
 executed an XHR request in the tab to fetch the YouTube HTML for the channel. I  might need to go back into using that slower
-code cause it doesn't require the background script to be persistent. 
+code cause it doesn't require the background script to be persistent.
 
 */
 
