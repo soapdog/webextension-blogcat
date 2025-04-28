@@ -218,8 +218,8 @@ const ItemMeta = {
         console.log("new season", s);
         console.log("new episode", e);
         item = seasons[s][e];
-        selectedSeason = item?.itunes?.season ?? "1";
-        selectedEpisode = item?.itunes?.episode;
+        selectedSeason = s; //item?.itunes?.season ?? "1";
+        selectedEpisode = e; //item?.itunes?.episode;
         m.redraw();
         setTimeout(() => el.play(), 1000);
       }
@@ -230,7 +230,7 @@ const ItemMeta = {
     let poster = item?.itunes?.image || meta.image.url;
     let episodeLabel = item?.itunes?.season && item?.itunes?.episode
       ? `Season ${item?.itunes?.season} — ${item?.title}`
-      : "Episode";
+      : item?.title;
     return [
       m("h2", episodeLabel),
       m("section.episode-meta", [
