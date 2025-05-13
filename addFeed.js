@@ -1,7 +1,8 @@
 import {
-  saveFeed,
-  loadFeedFromURL,
+  getAllTags,
   getFeedWithURL,
+  loadFeedFromURL,
+  saveFeed,
 } from "./common/dataStorage.js";
 
 const feedNameInput = document.getElementById("feed_name");
@@ -10,11 +11,15 @@ const fetchFrequency = document.getElementById("update_frequency");
 const tagsInput = document.getElementById("tags");
 const addFeedButton = document.getElementById("add_feed");
 const feedValidationSpan = document.getElementById("validation");
+const tagsSelector = document.getElementById("tags_selector");
 const search = new URLSearchParams(location.search);
 
 function displayBrokenFeedMessage(feed_url) {
-  let url = `https://validator.w3.org/feed/check.cgi?url=${encodeURIComponent(feed_url)}`;
-  feedValidationSpan.innerHTML = `Error: this feed can't be loaded. <a href="${url}" target="_blank">Click to check it on a validator</a>.`;
+  let url = `https://validator.w3.org/feed/check.cgi?url=${
+    encodeURIComponent(feed_url)
+  }`;
+  feedValidationSpan.innerHTML =
+    `Error: this feed can't be loaded. <a href="${url}" target="_blank">Click to check it on a validator</a>.`;
   addFeedButton.disabled = true;
 }
 
@@ -56,6 +61,27 @@ if (search.has("url")) {
     }
   }
 }
+
+getAllTags().then((tags) => {
+  tags.forEach((t) => {
+    let option = document.createElement("option");
+    option.setAttribute("value", t);
+    option.innerText = t;
+    tagsSelector.appendChild(option);
+  });
+  tagsSelector.disabled = false;
+});
+
+tagsSelector.addEventListener("change", (evt) => {
+  let tag = evt.target.value;
+
+  let tags = [];
+  if (tagsInput.value.trim().length > 0) {
+    tags = tagsInput.value.split(",").map((s) => s.trim());
+  }
+  tags.push(tag);
+  tagsInput.value = tags.join(", ");
+});
 
 addFeedButton.addEventListener("click", (evt) => {
   evt.stopPropagation();
