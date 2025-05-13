@@ -32,6 +32,8 @@
   - [Oh My Gods, Why?!](/why)
 
 - Release Notes
+  - [2025.5.1](/release-notes/2025.5.1)
+  - [2025.4.6](/release-notes/2025.4.6)
   - [2025.4.5](/release-notes/2025.4.5)
   - [2025.4.4](/release-notes/2025.4.4)
   - [2025.4.3](/release-notes/2025.4.3)
