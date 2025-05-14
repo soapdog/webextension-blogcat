@@ -3,7 +3,6 @@
 .idea
 .DS_Store
 *.sh
-*.lua
 web-ext-artifacts
 *.zip
 *.sublime-project
