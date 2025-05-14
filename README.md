@@ -4,6 +4,8 @@
 
 To learn how to use this add-on, go to our [getting started guide](https://blogcat.org/#/quickstart). Using the sidebar on the left, you can find out how BlogCat integrates with Firefox, how to read and subscribe to blogs, and how to be a part of the conversation by adding your blogging and microblogging accounts.
 
+> There is a mirror available at [Sourcehut](https://git.sr.ht/~soapdog/webextension-blogcat/) if you'd rather use that over Github. In the future, I might consider moving the development there and making Github the mirror. 
+
 # Inspiration
 
 This addon wouldn't exist if it was not for [FraidyCat](https://fraidyc.at) and [Rad Reader](https://cblgh.itch.io/rad-reader). They paved the way for BlogCat to find it's own path. If you'd rather have an app (or use a different browser), you might want to check them out.
