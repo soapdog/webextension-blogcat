@@ -4,7 +4,20 @@
 
 To learn how to use this add-on, go to our [getting started guide](https://blogcat.org/#/quickstart). Using the sidebar on the left, you can find out how BlogCat integrates with Firefox, how to read and subscribe to blogs, and how to be a part of the conversation by adding your blogging and microblogging accounts.
 
-> There is a mirror available at [Sourcehut](https://git.sr.ht/~soapdog/webextension-blogcat/) if you'd rather use that over Github. In the future, I might consider moving the development there and making Github the mirror. 
+> There is a mirror available at [Sourcehut](https://git.sr.ht/~soapdog/webextension-blogcat/) if you'd rather use that over [Github](https://github.com/soapdog/webextension-blogcat). In the future, I might consider moving the development there and making Github the mirror. 
+
+# Screenshots
+
+![Reading Feeds](docs/_media/reader-page.png)
+_Reading Feeds._
+
+![Podcast Viewer](docs/_media/podcast-viewer.png)
+_Listening to a podcast._
+
+![Adding a feed](docs/_media/add-feed-page.png)
+_Subscribing to a WebSite._
+
+There is a lot more to BlogCat than what you can see on these brief screenshots. Check out the [documentation](https://blogcat.org/#/?id=readme) for in-deep guides on how to use it.
 
 # Inspiration
 
