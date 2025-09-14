@@ -32,7 +32,7 @@ const FeedItem = {
     == Podcast ===========================================================================================================
     */
     if (
-      item.enclosure !== undefined &&
+      item.enclosure !== undefined && item.enclosure.type !== undefined &&
       (item.enclosure.type.includes("audio") ||
         item.enclosure.type.includes("video"))
     ) {
