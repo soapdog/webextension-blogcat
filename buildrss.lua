@@ -5,7 +5,7 @@ local markdown = require "markdown_extra"
 local template = require 'pl.template'
 
 local versions = {
-  "2025.5.2",
+  "2025.9.1",
   "2025.5.1",
   "2025.4.6",
   "2025.4.5",

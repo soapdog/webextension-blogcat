@@ -12,6 +12,12 @@ const tagsInput = document.getElementById("tags");
 const addFeedButton = document.getElementById("add_feed");
 const feedValidationSpan = document.getElementById("validation");
 const tagsSelector = document.getElementById("tags_selector");
+const blogTypeDetectionRadios = document.querySelectorAll(
+  `input[name="blog_type_detection"]`,
+);
+
+let blogTypeDetection = "auto";
+
 const search = new URLSearchParams(location.search);
 
 function displayBrokenFeedMessage(feed_url) {
@@ -42,6 +48,17 @@ if (search.has("url")) {
       let tags = feed.tags ? feed.tags.join(", ") : "";
 
       tagsInput.value = tags;
+
+      if (feed.blogTypeDetection) {
+        for (const radioButton of blogTypeDetectionRadios) {
+          if (feed.blogTypeDetection === radioButton.value) {
+            radioButton.checked = true;
+            break;
+          }
+        }
+      } else {
+        document.getElementById("blog_type_detection_auto").checked = true;
+      }
     }
     console.log("Editing feed", feed);
   } else {
@@ -97,6 +114,13 @@ addFeedButton.addEventListener("click", (evt) => {
 
   if (tagsInput.value.trim().length > 0) {
     feed.tags = tagsInput.value.split(",").map((s) => s.trim());
+  }
+
+  for (const radioButton of blogTypeDetectionRadios) {
+    if (radioButton.checked) {
+      feed.blogTypeDetection = radioButton.value;
+      break;
+    }
   }
 
   const onOk = (e) => {

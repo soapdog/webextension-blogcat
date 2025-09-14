@@ -1,59 +1,75 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>BlogCat - Add Feed</title>
-    <link rel="stylesheet" href="/vendor/pico.classless.min.css" />
-    <script src="browser-polyfill.js"></script>
-    <script src="./vendor/rss-parser.min.js"></script>
-    <script defer type="module" src="addFeed.js"></script>
-    <style type="text/css">
-      .cat-icon {
-        max-height: 64px;
-      }
 
-      #validation {
-        color: darkred;
-      }
-    </style>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>BlogCat - Add Feed</title>
+  <link rel="stylesheet" href="/vendor/pico.classless.min.css" />
+  <script src="browser-polyfill.js"></script>
+  <script src="./vendor/rss-parser.min.js"></script>
+  <script defer type="module" src="addFeed.js"></script>
+  <style type="text/css">
+    .cat-icon {
+      max-height: 64px;
+    }
 
-  <body>
-    <main>
-      <section>
-        <h1>
-          <img src="../icons/cat_pencil512c.png" class="cat-icon" /> Add Feed To
-          BlogCat
-        </h1>
-        <form>
-          <label for="feed_name">Feed Name</label>
-          <input type="text" name="feed_name" id="feed_name" required />
-          <label for="feed_url">Feed URL</label>
-          <input type="text" name="feed_url" id="feed_url" required />
-          <span id="validation"></span>
-          <label for="update_frequency">Update Frequency</label>
-          <select name="update_frequency" id="update_frequency">
-            <option value="daily">Daily</option>
-            <option value="always">Always</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-          </select>
-          <label for="tags">Tags (use commas to separate tags)</label>
-          <input type="text" name="tags" id="tags" />
-          <label for="tags_selector">Tags in use (select tag to add to the text field above)</label>
-          <select name="tags_selector" id="tags_selector" disabled>
-          </select>
-          <input type="submit" value="Add" id="add_feed" />
-        </form>
-        <p>
-          Open the documentation to learn more about
-          <a href="/docs/index.html#/feeddiscovery" target="_blank"
-            >feed discovery and adding sites to BlogCat</a
-          >.
-        </p>
-      </section>
-    </main>
-  </body>
+    #validation {
+      color: darkred;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <section>
+      <h1>
+        <img src="../icons/cat_pencil512c.png" class="cat-icon" /> Add Feed To
+        BlogCat
+      </h1>
+      <form>
+        <label for="feed_name">Feed Name</label>
+        <input type="text" name="feed_name" id="feed_name" required />
+        <label for="feed_url">Feed URL</label>
+        <input type="text" name="feed_url" id="feed_url" required />
+        <span id="validation"></span>
+        <label for="update_frequency">Update Frequency</label>
+        <select name="update_frequency" id="update_frequency">
+          <option value="daily">Daily</option>
+          <option value="always">Always</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+        <label for="tags">Tags (use commas to separate tags)</label>
+        <input type="text" name="tags" id="tags" />
+        <label for="tags_selector">Tags in use (select tag to add to the text field above)</label>
+        <select name="tags_selector" id="tags_selector" disabled>
+        </select>
+        <fieldset>
+          <legend>Blog type detection:</legend>
+          <label>
+            <input type="radio" name="blog_type_detection" id="blog_type_detection_auto" value="auto" checked />
+            Let BlogCat auto-detect the blog type.
+          </label>
+          <label>
+            <input type="radio" name="blog_type_detection" id="blog_type_detection_force_podcast"
+              value="force_podcast" />
+            Always open in podcast viewer.
+          </label>
+          <label>
+            <input type="radio" name="blog_type_detection" id="blog_type_detection_force_reader" value="force_reader" />
+            Always open in reader viewer.
+          </label>
+        </fieldset>
+        <input type="submit" value="Add" id="add_feed" />
+      </form>
+      <p>
+        Open the documentation to learn more about
+        <a href="/docs/index.html#/feeddiscovery" target="_blank">feed discovery and adding sites to BlogCat</a>.
+      </p>
+    </section>
+  </main>
+</body>
+
 </html>

@@ -274,6 +274,26 @@ const PodcastViewer = {
 
 let feed;
 let item;
+let error = {};
+
+const handleUncaughtException = (message, source, lineno, colno, error) => {
+  console.log("error happened!", message);
+
+  error = {
+    message,
+    source,
+    lineno,
+    colno,
+    error,
+  };
+
+  window.location = `/error.html?url=${feed.url}&error=${
+    JSON.stringify(error)
+  }`;
+  return true;
+};
+
+window.onerror = handleUncaughtException;
 
 const search = new URLSearchParams(location.search);
 
@@ -329,4 +349,5 @@ const appRoot = document.getElementById("app");
 
 m.route(appRoot, "/podcast", {
   "/podcast": PodcastViewer,
+  "/error": ErrorHandler,
 });

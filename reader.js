@@ -67,6 +67,26 @@ const FeedItem = {
       }
     }
 
+    /*
+    == User defined blog type detection ==================================================================================
+    */
+
+    if (feed.blogTypeDetection && feed.blogTypeDetection !== "auto") {
+      console.log(feed);
+      switch (feed.blogTypeDetection) {
+        case "force_podcast":
+          if (item.enclosure && item.enclosure.url) {
+            link = `/podcast.html?feed=${encodeURIComponent(feed.url)}&item=${
+              encodeURIComponent(item.enclosure.url)
+            }`;
+          }
+          break;
+        case "force_reader":
+          link = item.link;
+          break;
+      }
+    }
+
     return m("li", [
       m(
         "a",
