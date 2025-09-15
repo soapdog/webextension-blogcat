@@ -97,6 +97,15 @@ function handleMessage(request, sender, sendResponse) {
 /**
  * Context Menu
  * ==================================================
+ *
+ * Context menus need to be installed only once during the WebExtension install/update
+ * event. They are persistent even if the background script is not.
+ *
+ * The key to making them work was moving the onClicked event listener for the contextMenus
+ * to toplevel instead of the onInstalled function callback.
+ *
+ * Also, even though MDN says "menus" and "contextMenus" are just aliases of each other, I'm
+ * seeing "menus" being undefined in runtime and "contextMenus" working.
  */
 
 function onContextMenuCreated() {
@@ -297,6 +306,9 @@ async function renameFrequencyToAlways() {
 /**
  * Initialise
  * ==================================================
+ *
+ * All listeners need to be synchronous and toplevel or they won't cause
+ * the background to fire back up.
  */
 
 browser.runtime.onMessage.addListener(handleMessage);
