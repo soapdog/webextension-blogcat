@@ -13,7 +13,6 @@ function onError(error) {
 
 function pageActionToggle(tabId, changeInfo, tabInfo) {
   function onExecuted(result) {
-    console.log(`exec`, result[0]);
     let res = result[0].result;
 
     if (res.atom || res.rss || res.blogroll) {
@@ -106,23 +105,18 @@ function onContextMenuCreated() {
   } else {
     console.log("Context menu item created successfully");
   }
+
+  return true;
 }
 
-function copyToClipboard(text, html) {
-  function oncopy(event) {
-    document.removeEventListener("copy", oncopy, true);
-    // Hide the event from the page to prevent tampering.
-    event.stopImmediatePropagation();
-
-    // Overwrite the clipboard content.
-    event.preventDefault();
-    event.clipboardData.setData("text/plain", text);
-    event.clipboardData.setData("text/html", html);
-  }
-  document.addEventListener("copy", oncopy, true);
-
-  // Requires the clipboardWrite permission, or a user gesture:
-  document.execCommand("copy");
+async function setClipboard(text) {
+  const type = "text/plain";
+  const clipboardItemData = {
+    [type]: text,
+  };
+  const clipboardItem = new ClipboardItem(clipboardItemData);
+  await navigator.clipboard.write([clipboardItem]);
+  console.log(text);
 }
 
 function initializeContextMenus() {
@@ -152,30 +146,30 @@ function initializeContextMenus() {
     },
     onContextMenuCreated,
   );
+}
 
-  browser.contextMenus.onClicked.addListener(function (info, tab) {
-    let template;
-    console.dir("info", info);
-    switch (info.menuItemId) {
-      case "text-selection-to-clipboard-as-quotation":
-        let lines = info.selectionText
-          .split(`\n`)
-          .map((l) => `> ${l}`)
-          .join(`\n`);
-        template =
-          `${lines}\n>\n> &mdash; _Source: [${tab.title}](${info.pageUrl})_`;
-        copyToClipboard(template, template);
-        break;
-      case "page-action-to-clipboard-as-link":
-        template = `[${tab.title}](${tab.url})`;
-        copyToClipboard(template, template);
-        break;
-      case "link-to-clipboard-as-link":
-        template = `[${info.linkText}](${info.linkUrl})`;
-        copyToClipboard(template, template);
-        break;
-    }
-  });
+function handleContextMenu(info, tab) {
+  let template;
+  console.dir("info", info);
+  switch (info.menuItemId) {
+    case "text-selection-to-clipboard-as-quotation":
+      let lines = info.selectionText
+        .split(`\n`)
+        .map((l) => `> ${l}`)
+        .join(`\n`);
+      template =
+        `${lines}\n>\n> &mdash; _Source: [${tab.title}](${info.pageUrl})_`;
+      setClipboard(template);
+      break;
+    case "page-action-to-clipboard-as-link":
+      template = `[${tab.title}](${tab.url})`;
+      setClipboard(template);
+      break;
+    case "link-to-clipboard-as-link":
+      template = `[${info.linkText}](${info.linkUrl})`;
+      setClipboard(template);
+      break;
+  }
 }
 
 /*
@@ -208,11 +202,15 @@ function installedOrUpdated(details) {
   // MDN says context menus should only be run one during install. Cue:
   // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Background_scripts#initialize_the_extension
   initializeContextMenus();
+
+  return true;
 }
 
 function aboutToSuspend(details) {
   // background script will unload for who knows the reason.
   console.info("Yo! Background is gonna suspend!");
+
+  return true;
 }
 
 /*
@@ -301,11 +299,12 @@ async function renameFrequencyToAlways() {
  * ==================================================
  */
 
-await clearEmptyTags();
-await renameFrequencyToAlways();
-
 browser.runtime.onMessage.addListener(handleMessage);
 browser.tabs.onUpdated.addListener(pageActionToggle);
 browser.runtime.onInstalled.addListener(installedOrUpdated);
 browser.runtime.onSuspend.addListener(aboutToSuspend);
 browser.history.onVisited.addListener(onVisited);
+browser.contextMenus.onClicked.addListener(handleContextMenu);
+
+await clearEmptyTags();
+await renameFrequencyToAlways();
