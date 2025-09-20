@@ -7,6 +7,7 @@
   - [Preferences page](/options)
   - [Sidebar](/sidebar)
   - [Context menu](/contextmenu)
+  - [Linkgraph](/linkgraph)
 
 - Subscribing and Reading
 

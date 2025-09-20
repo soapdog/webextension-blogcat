@@ -3,6 +3,7 @@ import {
   FeedLoader,
   getAllSettings,
   getAllTags,
+  updateLinkGraph,
 } from "./common/dataStorage.js";
 
 const Loading = {
@@ -362,6 +363,7 @@ const Reader = {
         );
       }
 
+      updateLinkGraph();
       vnode.state.loading = false;
 
       m.redraw();

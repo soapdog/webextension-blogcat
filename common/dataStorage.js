@@ -362,3 +362,53 @@ export async function removeAllEmptyTags() {
     let f = feeds[k];
   });
 }
+
+export async function updateLinkGraph() {
+  const feeds = await getAllFeeds();
+  const parser = new DOMParser();
+  const links = {};
+
+  for (const prop in feeds) {
+    const feed = feeds[prop];
+
+    if (Array.isArray(feed?.data?.items)) {
+      const items = feed.data.items;
+
+      for (const item of items) {
+        try {
+          const text = `<html><body>${item.content}</body></html>`;
+          const doc = parser.parseFromString(text, "text/html");
+
+          for (const link of doc.links) {
+            if (link.href && link.href.startsWith("http")) {
+              if (!links[link.href]) {
+                links[link.href] = [item.link];
+              } else {
+                links[link.href].push(item.link);
+              }
+            }
+          }
+        } catch (_e) {
+          console.error("Error updating linkgraph", item.link);
+        }
+      }
+    }
+  }
+
+  const obj = {};
+  for (const link in links) {
+    const set = new Set(links[link]);
+    obj[link] = Array.from(set);
+  }
+  await browser.storage.session.set(obj);
+}
+
+export async function getLinksForURL(link) {
+  let obj = await browser.storage.session.get(link);
+
+  if (obj[link]) {
+    return obj[link];
+  } else {
+    return [];
+  }
+}

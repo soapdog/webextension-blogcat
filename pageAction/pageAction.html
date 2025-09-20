@@ -1,93 +1,102 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="../css/browser.css" />
-    <script src="../browser-polyfill.js"></script>
-    <script defer src="pageAction.js"></script>
-    <style>
-      body {
-        width: 300px;
-      }
 
-      .logo {
-        width: 48px;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="../css/browser.css" />
+  <script src="../browser-polyfill.js"></script>
+  <script defer src="pageAction.js"></script>
+  <style>
+    body {
+      width: 300px;
+    }
 
-      a.text {
-        text-decoration: none;
-        color: unset;
-      }
+    .logo {
+      width: 48px;
+    }
 
-      a.text:visited {
-        color: unset;
-      }
+    a.text {
+      text-decoration: none;
+      color: unset;
+    }
 
-      body,
-      html {
-        border-top: none;
-      }
+    a.text:visited {
+      color: unset;
+    }
 
-      #youtube_loading {
-        display: none;
-      }
+    body,
+    html {
+      border-top: none;
+    }
 
-      #atom_section {
-        display: none;
-      }
+    #youtube_loading {
+      display: none;
+    }
 
-      #rss_section {
-        display: none;
-      }
+    #atom_section {
+      display: none;
+    }
 
-      #subscribe_atom,
-      #copy_atom {
-        display: none;
-      }
+    #rss_section {
+      display: none;
+    }
 
-      #subscribe_rss,
-      #copy_rss {
-        display: none;
-      }
+    #subscribe_atom,
+    #copy_atom {
+      display: none;
+    }
 
-      #open_blogroll,
-      #copy_blogroll {
-        display: none;
-      }
-    </style>
-  </head>
+    #subscribe_rss,
+    #copy_rss {
+      display: none;
+    }
 
-  <body>
-    <header class="panel-section panel-section-header">
-      <img src="../icons/cat_idea512c.png" class="cat-idea-icon-32" />
-      <div class="text-section-header" id="blogcat-header">
-        BlogCat Found Feeds
-      </div>
-    </header>
-    <div class="panel-section panel-section-list">
-      <div class="panel-list-item" id="youtube_loading">
-        <span>Loading information from YouTube...</span>
-      </div>
+    #open_blogroll,
+    #copy_blogroll {
+      display: none;
+    }
+
+    .hide {
+      display: none;
+    }
+
+    li#header {
+      list-style-type: none;
+      font-size: 1.1em;
+      padding-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="panel-section panel-section-header">
+    <img src="../icons/cat_idea512c.png" class="cat-idea-icon-32" />
+    <div class="text-section-header" id="blogcat-header">
+      BlogCat Found Stuff
     </div>
-    <div class="panel-section panel-section-list">
+  </header>
+  <div class="panel-section panel-section-list">
+    <div class="panel-list-item" id="youtube_loading">
+      <span>Loading information from YouTube...</span>
+    </div>
+  </div>
+  <!-- SUBSCRIBE -->
+  <div class="panel-section panel-section-list">
+    <div id="feed-section" class="hide">
       <div class="panel-list-item" id="subscribe_atom">
         <div class="icon"></div>
-        <a class="text" target="_blank" href="#" id="atom_link"
-          >Subscribe using Atom feed</a
-        >
+        <a class="text" target="_blank" href="#" id="atom_link">Subscribe using Atom feed</a>
       </div>
       <div class="panel-list-item" id="subscribe_rss">
         <div class="icon"></div>
-        <a class="text" target="_blank" href="" id="rss_link"
-          >Subscribe using RSS feed</a
-        >
+        <a class="text" target="_blank" href="" id="rss_link">Subscribe using RSS feed</a>
       </div>
+      <!-- BLOGROLL -->
       <div class="panel-list-item" id="open_blogroll">
         <div class="icon"></div>
-        <a class="text" target="_blank" href="" id="blogroll_link"
-          >View Blogroll</a
-        >
+        <a class="text" target="_blank" href="" id="blogroll_link">View Blogroll</a>
       </div>
+      <!-- COPY LINKS -->
       <div class="panel-section-separator"></div>
       <div class="panel-list-item" id="copy_rss">
         <div class="icon"></div>
@@ -101,6 +110,15 @@
         <div class="icon"></div>
         <div class="text" id="blogroll_copy">Copy Blogroll URL</div>
       </div>
+      <div class="panel-section-separator"></div>
+      <!-- LINKED POSTS -->
     </div>
-  </body>
+    <div class="hide" id="linked-posts">
+      <ul id="linkgraph">
+        <li id="header"><strong>Page linked from:</strong></li>
+      </ul>
+    </div>
+  </div>
+</body>
+
 </html>

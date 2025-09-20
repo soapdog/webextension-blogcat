@@ -1,4 +1,9 @@
-import { getAllFeeds, saveFeed } from "./common/dataStorage.js";
+import {
+  getAllFeeds,
+  getLinksForURL,
+  saveFeed,
+  updateLinkGraph,
+} from "./common/dataStorage.js";
 
 /**
  * Page Action
@@ -15,11 +20,19 @@ function pageActionToggle(tabId, changeInfo, tabInfo) {
   function onExecuted(result) {
     let res = result[0].result;
 
-    if (res.atom || res.rss || res.blogroll) {
-      browser.pageAction.show(tabId);
-    } else {
-      browser.pageAction.hide(tabId);
-    }
+    // check linkgraph
+    getLinksForURL(tabInfo.url).then((links) => {
+      console.log(tabInfo.url, links);
+      if (links.length > 0) {
+        res["linkgraph"] = links;
+      }
+
+      if (res.atom || res.rss || res.blogroll || res.linkgraph) {
+        browser.pageAction.show(tabId);
+      } else {
+        browser.pageAction.hide(tabId);
+      }
+    });
   }
 
   if (changeInfo.status === "complete") {
@@ -40,9 +53,15 @@ function handleMessage(request, sender, sendResponse) {
   function onExecuted(result) {
     let res = result[0].result;
 
-    console.log("sending response", res);
-
-    sendResponse(res);
+    // check linkgraph
+    getLinksForURL(request.tab.url).then((links) => {
+      if (links.length > 0) {
+        console.log(request.tab.url, links);
+        res["linkgraph"] = links;
+      }
+      console.log("sending response", res);
+      sendResponse(res);
+    });
   }
 
   if (!request.tab.url.startsWith("https://www.youtube.com/")) {
@@ -320,3 +339,4 @@ browser.contextMenus.onClicked.addListener(handleContextMenu);
 
 await clearEmptyTags();
 await renameFrequencyToAlways();
+await updateLinkGraph();

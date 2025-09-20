@@ -14,6 +14,14 @@ function handleResponse(res) {
     return;
   }
 
+  if (res.atom || res.rss || res.blogroll) {
+    document.getElementById("feed-section").classList.remove("hide");
+  }
+
+  if (res.linkgraph) {
+    document.getElementById("linked-posts").classList.remove("hide");
+  }
+
   if (res.atom) {
     document
       .getElementById("atom_link")
@@ -75,6 +83,18 @@ function handleResponse(res) {
         url: `../importOpml.html?url=${res.blogroll}`,
       });
     });
+  }
+  if (res.linkgraph) {
+    const ul = document.getElementById("linkgraph");
+    console.log(res.linkgraph);
+    for (link of res.linkgraph) {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = link;
+      a.innerText = link;
+      li.appendChild(a);
+      ul.appendChild(li);
+    }
   }
 }
 
