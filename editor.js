@@ -1,7 +1,7 @@
 import {
-  savePostingAccount,
-  getAllPostingAccounts,
   deletePostingAccount,
+  getAllPostingAccounts,
+  savePostingAccount,
 } from "./common/dataStorage.js";
 import { mastodon } from "./common/mastodon.js";
 import { bluesky } from "./common/bluesky.js";
@@ -12,9 +12,19 @@ const Model = {
   title: "",
   links: {},
   errors: {},
+  onChange: (value) => {
+    localStorage.setItem("draft", value);
+  },
+  onCreate: () => {
+    Model.body = localStorage.getItem("draft") ?? "";
+    m.redraw();
+  },
 };
 
 const Compose = {
+  oninit: (vnode) => {
+    Model.onCreate();
+  },
   view: (vnode) => {
     let micropubSelected = false;
     let lengthStatus = Model.body.length;
@@ -38,24 +48,23 @@ const Compose = {
       }
     });
     return m("div", [
-      !micropubSelected
-        ? ""
-        : [
-            m("label", { for: "title" }, "Title (only used for Micropub)"),
-            m("input[type=text]", {
-              name: "title",
-              value: Model.title,
-              oninput: (e) => {
-                Model.title = e.target.value;
-              },
-            }),
-          ],
+      !micropubSelected ? "" : [
+        m("label", { for: "title" }, "Title (only used for Micropub)"),
+        m("input[type=text]", {
+          name: "title",
+          value: Model.title,
+          oninput: (e) => {
+            Model.title = e.target.value;
+          },
+        }),
+      ],
       m("textarea", {
         rows: 15,
         autofocus: true,
         value: Model.body,
         oninput: (e) => {
           Model.body = e.target.value;
+          Model.onChange(Model.body);
         },
       }),
       m("div", [m("span", { style: { float: "right" } }, lengthStatus)]),
@@ -80,13 +89,13 @@ const Account = {
       ]),
       Model.links[account.name]
         ? m("small", [
-            "  •     ",
-            m(
-              "a",
-              { href: Model.links[account.name], target: "_blank" },
-              Model.links[account.name]
-            ),
-          ])
+          "  •     ",
+          m(
+            "a",
+            { href: Model.links[account.name], target: "_blank" },
+            Model.links[account.name],
+          ),
+        ])
         : "",
       Model.errors[account.name]
         ? m("small", `  •     ${Model.errors[account.name]}`)
@@ -125,7 +134,7 @@ const Editor = {
             });
           },
         },
-        "Clear"
+        "Clear",
       ),
     ]);
   },
