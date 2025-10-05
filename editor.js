@@ -12,6 +12,7 @@ const Model = {
   title: "",
   links: {},
   errors: {},
+  images: [],
   onChange: (value) => {
     localStorage.setItem("draft", value);
   },
@@ -113,10 +114,42 @@ const Accounts = {
   },
 };
 
+const ImageUpload = {
+  view: (vnode) => {
+    return m("div", {
+      class: "row",
+    }, [
+      m("input", {
+        id: "file",
+        onchange: (evt) => {
+          evt.preventDefault();
+          evt.stopPropagation();
+          for (const f of evt.target.files) {
+            Model.images.push(f);
+          }
+          console.log(Model);
+        },
+        type: "file",
+        class: "hide",
+      }),
+      m("button", {
+        onclick: ((evt) => {
+          evt.stopPropagation();
+          evt.preventDefault();
+          const f = document.getElementById("file");
+          f.click();
+        }),
+      }, "Upload Image"),
+      m("span", `${Model.images.length} images selected`),
+    ]);
+  },
+};
+
 const Editor = {
   view: (vnode) => {
     return m("form", [
       m(Compose),
+      m(ImageUpload),
       m(Accounts),
       m("button", { onclick: post }, "Post"),
       m(
@@ -132,6 +165,7 @@ const Editor = {
             accounts.forEach((a) => {
               a.selected = false;
             });
+            localStorage.removeItem("draft");
           },
         },
         "Clear",
@@ -163,6 +197,7 @@ function post(ev) {
         case "Mastodon":
           let mastodonRes = await mastodon.publishStatus(account, {
             text: Model.body,
+            images: Model.images,
           });
           console.log(mastodonRes);
 
@@ -176,6 +211,7 @@ function post(ev) {
         case "Bluesky":
           let blueskyRes = await bluesky.publishStatus(account, {
             text: Model.body,
+            images: Model.images,
           });
 
           if (blueskyRes.link) {
@@ -190,6 +226,7 @@ function post(ev) {
           let micropubRes = await micropub.publish(account, {
             text: Model.body,
             title: Model.title,
+            images: Model.images,
           });
 
           if (micropubRes.url) {
