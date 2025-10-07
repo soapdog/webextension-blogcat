@@ -114,9 +114,26 @@ const Accounts = {
   },
 };
 
+const ImageThumb = {
+  oninit: vnode => {
+    const reader = new FileReader()
+    reader.addEventListener("load", data => {
+      vnode.state.src = reader.result
+      m.redraw()
+    })
+    reader.readAsDataURL(vnode.attrs.image)
+
+  },
+  view: vnode => {
+    return m("img.thumb", {src: vnode.state.src})
+  }
+}
+
 const ImageUpload = {
   view: (vnode) => {
-    return m("div", {
+    return [
+      m("div",{class: Model.images.length > 0 ? "image-thumbs" : "hide"}, Model.images.map(i => m(ImageThumb, {image: i}))),
+      m("div", {
       class: "row",
     }, [
       m("input", {
@@ -141,8 +158,9 @@ const ImageUpload = {
         }),
       }, "Upload Image"),
       m("span", `${Model.images.length} images selected`),
-    ]);
-  },
+    ])
+    ];
+  }
 };
 
 const Editor = {
