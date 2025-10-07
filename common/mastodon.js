@@ -118,6 +118,10 @@ export const mastodon = {
     const formData = new FormData();
     formData.append("file", image);
 
+    if (image.alttext) {
+      formData.append("description", image.alttext);
+    }
+
     try {
       const response = await fetch(url, {
         headers,

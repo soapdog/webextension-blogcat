@@ -125,7 +125,21 @@ const ImageThumb = {
 
   },
   view: vnode => {
-    return m("img.thumb", {src: vnode.state.src})
+    const img = vnode.attrs.image
+    return m("img.thumb", {
+      src: vnode.state.src,
+      onclick: evt => {
+        evt.stopPropagation()
+        evt.preventDefault()
+        const alttext = prompt("alt text", img.alttext)
+
+        if (alttext) {
+          img.alttext = alttext
+        }
+
+        console.log(Model.images)
+      }
+    })
   }
 }
 
@@ -133,6 +147,7 @@ const ImageUpload = {
   view: (vnode) => {
     return [
       m("div",{class: Model.images.length > 0 ? "image-thumbs" : "hide"}, Model.images.map(i => m(ImageThumb, {image: i}))),
+      m("span",{class: Model.images.length > 0 ? "row" : "hide"}, "Click the thumbnail to add alt text."),
       m("div", {
       class: "row",
     }, [
