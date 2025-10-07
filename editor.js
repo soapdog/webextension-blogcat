@@ -115,67 +115,74 @@ const Accounts = {
 };
 
 const ImageThumb = {
-  oninit: vnode => {
-    const reader = new FileReader()
-    reader.addEventListener("load", data => {
-      vnode.state.src = reader.result
-      m.redraw()
-    })
-    reader.readAsDataURL(vnode.attrs.image)
-
+  oninit: (vnode) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", (data) => {
+      vnode.state.src = reader.result;
+      m.redraw();
+    });
+    reader.readAsDataURL(vnode.attrs.image);
   },
-  view: vnode => {
-    const img = vnode.attrs.image
+  view: (vnode) => {
+    const img = vnode.attrs.image;
     return m("img.thumb", {
       src: vnode.state.src,
-      onclick: evt => {
-        evt.stopPropagation()
-        evt.preventDefault()
-        const alttext = prompt("alt text", img.alttext)
+      onclick: (evt) => {
+        evt.stopPropagation();
+        evt.preventDefault();
+        const alttext = prompt("alt text", img.alttext);
 
         if (alttext) {
-          img.alttext = alttext
+          img.alttext = alttext;
         }
 
-        console.log(Model.images)
-      }
-    })
-  }
-}
+        console.log(Model.images);
+      },
+    });
+  },
+};
 
 const ImageUpload = {
   view: (vnode) => {
     return [
-      m("div",{class: Model.images.length > 0 ? "image-thumbs" : "hide"}, Model.images.map(i => m(ImageThumb, {image: i}))),
-      m("span",{class: Model.images.length > 0 ? "row" : "hide"}, "Click the thumbnail to add alt text."),
+      m(
+        "div",
+        { class: Model.images.length > 0 ? "image-thumbs" : "hide" },
+        Model.images.map((i) => m(ImageThumb, { image: i })),
+      ),
+      m(
+        "span",
+        { class: Model.images.length > 0 ? "row" : "hide" },
+        "Click the thumbnail to add alt text.",
+      ),
       m("div", {
-      class: "row",
-    }, [
-      m("input", {
-        id: "file",
-        onchange: (evt) => {
-          evt.preventDefault();
-          evt.stopPropagation();
-          for (const f of evt.target.files) {
-            Model.images.push(f);
-          }
-          console.log(Model);
-        },
-        type: "file",
-        class: "hide",
-      }),
-      m("button", {
-        onclick: ((evt) => {
-          evt.stopPropagation();
-          evt.preventDefault();
-          const f = document.getElementById("file");
-          f.click();
+        class: "row",
+      }, [
+        m("input", {
+          id: "file",
+          onchange: (evt) => {
+            evt.preventDefault();
+            evt.stopPropagation();
+            for (const f of evt.target.files) {
+              Model.images.push(f);
+            }
+            console.log(Model);
+          },
+          type: "file",
+          class: "hide",
         }),
-      }, "Upload Image"),
-      m("span", `${Model.images.length} images selected`),
-    ])
+        m("button", {
+          onclick: ((evt) => {
+            evt.stopPropagation();
+            evt.preventDefault();
+            const f = document.getElementById("file");
+            f.click();
+          }),
+        }, "Add Image"),
+        m("span", `${Model.images.length} images selected`),
+      ]),
     ];
-  }
+  },
 };
 
 const Editor = {
@@ -276,6 +283,7 @@ function post(ev) {
     } catch (e) {
       console.error(`Error posting for ${account.name}:`, e.message);
       Model.errors[account.name] = `error: ${e.message}`;
+      ev.target.disabled = false;
       m.redraw();
       return false;
     }

@@ -43,6 +43,9 @@ export const bluesky = {
   maxPostLength: () => {
     return 300;
   },
+  maxImageUploadSize: () => {
+    return 1000000;
+  },
   createSession: async (account) => {
     const createSessionURL =
       "https://bsky.social/xrpc/com.atproto.server.createSession";
@@ -128,6 +131,9 @@ export const bluesky = {
       throw "Can't create Bluesky session";
     }
     const access_token = session.accessJwt;
+
+    // post status
+
     const repo = session.did;
     const url = "https://bsky.social/xrpc/com.atproto.repo.createRecord";
 
@@ -139,6 +145,8 @@ export const bluesky = {
       statusObj.date = new Date();
     }
 
+    const images = [];
+
     const post = {
       $type: "app.bsky.feed.post",
       text: statusObj.text,
@@ -148,6 +156,34 @@ export const bluesky = {
         ...bluesky.getFacetsForTags(statusObj.text),
       ],
     };
+
+    if (statusObj.images.length > 0) {
+      for (const img of statusObj.images) {
+        const res = await bluesky.uploadImage(account, img);
+
+        images.push(res);
+      }
+
+      console.log(images);
+
+      post["embed"] = {
+        "$type": "app.bsky.embed.images",
+        "images": images.map((i) => {
+          const d = {};
+
+          if (i["alt"]) {
+            d["alt"] = i["alt"];
+            delete i["alt"];
+          }
+
+          d["image"] = i;
+
+          return d;
+        }),
+      };
+
+      console.log("post", post);
+    }
 
     // console.log(post.text);
     // post.facets.forEach((f) => {
@@ -182,6 +218,47 @@ export const bluesky = {
       data.link = atUriToBskyAppUrl(data.uri);
       return data;
     } else {
+      throw new Error("strange bluesky response");
+    }
+  },
+
+  uploadImage: async (account, image) => {
+    if (image.size > bluesky.maxImageUploadSize()) {
+      throw `Image too large: ${image.name}`;
+    }
+
+    const session = await bluesky.createSession(account);
+    if (!session && !session.accessJwt) {
+      throw "Can't create Bluesky session";
+    }
+    const access_token = session.accessJwt;
+    const url = "https://bsky.social/xrpc/com.atproto.repo.uploadBlob";
+
+    const headers = new Headers();
+    headers.append("Authorization", `Bearer ${access_token}`);
+    headers.append("Content-Type", image.type);
+
+    const response = await fetch(url, {
+      headers,
+      method: "POST",
+      redirect: "follow",
+      body: image,
+    });
+
+    const data = await response.json();
+
+    // console.log(data)
+
+    if (response.ok && data["blob"]["$type"] === "blob") {
+      if (image.alttext) {
+        data["blob"]["alt"] = image.alttext;
+      }
+      return data["blob"];
+    } else if (response.status == 403) {
+      throw new Error(data.error ?? response.statusText);
+    } else {
+      console.log(response);
+      console.log(data);
       throw new Error("strange bluesky response");
     }
   },
