@@ -122,30 +122,23 @@ export const mastodon = {
       formData.append("description", image.alttext);
     }
 
-    try {
-      const response = await fetch(url, {
-        headers,
-        method: "POST",
-        redirect: "follow",
-        body: formData,
-      });
+    const response = await fetch(url, {
+      headers,
+      method: "POST",
+      redirect: "follow",
+      body: formData,
+    });
 
-      if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
-      }
+    const data = await response.json();
 
-      const data = await response.json();
+    // console.log(data)
 
-      // console.log(data)
-
-      if (data.id) {
-        return data;
-      } else {
-        throw new Error("strange mastodon response");
-      }
-    } catch (e) {
-      console.error(e.message);
-      console.log(e);
+    if (response.ok && data.id) {
+      return data;
+    } else if (response.status == 403) {
+      throw new Error(data.error ?? response.statusText);
+    } else {
+      throw new Error("strange mastodon response");
     }
   },
 };
