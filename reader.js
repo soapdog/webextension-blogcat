@@ -29,6 +29,10 @@ const FeedItem = {
     let label = item.title || item?.contentSnippet || "Unknown";
     let link = item.link ?? "";
 
+    if (typeof link !== "string") {
+      link = "";
+    }
+
     /*
     == Podcast ===========================================================================================================
     */
@@ -86,6 +90,16 @@ const FeedItem = {
           link = item.link;
           break;
       }
+    }
+
+    /*
+    == Double check if link is an absolute url ===========================================================================================================
+    */
+
+    if (item.link && !item.link.includes("://")) {
+      console.log("feed", feed.url);
+      console.log("item", item.link);
+      item.link = feed.url & item.link;
     }
 
     return m("li", [

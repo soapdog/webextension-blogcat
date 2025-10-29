@@ -125,6 +125,68 @@ export const bluesky = {
     });
     return spans;
   },
+  /*
+== Post Thread ===========================================================================================================
+  */
+
+  publishThread: async (account, statusObj, splitChar = false) => {
+    let thread = [];
+    let root = {};
+    let parent = {};
+    if (!splitChar) {
+      // doesn't actually happen at the moment.
+      // in the future will auto split on paragraphs.
+    } else {
+      const images = statusObj.images;
+      delete statusObj.images;
+      thread = statusObj.text.split(`\n${splitChar}\n`).map((s) => {
+        let newObj = {};
+        Object.assign(newObj, statusObj);
+        newObj.text = s.trim();
+        return newObj;
+      });
+      thread[0].images = images;
+    }
+
+    let responses = [];
+
+    for (const t in thread) {
+      if (responses.length == 1) {
+        root = {
+          uri: responses[0].uri,
+          cid: responses[0].cid,
+        };
+        parent = {
+          uri: responses[0].uri,
+          cid: responses[0].cid,
+        };
+        thread[t].reply = {
+          root,
+          parent,
+        };
+      }
+      if (responses.length > 1) {
+        parent = {
+          uri: responses.toReversed()[0].uri,
+          cid: responses.toReversed()[0].cid,
+        };
+        thread[t].reply = {
+          root,
+          parent,
+        };
+      }
+      const r = await bluesky.publishStatus(account, thread[t]);
+      responses.push(r);
+    }
+    console.log("threads", responses);
+    const resultObj = responses[0];
+    resultObj["threads"] = responses;
+    return resultObj;
+  },
+  /*
+  == Post Status ===========================================================================================================
+  */
+
   publishStatus: async (account, statusObj) => {
     const session = await bluesky.createSession(account);
     if (!session && !session.accessJwt) {
@@ -157,14 +219,16 @@ export const bluesky = {
       ],
     };
 
-    if (statusObj.images.length > 0) {
+    if (statusObj?.reply) {
+      post["reply"] = statusObj.reply;
+    }
+
+    if (statusObj?.images && statusObj.images.length > 0) {
       for (const img of statusObj.images) {
         const res = await bluesky.uploadImage(account, img);
 
         images.push(res);
       }
-
-      console.log(images);
 
       post["embed"] = {
         "$type": "app.bsky.embed.images",
@@ -174,6 +238,8 @@ export const bluesky = {
           if (i["alt"]) {
             d["alt"] = i["alt"];
             delete i["alt"];
+          } else {
+            d["alt"] = "";
           }
 
           d["image"] = i;
@@ -182,7 +248,7 @@ export const bluesky = {
         }),
       };
 
-      console.log("post", post);
+      console.log("bluesky post", post);
     }
 
     // console.log(post.text);
@@ -216,6 +282,7 @@ export const bluesky = {
 
     if (data.uri) {
       data.link = atUriToBskyAppUrl(data.uri);
+      console.log("bsky response", data);
       return data;
     } else {
       throw new Error("strange bluesky response");

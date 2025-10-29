@@ -1,6 +1,6 @@
 import {
-  FeedLoader,
   deleteFeed,
+  FeedLoader,
   getAllSettings,
   saveSettings,
 } from "/common/dataStorage.js";
@@ -62,6 +62,14 @@ const SettingsManager = {
         sidebar: "Editor opens on a sidebar",
         newtab: "Editor opens on a new tab",
       }),
+      makeRadio(
+        "splitPost",
+        "Automatically make threads if post is too long?",
+        {
+          sidebar: "Split post?",
+          newtab: "Don't split post",
+        },
+      ),
       makeRadio("openYoutubeIn", "Open YouTube Videos in?", {
         youtube: "YouTube",
         embed: "BlogCat",
@@ -69,17 +77,17 @@ const SettingsManager = {
       }),
       settings["openYoutubeIn"] == "custom"
         ? [
-            makeInput("youtubeCustomURL", "Custom URL for YouTube?"),
-            m("p", [
-              "Open the documentation about ",
-              m(
-                "a",
-                { href: "/docs/index.html#/youtube", target: "_blank" },
-                "viewing YouTube videos inside BlogCat",
-              ),
-              ".",
-            ]),
-          ]
+          makeInput("youtubeCustomURL", "Custom URL for YouTube?"),
+          m("p", [
+            "Open the documentation about ",
+            m(
+              "a",
+              { href: "/docs/index.html#/youtube", target: "_blank" },
+              "viewing YouTube videos inside BlogCat",
+            ),
+            ".",
+          ]),
+        ]
         : "",
     ]);
   },

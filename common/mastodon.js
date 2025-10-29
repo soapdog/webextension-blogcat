@@ -45,6 +45,47 @@ export const mastodon = {
     }
   },
 
+  /*
+== Post Thread ===========================================================================================================
+  */
+
+  publishThread: async (account, statusObj, splitChar = false) => {
+    let thread = [];
+    if (!splitChar) {
+      // doesn't actually happen at the moment.
+      // in the future will auto split on paragraphs.
+    } else {
+      const images = statusObj.images;
+      delete statusObj.images;
+      thread = statusObj.text.split(`\n${splitChar}\n`).map((s) => {
+        let newObj = {};
+        Object.assign(newObj, statusObj);
+        newObj.text = s.trim();
+        return newObj;
+      });
+      thread[0].images = images;
+    }
+
+    let responses = [];
+
+    for (const t in thread) {
+      if (responses.length > 0) {
+        thread[t].in_reply_to_id = responses.toReversed()[0].id;
+      }
+      const r = await mastodon.publishStatus(account, thread[t]);
+      console.log("thread item", r);
+      responses.push(r);
+    }
+    console.log("thread", responses);
+    const resultObj = responses[0];
+    resultObj["threads"] = responses;
+    return resultObj;
+  },
+
+  /*
+  == Post Status ===========================================================================================================
+  */
+
   publishStatus: async (account, statusObj) => {
     const access_token = account.access_token;
 
@@ -54,14 +95,12 @@ export const mastodon = {
 
     const images = [];
 
-    if (statusObj.images.length > 0) {
+    if (statusObj?.images && statusObj.images.length > 0) {
       for (const img of statusObj.images) {
         const res = await mastodon.uploadImage(account, img);
 
         images.push(res);
       }
-
-      console.log(images);
     }
 
     /*
@@ -80,6 +119,10 @@ export const mastodon = {
 
     if (images.length > 0) {
       obj["media_ids"] = images.map((i) => i.id);
+    }
+
+    if (statusObj?.in_reply_to_id) {
+      obj["in_reply_to_id"] = statusObj.in_reply_to_id;
     }
 
     try {

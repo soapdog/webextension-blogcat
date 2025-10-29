@@ -30,6 +30,7 @@ const defaultSettings = {
   openEditorIn: "sidebar",
   openYoutubeIn: "youtube",
   youtubeCustomURL: "",
+  splitPost: false,
 };
 
 const reservedKeys = ["settings", "account@"];
@@ -206,6 +207,7 @@ export async function loadFeed(feed, ticker) {
       feed.lastFetch = today;
       feed.errorFetching = false;
       feed.errorCount = 0;
+      console.log("fetch", data);
     } else if (feed.frequency == "daily" || m_today !== m_lastFetch) {
       if (d_today !== d_lastFetch) {
         data = await loadFeedFromURL(feed.url);
@@ -270,7 +272,17 @@ export async function loadFeed(feed, ticker) {
       feed.lastBuildDate = today;
     }
 
-    if (!feed.data.link.includes("://")) {
+    if (!feed.data.link) {
+      feed.data.link = feed.url;
+
+      feed.data.link = feed.data.link.substring(
+        0,
+        feed.data.link.lastIndexOf("/"),
+      );
+
+      feed.data.link = `${feed.data.link}/`;
+    }
+    if (feed.data.link && !feed.data.link.includes("://")) {
       feed.data.link = `https://${feed.data.link}`;
     }
 
@@ -296,6 +308,8 @@ export async function loadFeed(feed, ticker) {
 
     return feed;
   } catch (e) {
+    console.log("offending feed");
+    console.dir(feed);
     console.error(`thrown from feed ${feed.url}`, e);
     feed.errorFetching = true;
     if (!Number.isInteger(feed.errorCount)) {

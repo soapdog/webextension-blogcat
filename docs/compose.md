@@ -17,3 +17,9 @@ Below the text editing area there is a character counter. BlogCat does not enfor
 There are two buttons, one for posting and one for clearing up the editor for a new post.
 
 Once you post, the editor will show the links for each post under the selected account.
+
+You can add images to your posts by clicking the `Add Image` button. Bluesky supports only up to four images. Mastodon supports more but I suspect that depends on the server. Once you add an image, it shows as a thumbnail below the editor. Click a thumbnail to add alt text for accessibility purposes to the image.
+
+![Editor as a sidebar](_media/editor-with-images.png)
+
+> **important:** Be aware that BlogCat does not clear EXIF fields. 

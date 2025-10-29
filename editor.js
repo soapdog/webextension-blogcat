@@ -1,6 +1,7 @@
 import {
   deletePostingAccount,
   getAllPostingAccounts,
+  getAllSettings,
   savePostingAccount,
 } from "./common/dataStorage.js";
 import { mastodon } from "./common/mastodon.js";
@@ -31,20 +32,68 @@ const Compose = {
     let lengthStatus = Model.body.length;
 
     accounts.forEach((account) => {
+      let BlueskyPostLengthReached = false;
+      let MastodonPostLengthReached = false;
+      let mastodon_x;
+      let bluesky_x;
       if (account.selected && account.type == "Micropub") {
         micropubSelected = true;
       }
       if (account.selected && account.type !== "Micropub") {
         switch (account.type) {
           case "Mastodon":
-            if (Model.body.length >= mastodon.maxPostLength()) {
-              lengthStatus = `${lengthStatus}  •  Over Mastodon Limit!`;
+            if (settings["splitPost"]) {
+              mastodon_x = 1;
+              Model.body.split(`\n-\n`).forEach((v) => {
+                if (v.length >= mastodon.maxPostLength()) {
+                  MastodonPostLengthReached = mastodon_x;
+                }
+                mastodon_x += 1;
+              });
             }
 
-          case "Bluesky":
-            if (Model.body.length >= bluesky.maxPostLength()) {
-              lengthStatus = `${lengthStatus}  •  Over Bluesky Limit!`;
+            if (
+              !settings["splitPost"] &&
+              Model.body.length >= mastodon.maxPostLength()
+            ) {
+              MastodonPostLengthReached = true;
             }
+            break;
+          case "Bluesky":
+            if (settings["splitPost"]) {
+              bluesky_x = 1;
+              Model.body.split(`\n-\n`).forEach((v) => {
+                if (v.length >= bluesky.maxPostLength()) {
+                  BlueskyPostLengthReached = bluesky_x;
+                }
+                bluesky_x += 1;
+              });
+            }
+
+            if (
+              !settings["splitPost"] &&
+              Model.body.length >= bluesky.maxPostLength()
+            ) {
+              BlueskyPostLengthReached = true;
+            }
+            break;
+        }
+      }
+      if (BlueskyPostLengthReached) {
+        lengthStatus = `${lengthStatus}  •  Over Bluesky Limit!`;
+
+        if (settings["splitPost"]) {
+          lengthStatus =
+            `Over Bluesky limit on thread item: ${BlueskyPostLengthReached}.`;
+        }
+      }
+
+      if (MastodonPostLengthReached) {
+        lengthStatus = `${lengthStatus}  •  Over Mastodon Limit!`;
+
+        if (settings["splitPost"]) {
+          lengthStatus =
+            `Over Mastodon limit on thread item: ${MastodonPostLengthReached}.`;
         }
       }
     });
@@ -68,6 +117,9 @@ const Compose = {
           Model.onChange(Model.body);
         },
       }),
+      micropubSelected
+        ? m("strong", "Micropub doesn't support images at the moment.")
+        : "",
       m("div", [m("span", { style: { float: "right" } }, lengthStatus)]),
     ]);
   },
@@ -135,8 +187,6 @@ const ImageThumb = {
         if (alttext) {
           img.alttext = alttext;
         }
-
-        console.log(Model.images);
       },
     });
   },
@@ -166,7 +216,6 @@ const ImageUpload = {
             for (const f of evt.target.files) {
               Model.images.push(f);
             }
-            console.log(Model);
           },
           type: "file",
           class: "hide",
@@ -191,7 +240,10 @@ const Editor = {
       m(Compose),
       m(ImageUpload),
       m(Accounts),
-      m("button", { onclick: post }, "Post"),
+      m("button", {
+        id: "post-button",
+        onclick: post,
+      }, "Post"),
       m(
         "button.secondary",
         {
@@ -234,12 +286,20 @@ function post(ev) {
     console.log(`posting to ${account.name}`);
     try {
       switch (account.type) {
-        case "Mastodon":
-          let mastodonRes = await mastodon.publishStatus(account, {
-            text: Model.body,
-            images: Model.images,
-          });
-          console.log(mastodonRes);
+        case "Mastodon": {
+          let mastodonRes;
+
+          if (settings["splitPost"] && Model.body.includes(`\n-\n`)) {
+            mastodonRes = await mastodon.publishThread(account, {
+              text: Model.body,
+              images: Model.images,
+            }, `\n-\n`);
+          } else {
+            mastodonRes = await mastodon.publishStatus(account, {
+              text: Model.body,
+              images: Model.images,
+            });
+          }
 
           if (mastodonRes.url) {
             Model.links[account.name] = mastodonRes.url;
@@ -248,11 +308,21 @@ function post(ev) {
             delete Model.links[account.name];
           }
           break;
-        case "Bluesky":
-          let blueskyRes = await bluesky.publishStatus(account, {
-            text: Model.body,
-            images: Model.images,
-          });
+        }
+        case "Bluesky": {
+          let blueskyRes;
+
+          if (settings["splitPost"] && Model.body.includes(`\n-\n`)) {
+            blueskyRes = await bluesky.publishThread(account, {
+              text: Model.body,
+              images: Model.images,
+            }, `\n-\n`);
+          } else {
+            blueskyRes = await bluesky.publishStatus(account, {
+              text: Model.body,
+              images: Model.images,
+            });
+          }
 
           if (blueskyRes.link) {
             Model.links[account.name] = blueskyRes.link;
@@ -262,7 +332,8 @@ function post(ev) {
           }
           console.log("model", Model);
           break;
-        case "Micropub":
+        }
+        case "Micropub": {
           let micropubRes = await micropub.publish(account, {
             text: Model.body,
             title: Model.title,
@@ -276,13 +347,14 @@ function post(ev) {
             delete Model.links[account.name];
           }
           break;
+        }
       }
-      console.dir(Model);
+      ev.target.disabled = false;
       m.redraw();
       return true;
     } catch (e) {
-      console.error(`Error posting for ${account.name}:`, e.message);
-      Model.errors[account.name] = `error: ${e.message}`;
+      console.error(`Error posting for ${account.name}:`, e.message || e);
+      Model.errors[account.name] = `error: ${e.message || e}`;
       ev.target.disabled = false;
       m.redraw();
       return false;
@@ -301,6 +373,8 @@ function post(ev) {
 */
 
 let accounts = [];
+
+const settings = await getAllSettings();
 
 async function refreshAccounts() {
   let obj = await getAllPostingAccounts();

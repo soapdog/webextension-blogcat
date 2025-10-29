@@ -141,6 +141,9 @@ feedURLInput.addEventListener("change", async (evt) => {
     console.log("checking feed...");
     try {
       let tentative_feed = await loadFeedFromURL(feed_url);
+      console.log(tentative_feed);
+      feedNameInput.value = tentative_feed.title;
+
       addFeedButton.disabled = false;
     } catch (e) {
       console.log("feed doesn't load");
