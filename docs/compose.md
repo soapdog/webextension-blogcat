@@ -20,6 +20,12 @@ Once you post, the editor will show the links for each post under the selected a
 
 You can add images to your posts by clicking the `Add Image` button. Bluesky supports only up to four images. Mastodon supports more but I suspect that depends on the server. Once you add an image, it shows as a thumbnail below the editor. Click a thumbnail to add alt text for accessibility purposes to the image.
 
-![Editor as a sidebar](_media/editor-with-images.png)
+![Editor as a sidebar](_media/editor-with-images.jpeg)
 
 > **important:** Be aware that BlogCat does not clear EXIF fields. 
+
+If you select `split post` in the [add-on preferences page](options), then you can use a single dash character `-` in a new line to split posts and create a thread.
+
+![Editor as a sidebar](_media/sidebar-with-thread.jpeg)
+
+
