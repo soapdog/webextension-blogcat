@@ -16,6 +16,13 @@ Please describe what happened below. If possible, include screenshots.
 ----
 `;
 
+if (error.source.includes("podcast.js")) {
+    body += `
+The error happened while working with this feed: ${url}
+---
+    `;
+}
+
 let filename = error.source.split("/").slice(3).join("/");
 
 const ErrorHandler = {
@@ -29,6 +36,7 @@ const ErrorHandler = {
                 m(
                     "li",
                     m("a", {
+                        target: "_blank",
                         href:
                             `https://github.com/soapdog/blogcat/issues/new?title=${
                                 encodeURIComponent(title)
