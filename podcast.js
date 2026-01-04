@@ -139,7 +139,7 @@ const EpisodePills = {
       "div.episode-pills",
       episodes.map((e) => {
         let episode = seasons[selectedSeason][e];
-        let poster = episode?.itunes?.image || meta.image.url;
+        let poster = episode?.itunes?.image || meta?.image?.url;
         return m(
           "figure.episode",
           {
@@ -171,14 +171,16 @@ const PodcastMeta = {
           // m("li", m(EpisodeSelector)),
         ]),
       ),
-      m("section.podcast-meta", [
-        m(
-          "a",
-          { href: meta.image.link, target: "_blank" },
-          m("img.podcast-banner", { src: meta.image.url }),
-        ),
-        m("div.description", m.trust(meta.description)),
-      ]),
+      meta?.image
+        ? m("section.podcast-meta", [
+          m(
+            "a",
+            { href: meta.image.link, target: "_blank" },
+            m("img.podcast-banner", { src: meta.image.url }),
+          ),
+          m("div.description", m.trust(meta.description)),
+        ])
+        : "",
       m(SeasonPills),
       m(EpisodePills),
     ];
@@ -239,6 +241,10 @@ const ItemMeta = {
           { style: { display: "flex", "flex-direction": "column" } },
           m("video", {
             src: item.enclosure.url,
+            class:
+              item.enclosure?.type && item.enclosure.type.startsWith("video/")
+                ? "video"
+                : "audio",
             id: "podcast-player",
             controls: true,
             poster,
@@ -349,5 +355,4 @@ const appRoot = document.getElementById("app");
 
 m.route(appRoot, "/podcast", {
   "/podcast": PodcastViewer,
-  "/error": ErrorHandler,
 });
