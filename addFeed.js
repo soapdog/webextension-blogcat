@@ -1,6 +1,7 @@
 import {
   getAllTags,
   getFeedWithURL,
+  loadFeed,
   loadFeedFromURL,
   saveFeed,
 } from "./common/dataStorage.js";
@@ -124,7 +125,10 @@ addFeedButton.addEventListener("click", (evt) => {
   }
 
   const onOk = (e) => {
-    window.close();
+    const feed = getFeedWithURL(feed_url);
+    loadFeed(feed, () => {}).then(() => {
+      window.close();
+    });
   };
 
   const onError = (e) => {
