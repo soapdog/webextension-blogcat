@@ -33,6 +33,12 @@ const FeedItem = {
       link = "";
     }
 
+    if (!link.startsWith("http://") && !link.startsWith("https://")) {
+      if (item?.id?.startsWith("http://") || item?.id?.startsWith("https://")) {
+        link = item.id;
+      }
+    }
+
     /*
     == Podcast ===========================================================================================================
     */

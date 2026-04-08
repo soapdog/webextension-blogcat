@@ -22,6 +22,18 @@ Date.prototype.getWeek = function () {
   );
 };
 
+function evaluateXPath(node, expr) {
+  const xpe = new XPathEvaluator();
+  const nsResolver = node.ownerDocument === null
+    ? node.documentElement
+    : node.ownerDocument.documentElement;
+  const result = xpe.evaluate(expr, node, nsResolver, 0, null);
+  const found = [];
+  let res;
+  while ((res = result.iterateNext())) found.push(res);
+  return found;
+}
+
 const defaultSettings = {
   postsPerBlog: 3,
   openPostsIn: "newtab",
@@ -156,12 +168,76 @@ export async function saveSettings(settings) {
 }
 
 export async function loadFeedFromURL(url) {
-  let parser = new RSSParser({
-    timeout: 6000,
-  });
-  let feed = await parser.parseURL(url);
+  try {
+    let parser = new RSSParser({
+      timeout: 6000,
+    });
+    console.log(parser);
+    let feed = await parser.parseURL(url);
 
-  return feed;
+    return feed;
+  } catch (e) {
+    // console.error("error parsing feed", e);
+    console.log("attempting fix...");
+    const response = await fetch(url);
+    const headers = response.headers;
+
+    if (!response.ok) {
+      throw "error with feed.";
+    }
+
+    const mimeType = headers.get("Content-Type");
+
+    if (
+      mimeType.startsWith("application/xml") ||
+      mimeType.startsWith("application/atom+xml") ||
+      mimeType.startsWith("text/xml")
+    ) {
+      // looks like atom.
+
+      const text = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(text, "text/xml");
+      const xml = doc.documentElement;
+
+      const rootElementTagName = xml.tagName;
+
+      if (rootElementTagName == "feed") {
+        console.log("looks like an atom feed.");
+
+        let feed = {};
+
+        feed["feedUrl"] = url;
+        feed["title"] = xml.querySelector("title")?.innerHTML ??
+          "Untitled Feed";
+        feed["description"] = xml.querySelector("description")?.innerHTML ?? "";
+        feed["link"] =
+          xml.querySelector("link[rel=alternate]")?.getAttribute("href") ?? url;
+
+        feed["lastBuildDate"] = xml.querySelector("updated")?.innerHTML ??
+          new Date();
+
+        feed["items"] = [];
+
+        const entries = xml.querySelectorAll("entry");
+
+        for (const entry of entries) {
+          const item = {};
+
+          item["title"] = entry.querySelector("title")?.innerHTML;
+          item["link"] = entry.querySelector("link")
+            ?.getAttribute("href");
+          item["pubDate"] = entry.querySelector("updated")?.innerHTML ??
+            entry.querySelector("published")?.innerHTML;
+
+          feed["items"].push(item);
+        }
+
+        console.log(feed);
+        return feed;
+      }
+    }
+  }
 }
 
 export async function getAllTags() {

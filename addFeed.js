@@ -146,7 +146,7 @@ feedURLInput.addEventListener("change", async (evt) => {
     try {
       let tentative_feed = await loadFeedFromURL(feed_url);
       console.log(tentative_feed);
-      feedNameInput.value = tentative_feed.title;
+      feedNameInput.value = tentative_feed?.title || "Untitled";
 
       addFeedButton.disabled = false;
     } catch (e) {

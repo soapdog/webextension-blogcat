@@ -17,7 +17,7 @@ Please describe what happened below. If possible, include screenshots.
 `;
 
 if (error.source.includes("podcast.js")) {
-    body += `
+  body += `
 The error happened while working with this feed: ${url}
 ---
     `;
@@ -26,36 +26,36 @@ The error happened while working with this feed: ${url}
 let filename = error.source.split("/").slice(3).join("/");
 
 const ErrorHandler = {
-    view: (vnode) => {
-        return [
-            m("h1", "An Error Has Errored"),
-            m("blockquote", m("code", error.message)),
-            m("p", m.trust(`The error happened in <code>${filename}</code>`)),
-            m("p", m.trust(`Possible actions:`)),
-            m("ul", [
-                m(
-                    "li",
-                    m("a", {
-                        target: "_blank",
-                        href:
-                            `https://github.com/soapdog/blogcat/issues/new?title=${
-                                encodeURIComponent(title)
-                            }&body=${encodeURIComponent(body)}`,
-                    }, "Report bug so I can fix it"),
-                ),
-                m(
-                    "li",
-                    m("a", {
-                        href: `/addFeed.html?url=${encodeURIComponent(url)}`,
-                    }, "Edit the feed configuration"),
-                ),
-            ]),
-        ];
-    },
+  view: (vnode) => {
+    return [
+      m("h1", "An Error Has Errored"),
+      m("blockquote", m("code", error.message)),
+      m("p", m.trust(`The error happened in <code>${filename}</code>`)),
+      m("p", m.trust(`Possible actions:`)),
+      m("ul", [
+        m(
+          "li",
+          m("a", {
+            target: "_blank",
+            href:
+              `https://github.com/soapdog/webextension-blogcat/issues/new?title=${
+                encodeURIComponent(title)
+              }&body=${encodeURIComponent(body)}`,
+          }, "Report bug so I can fix it"),
+        ),
+        m(
+          "li",
+          m("a", {
+            href: `/addFeed.html?url=${encodeURIComponent(url)}`,
+          }, "Edit the feed configuration"),
+        ),
+      ]),
+    ];
+  },
 };
 
 const appRoot = document.getElementById("app");
 
 m.route(appRoot, "/error", {
-    "/error": ErrorHandler,
+  "/error": ErrorHandler,
 });
