@@ -15,8 +15,7 @@ Date.prototype.getWeek = function () {
     1 +
     Math.round(
       ((date.getTime() - week1.getTime()) / 86400000 -
-        3 +
-        ((week1.getDay() + 6) % 7)) /
+        3 + ((week1.getDay() + 6) % 7)) /
         7,
     )
   );
@@ -172,7 +171,6 @@ export async function loadFeedFromURL(url) {
     let parser = new RSSParser({
       timeout: 6000,
     });
-    console.log(parser);
     let feed = await parser.parseURL(url);
 
     return feed;
@@ -413,7 +411,7 @@ export const FeedLoader = {
   },
   processQueue: (callback) => {
     const ticker = () => {
-      // console.log(`${FeedLoader.progress}/${FeedLoader.total}`)
+      console.log(`${FeedLoader.progress}/${FeedLoader.total}`);
       FeedLoader.progress += 1;
       m.redraw();
     };

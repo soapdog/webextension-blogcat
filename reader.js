@@ -164,6 +164,18 @@ const FeedDisplay = {
               m("b", feed.data.title),
             ),
           ),
+          feed?.resumeState
+            ? m(
+              "li",
+              m("a", {
+                href: `/podcast.html?feed=${
+                  encodeURIComponent(feed.url)
+                }&item=${
+                  encodeURIComponent(feed.resumeState.item)
+                }&currentTime=${feed.resumeState.currentTime}`,
+              }, m("small", "resume playing")),
+            )
+            : null,
           m(
             "li",
             m(

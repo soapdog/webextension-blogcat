@@ -1,4 +1,8 @@
-import { getAllSettings, getFeedWithURL } from "./common/dataStorage.js";
+import {
+  getAllSettings,
+  getFeedWithURL,
+  saveFeed,
+} from "./common/dataStorage.js";
 
 const Menu = {
   view: (vnode) => {
@@ -192,9 +196,29 @@ const ItemMeta = {
     vnode.state.playNext = false;
   },
   oncreate: (vnode) => {
-    console.log("attaching event");
     let el = document.getElementById("podcast-player");
-    console.log(el);
+    // resume
+    if (currentTime) {
+      console.log("resume playing from", currentTime);
+      el.play();
+      el.addEventListener("loadeddata", (_ev) => {
+        console.log("firing");
+        el.currentTime = currentTime;
+        currentTime = false;
+      });
+    }
+    // events
+    console.log("attaching event");
+    el.addEventListener("timeupdate", (ev) => {
+      if (!feed?.resumeState) {
+        feed.resumeState = {};
+      }
+      feed.resumeState = {
+        item: item.enclosure.url,
+        currentTime: ev.target.currentTime,
+      };
+      saveFeed(feed);
+    });
     el.addEventListener("ended", (p) => {
       console.log("autoplay", vnode.state.playNext);
 
@@ -281,6 +305,7 @@ const PodcastViewer = {
 let feed;
 let item;
 let error = {};
+let currentTime = false;
 
 const handleUncaughtException = (message, source, lineno, colno, error) => {
   console.log("error happened!", message);
@@ -317,7 +342,12 @@ if (search.has("item")) {
   );
 }
 
-console.log(item);
+if (search.has("currentTime")) {
+  currentTime = search.get("currentTime");
+  console.log("found time", currentTime);
+}
+
+// console.log(item);
 
 let seasons = {};
 
@@ -340,7 +370,7 @@ feed.data.items.forEach((i) => {
   }
 });
 
-console.log(seasons);
+// console.log(seasons);
 
 let selectedSeason = item?.itunes?.season ?? "1";
 let selectedEpisode = item?.itunes?.episode;
