@@ -45,7 +45,7 @@ const Compose = {
             if (settings["splitPost"]) {
               mastodon_x = 1;
               Model.body.split(`\n-\n`).forEach((v) => {
-                if (v.length >= mastodon.maxPostLength()) {
+                if (v.length >= account.maxPostLength()) {
                   MastodonPostLengthReached = mastodon_x;
                 }
                 mastodon_x += 1;
@@ -54,7 +54,7 @@ const Compose = {
 
             if (
               !settings["splitPost"] &&
-              Model.body.length >= mastodon.maxPostLength()
+              Model.body.length >= account.maxPostLength()
             ) {
               MastodonPostLengthReached = true;
             }
@@ -381,7 +381,20 @@ async function refreshAccounts() {
 
   let keys = Object.keys(obj);
 
-  accounts = keys.map((k) => obj[k]);
+  accounts = keys.map((k) => {
+    const a = obj[k];
+
+    if (a.type === "Mastodon") {
+      mastodon.getMaxLengthForPost(a)
+      .then(max => {
+        a.maxPostLength = () => {
+          return max
+        }
+      });
+    }
+
+    return a;
+  });
 
   m.redraw();
 }

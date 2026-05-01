@@ -1,7 +1,7 @@
 import {
-  savePostingAccount,
-  getAllPostingAccounts,
   deletePostingAccount,
+  getAllPostingAccounts,
+  savePostingAccount,
 } from "./common/dataStorage.js";
 import { mastodon } from "./common/mastodon.js";
 import { bluesky } from "./common/bluesky.js";
@@ -79,12 +79,17 @@ async function saveMastodonAccount(ev, account) {
     BUG: This is the wrong method to call. It doesn't prove that the access token has read access to the profile.
     It proves if the profile exists, which is a plus. It needs a subsequent call to read the profile.
     */
+  const headers = new Headers();
+  headers.append("Authorization", `Bearer ${account.access_token}`);
+
   let profileURL = new URL(
     `/api/v1/accounts/lookup?acct=${account.handle}`,
     serverURL,
   ); // public call, if I go through normal mastodon.methodCall() it fails
 
-  let response = await fetch(profileURL);
+  let response = await fetch(profileURL, {
+    headers,
+  });
   let profileInfo;
 
   if (response.ok) {
@@ -255,11 +260,9 @@ const AccountList = {
       m("h3", "Accounts for posting"),
       vnode.state.accounts.length > 0
         ? m(
-            "ul",
-            vnode.state.accounts.map((account) =>
-              m(AccountDisplay, { account }),
-            ),
-          )
+          "ul",
+          vnode.state.accounts.map((account) => m(AccountDisplay, { account })),
+        )
         : m("strong", "Add posting accounts using the buttons below."),
       m(
         "nav",

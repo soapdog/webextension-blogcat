@@ -1,7 +1,4 @@
 export const mastodon = {
-  maxPostLength: () => {
-    return 500;
-  },
   methodCall: async (account, method, obj) => {
     const access_token = account.access_token;
     const url = new URL(method, account.server);
@@ -182,6 +179,48 @@ export const mastodon = {
       throw new Error(data.error ?? response.statusText);
     } else {
       throw new Error("strange mastodon response");
+    }
+  },
+
+  /*
+  == Server Information ===========================================================================================================
+  */
+
+  getServerInfo: async (account) => {
+    const access_token = account.access_token;
+    const url = new URL(`/api/v2/instance`, account.server);
+
+    const headers = new Headers();
+    headers.append("Authorization", `Bearer ${access_token}`);
+
+    const response = await fetch(url, {
+      headers,
+      redirect: "follow",
+    });
+
+    const data = await response.json();
+
+    // console.log(data)
+    if (response.ok && data.domain) {
+      return data;
+    } else if (response.status == 403) {
+      throw new Error(data.error ?? response.statusText);
+    } else {
+      throw new Error("strange mastodon response");
+    }
+  },
+
+  /*
+  == Max Status Length ===========================================================================================================
+  */
+
+  getMaxLengthForPost: async (account) => {
+    const data = await mastodon.getServerInfo(account);
+
+    if (data?.configuration?.statuses?.max_characters) {
+      return data?.configuration?.statuses?.max_characters;
+    } else {
+      return 500;
     }
   },
 };
