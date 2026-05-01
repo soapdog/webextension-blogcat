@@ -122,6 +122,8 @@ export const mastodon = {
       obj["in_reply_to_id"] = statusObj.in_reply_to_id;
     }
 
+    obj["visibility"] = "public";
+
     try {
       const response = await fetch(url, {
         headers,
