@@ -16,28 +16,31 @@ const Menu = {
               src: "../icons/cat_reading512c.png",
               class: "cat-icon",
             }),
-            m("h3", { style: { display: "inline" } }, item.title || "BlogCat Content Viewer"),
+            m(
+              "h3",
+              { style: { display: "inline" } },
+              `${feed.title}: ${item.title}` || "BlogCat Content Viewer",
+            ),
           ]),
         ),
       ),
-      
-          ]);
+    ]);
   },
 };
 
 const ContentDisplay = {
   view: (vnode) => {
-    console.log(item.content)
+    console.log(item.content);
     if (item.content?.type === "xhtml" || item.content?.type === "html") {
-      return m("iframe", m.trust(item.content))
+      return m("iframe", m.trust(item.content));
     }
-     if (item.contentType === "xhtml" || item.contentType === "html") {
+    if (item.contentType === "xhtml" || item.contentType === "html") {
       return m("iframe", {
-        srcdoc: item.content
-      })
+        srcdoc: item.content,
+      });
     }
-  }
-}
+  },
+};
 
 const ContentReader = {
   view: (vnode) => {
