@@ -16,7 +16,7 @@ const Menu = {
               src: "../icons/cat_reading512c.png",
               class: "cat-icon",
             }),
-            m("h3", { style: { display: "inline" } }, "BlogCat Content Viewer"),
+            m("h3", { style: { display: "inline" } }, item.title || "BlogCat Content Viewer"),
           ]),
         ),
       ),
