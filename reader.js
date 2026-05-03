@@ -108,6 +108,16 @@ const FeedItem = {
       item.link = feed.url & item.link;
     }
 
+    /*
+    == Check if content and no link ========================================================
+    */
+
+    if (link === "" && item?.content) {
+      link = `/contentReader.html?feed=${encodeURIComponent(feed.url)}&id=${
+              encodeURIComponent(item.id)
+            }`
+    }
+
     return m("li", [
       m(
         "a",

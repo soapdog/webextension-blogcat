@@ -227,6 +227,11 @@ export async function loadFeedFromURL(url) {
             ?.getAttribute("href");
           item["pubDate"] = entry.querySelector("updated")?.innerHTML ??
             entry.querySelector("published")?.innerHTML;
+          item["id"] = entry.querySelector("id")?.innerHTML
+          item["contentType"] = entry.querySelector("content")?.getAttribute("type")
+          item["content"] = entry.querySelector("content")?.innerHTML
+
+          
 
           feed["items"].push(item);
         }

@@ -1,8 +1,6 @@
 #!/opt/local/bin/lua
 
 require "pl"
-local markdown = require 'markdown_extra'
-local template = require 'pl.template'
 local json = require 'dkjson'
 
 local manifestRaw = file.read('manifest.json')
