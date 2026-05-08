@@ -114,8 +114,8 @@ const FeedItem = {
 
     if (link === "" && item?.content) {
       link = `/contentReader.html?feed=${encodeURIComponent(feed.url)}&id=${
-              encodeURIComponent(item.id)
-            }`
+        encodeURIComponent(item.id)
+      }`;
     }
 
     return m("li", [
@@ -171,7 +171,7 @@ const FeedDisplay = {
             m(
               "a",
               { href: feed.data.link, target: "_blank" },
-              m("b", feed.data.title),
+              m("b", feed.title),
             ),
           ),
           feed?.resumeState
