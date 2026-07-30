@@ -7,6 +7,13 @@ function goReader() {
   window.close();
 }
 
+function goSwanReader() {
+  browser.tabs.create({
+    url: "/swan-reader.html",
+  });
+  window.close();
+}
+
 function goKofi() {
   browser.tabs.create({
     url: "https://ko-fi.com/andreshouldbewriting",
@@ -88,6 +95,12 @@ document.getElementById("go-to-reader").addEventListener("click", (ev) => {
   ev.stopPropagation();
   ev.preventDefault();
   goReader();
+});
+
+document.getElementById("go-to-swan-reader").addEventListener("click", (ev) => {
+  ev.stopPropagation();
+  ev.preventDefault();
+  goSwanReader();
 });
 
 document.getElementById("go-to-add-feed").addEventListener("click", (ev) => {
