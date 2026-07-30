@@ -142,7 +142,6 @@ const FeedItem = {
       m("small", pubDate),
       m("span", "  •  "),
       m("small", item.feed.title),
-
     ]);
   },
 };
@@ -270,17 +269,17 @@ const FeedList = {
   },
   view: (vnode) => {
     let items = [];
-    const postsPerBlog = Number(settings["postsPerBlog"]) - 1 ?? 3
+    const postsPerBlog = Number(settings["postsPerBlog"]) - 1 ?? 3;
 
     for (const feed of feeds) {
-      const newItems = feed.data.items.slice(0, postsPerBlog)
-      newItems.forEach(i => i.feed = feed)
+      const newItems = feed.data.items.slice(0, postsPerBlog);
+      newItems.forEach((i) => i.feed = feed);
       items = items.concat(newItems);
     }
 
-    items = items.toSorted((a,b) => {
-      return new Date(b.pubDate) - new Date(a.pubDate)
-    })
+    items = items.toSorted((a, b) => {
+      return new Date(b.pubDate) - new Date(a.pubDate);
+    });
 
     return m(
       "div",
@@ -364,10 +363,10 @@ const Menu = {
           "li",
           m("div.box", [
             m("img", {
-              src: "../icons/cat_reading512c.png",
+              src: "../icons/swan512c.png",
               class: "cat-icon",
             }),
-            m("h2", { style: { display: "inline" } }, "BlogCat"),
+            m("h2", { style: { display: "inline" } }, "BlogCat (swan reader)"),
           ]),
         ),
       ),
