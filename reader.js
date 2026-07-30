@@ -147,9 +147,11 @@ const FeedItem = {
 const FeedDisplay = {
   showMore: true,
   view: (vnode) => {
+    const postsPerBlog = Number(settings["postsPerBlog"]) - 1  ?? 3
+
     let feed = vnode.attrs.feed;
     let items = vnode.state.showMore
-      ? feed.data.items.slice(0, 3)
+      ? feed.data.items.slice(0, postsPerBlog)
       : feed.data.items;
 
     function stripHtml(html) {
