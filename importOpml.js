@@ -1,8 +1,8 @@
 import {
   getAllFeeds,
+  loadFeedFromURL,
   saveFeed,
   saveFeeds,
-  loadFeedFromURL,
 } from "./common/dataStorage.js";
 
 import { opml } from "./common/opml.js";
@@ -48,6 +48,30 @@ const InputForm = {
           opml.loadFromFile(e, c);
         },
       }),
+      m("label", { for: "csv" }, "CSV FILE FROM MASTODON"),
+      m("input", {
+        name: "csv",
+        type: "file",
+        onchange: (e) => {
+          vnode.state.status = "";
+          const c = (fs) => {
+            feeds = fs;
+            m.redraw();
+          };
+          const s = (t) => {
+            vnode.state.status = t;
+            m.redraw();
+          };
+          opml.loadFromCSV(e, c, s);
+        },
+      }),
+      m(
+        "label",
+        `Importing from CSV is very slow. 
+        It takes two requests per account to find the RSS feed. Some of those
+        requests can be very slow as hosts go offline of have a bad response time.`,
+      ),
+      m("div", m("small", vnode.state.status ?? "")),
     ]);
   },
 };
@@ -68,10 +92,10 @@ const FeedItem = {
         "td",
         vnode.attrs.feed.web
           ? m(
-              "a",
-              { href: vnode.attrs.feed.web, target: "_blank" },
-              vnode.attrs.feed.title,
-            )
+            "a",
+            { href: vnode.attrs.feed.web, target: "_blank" },
+            vnode.attrs.feed.title,
+          )
           : vnode.attrs.feed.title,
       ),
       m("td", vnode.attrs.feed.tags.join(" ")),
@@ -160,16 +184,16 @@ const FeedList = {
 const URLImporter = {
   view: (vnode) => {
     return m("section", [
-      m(InputForm),
       m("p", [
         "Open the documentation about ",
         m(
           "a",
           { href: "/docs/index.html#/opml", target: "_blank" },
-          "importing and exporting OPML files",
+          "importing and exporting OPML & CSV files",
         ),
         ".",
       ]),
+      m(InputForm),
       feeds.length > 0 ? m(FeedList) : "",
     ]);
   },
