@@ -157,7 +157,7 @@ document.getElementById("go-to-kofi").addEventListener("click", (ev) => {
   goKofi();
 });
 
-let settings = await getAllSettings();
+const settings = await getAllSettings();
 
 const version = browser.runtime.getManifest().version;
 document.getElementById("blogcat-header").innerText = `BlogCat ${version}`;
