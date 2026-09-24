@@ -147,7 +147,7 @@ const FeedItem = {
 const FeedDisplay = {
   showMore: true,
   view: (vnode) => {
-    const postsPerBlog = Number(settings["postsPerBlog"]) - 1  ?? 3
+    const postsPerBlog = Number(settings["postsPerBlog"]) - 1 ?? 3;
 
     let feed = vnode.attrs.feed;
     let items = vnode.state.showMore
@@ -470,7 +470,15 @@ let allFeeds = [];
 let currentTag = "All";
 
 function openInReaderView(url) {
-  browser.tabs.create({ openInReaderMode: true, url: url });
+  if (browser.runtime?.getBrowserInfo) {
+    browser.runtime?.getBrowserInfo().then((i) => {
+      if (i.name === "Firefox") {
+        browser.tabs.create({ openInReaderMode: true, url: url });
+      }
+    });
+  } else {
+    browser.tabs.create({ url: url });
+  }
 }
 
 const appRoot = document.getElementById("app");
