@@ -23,8 +23,25 @@ function goKofi() {
 
 function goCompose() {
   if (settings["openEditorIn"] == "sidebar") {
-    browser.sidebarAction.open();
-    window.close();
+    if (browser?.sidebarAction) {
+      // Firefox
+      browser.sidebarAction.open();
+      window.close();
+    } else if (browser?.sidePanel) {
+      // Chrome & Friends
+      browser.windows.getCurrent().then((w) => {
+        const windowId = w.id;
+        browser.sidePanel.setOptions({
+          path: "/editor.html",
+          enabled: false,
+        }).then((_s) => {
+          browser.sidePanel.open({
+            windowId,
+          });
+          window.close();
+        });
+      });
+    }
   } else {
     browser.tabs.create({
       url: "/editor.html",

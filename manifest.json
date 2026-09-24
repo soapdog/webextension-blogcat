@@ -34,6 +34,9 @@
     "default_panel": "editor.html",
     "open_at_install": false
   },
+  "side_panel": {
+    "default_path": "editor.html"
+  },
   "options_ui": {
     "page": "options/options.html"
   },
@@ -53,7 +56,8 @@
     "unlimitedStorage",
     "contextMenus",
     "history",
-    "downloads"
+    "downloads",
+    "sidePanel"
   ],
   "host_permissions": [
     "<all_urls>"
