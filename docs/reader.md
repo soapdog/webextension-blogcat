@@ -1,4 +1,4 @@
-Use the _browser toolbar button_ to access the _reader page_ by clicking _Open Reader_.
+Use the _browser toolbar button_ to access the _reader page_ by clicking _Open Cat Reader_ or _Open Swan Reader_.
 
 ![Browser toolbar button](_media/browser-action.png)
 
@@ -11,7 +11,11 @@ The update frequency might not work exactly how you expect.
 - Weekly: That doesn't mean every seven days! There are 52 weeks in a year, this one checks the _week number_ of the last time it got the feed and the current week number, if they don't match, it fetches again. That means that opening the reader on a Friday and then again on Monday will fetch the feed twice even though fewer than seven days passed.
 - Monthy: Quite simple, it checks the month number, if they don't match it fetches again.
 
-BlogCat uses [RSS Parser](https://github.com/rbren/rss-parser) to fetch feeds. This library will send [HTTP Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) to the server with the date and etag of the last time it accessed the feed and respect their response.
+BlogCat uses [RSS Parser](https://github.com/rbren/rss-parser) to fetch feeds. This library will send [HTTP Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) to the server with the date and etag of the last time it accessed the feed and respect their response. There is also a naïve fallback code in case `RSS Parser` throws an exception. I noticed that lots of people have broken feeds, so the fallback code attempts to parse those broken feeds and extract the minimum needed information to display on the reader.
+
+You have two options of reader pages, the _cat reader_ and the _swan reader_, the only difference between them is UX, choose what you feeling at the moment.
+
+## Cat Reader
 
 ![Reader page](_media/reader-page.png)
 
@@ -26,6 +30,16 @@ You can unsubscribe to a website by clicking _remove_.
 To edit a subscription, click _edit_. This will open the _add feed page_ with that feed loaded into it.
 
 Clicking on a website title, will open the website.
+
+## Swan reader
+
+The swan reader is similar to the cat reader in which the menu navigation and the behaviour when clicking posts or tags are the same. The only difference is how the posts are displayed. Instead of being grouped by site, they are shown as a list ordered by date, which means that all the sites are jumbled together. Lots of other feed readers use this approach, and some of my users wanted, so I'm offering it as well as the more calm experience of the _cat reader_
+
+![The swan reader page](_media/swan-reader.png)
+
+
+
+## Reading a post
 
 Clicking on a post will navigate to the post with some user configurable options:
 

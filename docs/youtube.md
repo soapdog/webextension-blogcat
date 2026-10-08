@@ -8,6 +8,12 @@ BlogCat can be used to subscribe to YouTube channels. Just go to the channel pag
 
 Why subscribe to YouTube channels you ask? Well to keep all your subscribed websites in BlogCat and also step away from YouTube's own algorithm. YouTube is notorious for not showing you all the updates from channels you follow. Why they don't is unknown to me but I built BlogCat for various reasons and among them was to be able to actually see the videos from the channels I follow.
 
+## Youtube Home
+
+If you want to view a grid of thumbnails for all your Youtube subscribed channels, you click the _Open Youtube Subscriptions_ menu item from the toolbar.
+
+![Youtube Home showing your subscriptions](_media/youtube-home.png)
+
 ## Watching YouTube videos
 
 By default, when you click on a link that is a YouTube video in the _Reader page_, BlogCat will open a new tab with the link to the video. This will load the full YouTube experience with the comments, recommendations, etc.

@@ -14,6 +14,13 @@ function goSwanReader() {
   window.close();
 }
 
+function goYoutubeHome() {
+  browser.tabs.create({
+    url: "/youtube-home.html",
+  });
+  window.close();
+}
+
 function goKofi() {
   browser.tabs.create({
     url: "https://ko-fi.com/andreshouldbewriting",
@@ -102,6 +109,15 @@ document.getElementById("go-to-swan-reader").addEventListener("click", (ev) => {
   ev.preventDefault();
   goSwanReader();
 });
+
+document.getElementById("go-to-youtube-home").addEventListener(
+  "click",
+  (ev) => {
+    ev.stopPropagation();
+    ev.preventDefault();
+    goYoutubeHome();
+  },
+);
 
 document.getElementById("go-to-add-feed").addEventListener("click", (ev) => {
   ev.stopPropagation();
